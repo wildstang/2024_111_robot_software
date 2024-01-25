@@ -26,6 +26,7 @@ public class shooter implements Subsystem {
     private boolean rightTriggerPressed = false;
     private static final double MAX_SPEED = 1.0;
     private static final double MIN_SPEED = 0.0;
+    //I'd drop the speed step to like 0.05 for initial testing
     private static final double SPEED_STEP = 0.20;
 
 
@@ -35,6 +36,8 @@ public class shooter implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
+        //this is correct, but instead of an if-else to assign a boolean, you could just directly assign it
+        //i.e. leftTriggerPressed = leftTrigger.getValue() > 0.15;
         if (leftTrigger.getValue() > 0.15) {
             leftTriggerPressed = true;
         } else {
@@ -65,6 +68,7 @@ public class shooter implements Subsystem {
         rightTrigger.addInputListener(this);
         leftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
         leftTrigger.addInputListener(this);
+        //make sure to add .addInputListener(this) for the dpadUp and down buttons
         dpadUp = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_DPAD_UP);
         dpadDown = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_DPAD_DOWN);
     }
@@ -82,6 +86,7 @@ public class shooter implements Subsystem {
             Vortex1.setSpeed(Vortex1Speed);
             Vortex2.setSpeed(Vortex2Speed);
         }
+        //I would use else here instead of !boolean, so it's easier for future programmers to understand what's intended
         if (!leftTriggerPressed) {
             Vortex1.stop();
             Vortex2.stop();
