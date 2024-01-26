@@ -9,7 +9,6 @@ import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
-import com.revrobotics.CANSparkBase.ControlType;
 
 public class ArmControl implements Subsystem {
     private WsSpark ArmNeo;
@@ -17,6 +16,8 @@ public class ArmControl implements Subsystem {
     private double targetAngle = 0.0;
     private final double BaseAngle = 2.0;
     private int logicNumber = 0;
+    private final double  MAX_Angle = 90; // This maximum angle of rotation of Arm
+    private final double  MIN_Angle = 0; // This minimum angle of rotation of Arm
 
     @Override
     public void inputUpdate(Input source) {
@@ -29,11 +30,10 @@ public class ArmControl implements Subsystem {
             }
                
             if (logicNumber == 1) {
-                //you should parameterize that 360 for a "MAX ANGLE" (and min angle below), and maybe make it like 90 degrees
-                   targetAngle = Math.min(targetAngle + BaseAngle, 360);  
+                   targetAngle = Math.min(targetAngle + BaseAngle, MAX_Angle);  
         }        
             else if (logicNumber == -1) {
-                   targetAngle = Math.max(targetAngle - BaseAngle, 0);  
+                   targetAngle = Math.max(targetAngle - BaseAngle, MIN_Angle);  
     }
     
 }
@@ -48,23 +48,17 @@ public class ArmControl implements Subsystem {
         AbsoluteEncoder absEncoder = ArmNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
         absEncoder.setPositionConversionFactor(360.00);
 
-        //There's a few other commands needed to set up the closed loop. There's a "shortcut" method
-        //ArmNeo.initClosedLoop(0.1, 0.0, 0.0, 0.0, absEncoder, false);
-        //which does all of them. The arguments for that are the P, I, D, FF (should be 0), encoder, and if it's wrapped
-        //(wrapped means does it go from 359 to 1 by crossing the 360 to 0 discontinuity or not. In this application it shouldn't)
-        ArmNeo.getController().getPIDController().setP(0.1);  
-        ArmNeo.getController().getPIDController().setI(0.0);  
-        ArmNeo.getController().getPIDController().setD(0.0);  
+
+        ArmNeo.initClosedLoop(0.1, 0.0, 0.0, 0.0, absEncoder, false);
 
         ArmNeo.setBrake();
-        //this is a full neo, so this can be set to like 40 to start with
-        ArmNeo.setCurrentLimit(15, 15, 0);  
+
+        ArmNeo.setCurrentLimit(40, 40, 0);  
     }
 
     @Override
     public void update() {
-        //this is technically correct, but you can use ArmNeo.setPosition(targetAngle); to be a bit less verbose
-        ArmNeo.getController().getPIDController().setReference(targetAngle, ControlType.kPosition);
+        ArmNeo.setPosition(targetAngle);
     }
 
     @Override
