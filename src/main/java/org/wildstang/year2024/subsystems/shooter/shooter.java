@@ -13,11 +13,10 @@ import org.wildstang.year2024.robot.WsOutputs;
 
 
 public class shooter implements Subsystem {
-    private WsSpark Vortex1;
-    private WsSpark Vortex2;
-    private double Vortex1Speed = 0;
-    private double Vortex2Speed = 0;
+    private WsSpark Vortex;
+    private double VortexAllMotorsSpeed = 0;
     private WsSpark NeoMotor1;
+    private double NeoMotorSpeed = 1;
     private AnalogInput leftTrigger;
     private AnalogInput rightTrigger;
     private DigitalInput dpadUp;
@@ -26,8 +25,7 @@ public class shooter implements Subsystem {
     private boolean rightTriggerPressed = false;
     private static final double MAX_SPEED = 1.0;
     private static final double MIN_SPEED = 0.0;
-    //I'd drop the speed step to like 0.05 for initial testing
-    private static final double SPEED_STEP = 0.20;
+    private static final double SPEED_STEP = 0.05;
 
 
 
@@ -36,41 +34,29 @@ public class shooter implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
-        //this is correct, but instead of an if-else to assign a boolean, you could just directly assign it
-        //i.e. leftTriggerPressed = leftTrigger.getValue() > 0.15;
-        if (leftTrigger.getValue() > 0.15) {
-            leftTriggerPressed = true;
-        } else {
-            leftTriggerPressed = false;
-        }
-        if (rightTrigger.getValue() > 0.15) { 
-            rightTriggerPressed = true;
-        } else {
-            rightTriggerPressed = false;
-        }
+        leftTriggerPressed = leftTrigger.getValue() > 0.15;
+        rightTriggerPressed = rightTrigger.getValue() > 0.15;
         if (dpadUp.getValue()) {
-            Vortex1Speed = Math.min(Vortex1Speed + SPEED_STEP, MAX_SPEED);
-            Vortex2Speed = Math.min(Vortex2Speed + SPEED_STEP, MAX_SPEED);
+            VortexAllMotorsSpeed = Math.min(VortexAllMotorsSpeed + SPEED_STEP, MAX_SPEED);
         }
         if (dpadDown.getValue()) {
-            Vortex1Speed = Math.max(Vortex1Speed - SPEED_STEP, MIN_SPEED);
-            Vortex2Speed = Math.max(Vortex2Speed - SPEED_STEP, MIN_SPEED);
+            VortexAllMotorsSpeed = Math.max(VortexAllMotorsSpeed - SPEED_STEP, MIN_SPEED);
         }
     }
 
     @Override
     public void init() {
-        Vortex1 = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.VORTEX1);
-        Vortex2 = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.VORTEX2);
+        Vortex = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.VORTEX1);
         NeoMotor1 = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.NEOMOTOR1);// add another motors if needed as following motors 
 
         rightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
         rightTrigger.addInputListener(this);
         leftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
         leftTrigger.addInputListener(this);
-        //make sure to add .addInputListener(this) for the dpadUp and down buttons
         dpadUp = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_DPAD_UP);
+        dpadUp.addInputListener(this);
         dpadDown = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_DPAD_DOWN);
+        dpadDown.addInputListener(this);
     }
 
     @Override
@@ -81,20 +67,16 @@ public class shooter implements Subsystem {
     @Override
     public void update() {
         if (leftTriggerPressed) {
-            Vortex1Speed = Math.min(Math.max(Vortex1Speed, MIN_SPEED), MAX_SPEED);
-            Vortex2Speed = Math.min(Math.max(Vortex2Speed, MIN_SPEED), MAX_SPEED);
-            Vortex1.setSpeed(Vortex1Speed);
-            Vortex2.setSpeed(Vortex2Speed);
+            VortexAllMotorsSpeed = Math.min(Math.max(VortexAllMotorsSpeed, MIN_SPEED), MAX_SPEED);
+            Vortex.setSpeed(VortexAllMotorsSpeed);
         }
-        //I would use else here instead of !boolean, so it's easier for future programmers to understand what's intended
-        if (!leftTriggerPressed) {
-            Vortex1.stop();
-            Vortex2.stop();
+         else {
+            Vortex.stop();
         }
         if (rightTriggerPressed){
-            NeoMotor1.setSpeed(1);
+            NeoMotor1.setSpeed(NeoMotorSpeed);
         }
-        if (!rightTriggerPressed){
+         else{
             NeoMotor1.stop();
         }
     }

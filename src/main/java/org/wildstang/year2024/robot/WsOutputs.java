@@ -7,6 +7,7 @@ import org.wildstang.framework.hardware.OutputConfig;
 import org.wildstang.framework.io.outputs.Output;
 import org.wildstang.hardware.roborio.outputs.config.WsMotorControllers;
 import org.wildstang.hardware.roborio.outputs.config.WsSparkConfig;
+import org.wildstang.hardware.roborio.outputs.config.WsSparkFollowerConfig;
 
 /**
  * Output mappings are stored here.
@@ -26,12 +27,9 @@ public enum WsOutputs implements Outputs {
     ANGLE3("Module 3 Angle Motor", new WsSparkConfig(CANConstants.ANGLE3, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     DRIVE4("Module 4 Drive Motor", new WsSparkConfig(CANConstants.DRIVE4, WsMotorControllers.SPARK_FLEX_BRUSHLESS)),
     ANGLE4("Module 4 Angle Motor", new WsSparkConfig(CANConstants.ANGLE4, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
-    //Vortex1 should be a SPARK_FLEX_BRUSHLESS instead of a MAX
-    VORTEX1("Shooter 1 Motor", new WsSparkConfig(CANConstants.VORTEX1, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
-    //Vortex2 should be a SPARK_FLEX_BRUSHLESS instead of a MAX
-    VORTEX2( "Shooter 2 Motor", new WsSparkConfig(CANConstants.VORTEX2, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
-    //this NeoMotor1 needs a unique string name, as "Shooter 2 Motor" is also used for Vortex2 right now
-    NEOMOTOR1( "Shooter 2 Motor", new WsSparkConfig(CANConstants.NEOMOTOR1, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
+    VORTEX1("Shooter 1 Motor", new WsSparkConfig(CANConstants.VORTEX1, WsMotorControllers.SPARK_FLEX_BRUSHLESS)),
+    VORTEXFOLOW( "Shooter 2 Motor follow", new WsSparkFollowerConfig("Shooter 1 Motor",CANConstants.VORTEXFOLOW, WsMotorControllers.SPARK_FLEX_BRUSHLESS,true)),
+    NEOMOTOR1( "Neo Motor 1", new WsSparkConfig(CANConstants.NEOMOTOR1, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     
 
     // ---------------------------------
