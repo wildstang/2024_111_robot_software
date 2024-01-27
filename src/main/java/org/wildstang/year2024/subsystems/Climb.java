@@ -1,4 +1,4 @@
-package main.java.org.wildstang.year2024.subsystems;
+package org.wildstang.year2024.subsystems;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
@@ -27,12 +27,13 @@ private double climbSpeed;
 public void init() {
 
     climbMotor = (WsSpark) WsOutputs.CLIMB_MOTOR.get();
-
+    //remember to call initInputs() here if you want to have that in a separate method
 }
 
 
 public void initInputs() {
 
+    //make sure to add .addInputListener(this)
     joystick = (AnalogInput) WsInputs.OPERATOR_LEFT_JOYSTICK_Y.get();
 
 }
@@ -41,6 +42,7 @@ public void initInputs() {
 
 public void inputUpdate(Input source) {
 
+    //what happens when the joystick isn't pressed? How does the value of climbSpeed return to 0?
 if (Math.abs(joystick.getValue()) > 0.05 && source == joystick) {
 
     climbSpeed = joystick.getValue();
