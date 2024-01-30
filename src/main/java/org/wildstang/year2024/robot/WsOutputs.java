@@ -7,6 +7,7 @@ import org.wildstang.framework.hardware.OutputConfig;
 import org.wildstang.framework.io.outputs.Output;
 import org.wildstang.hardware.roborio.outputs.config.WsMotorControllers;
 import org.wildstang.hardware.roborio.outputs.config.WsSparkConfig;
+import org.wildstang.hardware.roborio.outputs.config.WsSparkFollowerConfig;
 
 /**
  * Output mappings are stored here.
@@ -27,7 +28,7 @@ public enum WsOutputs implements Outputs {
     DRIVE4("Module 4 Drive Motor", new WsSparkConfig(CANConstants.DRIVE4, WsMotorControllers.SPARK_FLEX_BRUSHLESS)),
     ANGLE4("Module 4 Angle Motor", new WsSparkConfig(CANConstants.ANGLE4, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     CLIMB("Climb", new WsSparkConfig(CANConstants.CLIMB, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
-    CLIMB_Follower("Climb Follower", new WsSparkMaxFollowerConfig("Climb Motor", CANConstants.CLIMB_FOLLOWER, true, false)),
+    CLIMB_Follower("Climb Follower", new WsSparkFollowerConfig("Climb Motor", CANConstants.CLIMB_FOLLOWER, WsMotorControllers.SPARK_MAX_BRUSHLESS, false)),
 
     // ---------------------------------
     // Other Motors

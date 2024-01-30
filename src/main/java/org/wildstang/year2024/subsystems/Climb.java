@@ -27,6 +27,7 @@ public void init() {
 
     climbMotor = (WsSpark) WsOutputs.CLIMB.get();
     climbMotor.initClosedLoop(0.1,0.0,0.0,0.0);
+    climbMotor.setCurrentLimit(40, 40, 0);
 
     initInputs();
 
