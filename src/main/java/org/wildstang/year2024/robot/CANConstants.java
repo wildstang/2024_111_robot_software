@@ -1,5 +1,7 @@
 package org.wildstang.year2024.robot;
 
+import com.fasterxml.jackson.databind.deser.std.StackTraceElementDeserializer;
+
 /**
  * CAN Constants are stored here.
  * We primarily use CAN to communicate with Talon motor controllers.
@@ -26,5 +28,7 @@ public final class CANConstants {
     public static final int ANGLE3 = 16;
     public static final int DRIVE4 = 17;
     public static final int ANGLE4 = 18;
+    public static final int LIFT1 = 19;
+    public static final int LIFTFOLLOW2 = 20;
     
 }
