@@ -27,14 +27,15 @@ private double climbSpeed;
 public void init() {
 
     climbMotor = (WsSpark) WsOutputs.CLIMB_MOTOR.get();
-    //remember to call initInputs() here if you want to have that in a separate method
+    initInputs();
+    
 }
 
 
 public void initInputs() {
 
-    //make sure to add .addInputListener(this)
     joystick = (AnalogInput) WsInputs.OPERATOR_LEFT_JOYSTICK_Y.get();
+    joystick.addInputListener(this);
 
 }
 
@@ -42,11 +43,11 @@ public void initInputs() {
 
 public void inputUpdate(Input source) {
 
-    //what happens when the joystick isn't pressed? How does the value of climbSpeed return to 0?
 if (Math.abs(joystick.getValue()) > 0.05 && source == joystick) {
-
     climbSpeed = joystick.getValue();
-
+}
+else {
+    climbSpeed = 0;
 }
 
 }
