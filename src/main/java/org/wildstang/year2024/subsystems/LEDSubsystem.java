@@ -1,12 +1,16 @@
 package org.wildstang.year2024.subsystems;
 
+//input
 import org.wildstang.framework.io.inputs.Input;
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.hardware.roborio.inputs.WsJoystickButton;
 import org.wildstang.year2024.robot.WsInputs;
 
+//ouput
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+
+//utiity
 import edu.wpi.first.wpilibj.util.Color;
 
 /**
@@ -36,26 +40,27 @@ public class LEDSubsystem implements Subsystem {
     private boolean isEndgame; //TODO: implement a timer or something so that it works
 
     //vision
+    //TODO: Have to wait for vision to work
     private boolean canSeeStage;
     private boolean canSeeAmp;
     private boolean canSeeSpeaker;
     private boolean canSeeNote;
 
     //colors
-    private Color cyan = new Color(0, 255, 255);
-    private Color white = new Color(255, 255, 255);
-    private Color purple = new Color(255, 0, 255);
-    private Color green = new Color(0, 255, 0);
-    private Color orange = new Color(255, 165, 0);
-    private Color red = new Color(255, 0, 0);
-    private Color yellow = new Color(255, 255, 0);
+    private final Color cyan = new Color(0, 255, 255);
+    private final Color white = new Color(255, 255, 255);
+    private final Color purple = new Color(255, 0, 255);
+    private final Color green = new Color(0, 255, 0);
+    private final Color orange = new Color(255, 165, 0);
+    private final Color red = new Color(255, 0, 0);
+    private final Color yellow = new Color(255, 255, 0);
 
 
     @Override
     public void init() {
 
         //led
-        led = new AddressableLED(port); //TODO: figure out what number this is
+        led = new AddressableLED(port);
         ledBuffer = new AddressableLEDBuffer(length);
 
         led.setLength(ledBuffer.getLength());
@@ -78,12 +83,7 @@ public class LEDSubsystem implements Subsystem {
 
             if (intakeButtonHeld) {
 
-                //cyan
-                for (int i = 0; i < ledBuffer.getLength(); i++) {
-
-                    ledBuffer.setRGB(i, (int) cyan.red, (int) cyan.green, (int) cyan.blue);
-
-                }
+                setColor(cyan);
 
             } else if (isEndgame) {
 
@@ -94,60 +94,30 @@ public class LEDSubsystem implements Subsystem {
 
                 } else {
 
-                    //white
-                    for (int i = 0; i < ledBuffer.getLength(); i++) {
-
-                        ledBuffer.setRGB(i, (int) white.red, (int) white.green, (int) white.blue);
-
-                    }
+                    setColor(white);
 
                 }
 
             } else if (canSeeAmp) {
 
-                //purple
-                for (int i = 0; i < ledBuffer.getLength(); i++) {
-
-                    ledBuffer.setRGB(i, (int) purple.red, (int) purple.green, (int) purple.blue);
-
-                }
+                setColor(purple);
 
             } else if (canSeeSpeaker) {
 
-                //green
-                for (int i = 0; i < ledBuffer.getLength(); i++) {
-
-                    ledBuffer.setRGB(i, (int) green.red, (int) green.green, (int) green.blue);
-
-                }
+                setColor(green);
 
             } else {
 
-                //orange
-                for (int i = 0; i < ledBuffer.getLength(); i++) {
-
-                    ledBuffer.setRGB(i, (int) orange.red, (int) orange.green, (int) orange.blue);
-
-                }
+                setColor(orange);
 
             }
         } else if (canSeeNote) {
 
-            //red
-            for (int i = 0; i < ledBuffer.getLength(); i++) {
-
-                ledBuffer.setRGB(i, (int) red.red, (int) red.green, (int) red.blue);
-
-            }
+            setColor(red);
 
         } else {
 
-            //yellow
-            for (int i = 0; i < ledBuffer.getLength(); i++) {
-
-                ledBuffer.setRGB(i, (int) yellow.red, (int) yellow.green, (int) yellow.blue);
-
-            }
+            setColor(yellow);
 
         }
 
@@ -187,5 +157,20 @@ public class LEDSubsystem implements Subsystem {
     @Override
     public String getName() {
         return "LED Subsystem";
+    }
+
+    /**
+     * Set the color of the LED buffer.
+     *
+     * @param  color  the color to set
+     */
+    private void setColor(Color color) {
+
+        for (int i = 0; i < ledBuffer.getLength(); i++) {
+
+            ledBuffer.setRGB(i, (int) color.red, (int) color.green, (int) color.blue);
+
+        }
+
     }
 }
