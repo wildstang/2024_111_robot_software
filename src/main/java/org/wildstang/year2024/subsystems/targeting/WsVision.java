@@ -39,6 +39,14 @@ public class WsVision implements Subsystem {
     public void selfTest() {
     }
 
+    //get distance from Amp
+    public double getAmp(double distance){
+        if (back.TargetInView()){
+        return (AmpHeight - CameraHeight)/ Math.tan(back.ty);
+    }
+        else {return 0;}
+    }
+
     @Override
     public void update() {
         front.update();

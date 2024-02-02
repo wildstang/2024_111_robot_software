@@ -45,6 +45,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private DigitalInput faceLeft;//rotation lock 270 degrees
     private DigitalInput faceDown;//rotation lock 180 degrees
     private DigitalInput dpadLeft;//defense mode
+    private DigitalInput dpadUp;//amp mode
     private DigitalInput rightStickButton;//auto drive override
 
     private double xSpeed;
@@ -61,6 +62,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private double pathTarget;
     private double aimOffset;
     private double vertOffset;
+    private double ampOffset;
     private double pathXOffset = 0;
     private double pathYOffset = 0;
     private boolean autoOverride;
@@ -80,7 +82,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private WsVision limelight;
     private LimeConsts LC;
 
-    public enum driveType {TELEOP, AUTO, CROSS};
+    public enum driveType {TELEOP, AUTO, CROSS, AMP};
     public driveType driveState;
 
     @Override
@@ -96,6 +98,18 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         else if (driveState == driveType.CROSS || driveState == driveType.AUTO) {
             driveState = driveType.TELEOP;
+        }
+
+        //use the limelight for amp
+        if (dpadUp.getValue() && driveState != driveType.CROSS) {
+            if (driveState == driveType.TELEOP){
+                driveState = driveType.AMP;
+                autoOverride = false;
+            }
+        } else {
+            if (driveState == driveType.AMP) {
+                driveState = driveType.TELEOP;
+            }
         }
 
         //get x and y speeds
@@ -137,6 +151,14 @@ public class SwerveDrive extends SwerveDriveTemplate {
             } else rotTarget = 90.0;
             rotLocked = true;
         }
+
+        //driving towards amp
+        if (driveState == driveType.AMP) {  
+            xSpeed = limelight.getAmp(ampOffset) * 0.2;
+            ySpeed = limelight.getAmp(ampOffset) * 0.2;
+        this.swerveSignal = swerveHelper.setDrive(xSpeed, ySpeed, rotSpeed, getGyroAngle());            
+        drive();
+    }        
 
         //get rotational joystick
         rotSpeed = rightStickX.getValue()*Math.abs(rightStickX.getValue());
