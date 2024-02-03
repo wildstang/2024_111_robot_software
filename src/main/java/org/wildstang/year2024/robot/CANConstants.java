@@ -28,4 +28,5 @@ public final class CANConstants {
     public static final int ANGLE4 = 18;
     public static final int VORTEX1 = 19;
     public static final int VORTEXFOLOW =20;
+    public static final int ARMNEO = 19;
 }

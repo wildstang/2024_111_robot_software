@@ -29,6 +29,9 @@ public enum WsOutputs implements Outputs {
     ANGLE4("Module 4 Angle Motor", new WsSparkConfig(CANConstants.ANGLE4, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     VORTEX1("Shooter 1 Motor", new WsSparkConfig(CANConstants.VORTEX1, WsMotorControllers.SPARK_FLEX_BRUSHLESS)),
     VORTEXFOLOW( "Shooter 2 Motor follow", new WsSparkFollowerConfig("Shooter 1 Motor",CANConstants.VORTEXFOLOW, WsMotorControllers.SPARK_FLEX_BRUSHLESS,true)),
+    ARMNEO("Arm Neo", new WsSparkConfig(CANConstants.ARMNEO, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
+
+
 
 
 

@@ -2,32 +2,28 @@ package org.wildstang.year2024.subsystems.targeting;
 
 public class LimeConsts {
 
-    public double VERTICAL_APRILTAG_DISTANCE = 73.0; 
+    // Arbuitrary values to be updated
+    public static double HORIZONTAL_LIMELIGHT_MOUNT = 20;
+    public static double VERTICAL_LIMELIGHT_MOUNT = 20;
 
-    public double HORIZONTAL_APRILTAG_DISTANCE_LEFT = 33.0; 
-
-    public double HORIZONTAL_APRILTAG_DISTANCE_RIGHT = 33.0;
-
-    public double HORIZONTAL_LIMELIGHT_MOUNT = 6.4;
-
-    public double VERT_AUTOAIM_P = 0.01;
-
-    public double HORI_AUTOAIM_P = 0.01;
-
-    public double OFFSET_HORIZONTAL = 10;
-
-    public double OFFSET_VERTICAL = -5;
-
-    public double[] CUBES = {6.938,  5.268,  3.592,  4.425,  2.75,   1.072}; //meters
-    public double[] CONES = {7.503, 6.385, 5.827, 4.709, 4.150, 3.033, 4.989, 3.871, 3.307, 2.189, 1.631, 0.513};//meters
-
-    public double STATION_VERTICAL = 9.0 + 42.19;//inches
-
-    public double RED_STATION_X = 1.266*39.3701;//inches
-    public double BLUE_STATION_X = 6.75*39.3701;//inches
-    public double STATION_HORIZONTAL = 24.0;//inches
-    public double STATION_OFFSETS = 20;
-    
-    public final boolean CONE = true;
-    public final boolean CUBE = false;
+    // At each index is the height of the tag with that id
+    public static double[] APRIL_TAG_HEIGHTS = {
+        0, 
+        51.75, // ID 1 Source Blue
+        51.75, // ID 2 Source Blue
+        55.125, // ID 3 Speaker Blue
+        55.125, // ID 4 Speaker Blue
+        51.375, // ID 5 AMP Blue
+        51.375, // ID 6 AMP Red
+        55.125, // ID 7 Speaker Red
+        55.125, // ID 8 Speaker Red
+        51.75, // ID 9 Source Red
+        51.75, // ID 10 Source Red
+        50.75, // ID 11 Stage Red
+        50.75, // ID 12 Stage Red
+        50.75, // ID 13 Stage Red
+        50.75, // ID 14 Stage Blue
+        50.75, // iD 15 Stage Blue
+        50.75 // ID 16 Stage Blue
+    };
 }
