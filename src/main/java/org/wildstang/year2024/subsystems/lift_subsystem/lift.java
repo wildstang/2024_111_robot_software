@@ -9,83 +9,102 @@ import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import edu.wpi.first.wpilibj.Timer;
 
+public class lift implements Subsystem {
+    private WsSpark liftMAX;
+    private DigitalInput left_raize_AMP, trap_start_BT, trap_select_BT;
+    private Timer timer = new Timer();
+    private Timer trapTimer = new Timer();
 
-public class lift implements Subsystem { 
-    //inputs_outputs
+    private static final double LIFT_AMP_TIME = 2.0;
+    private static final double TRAP_TIME = 3.0;
+    private double liftDuration = 0;
+    private boolean isOperating = false;
+    private boolean isLifting = false;
+    private boolean isSelectPressed = false;
+    private boolean isStartPressed = false;
+    private boolean isTrapOperating = false;
 
-private WsSpark liftMAX;
-private DigitalInput left_raize_AMP,trap_start_BT,trap_select_BT;
+    @Override
+    public void init() {
+        left_raize_AMP = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_SHOULDER);
+        trap_start_BT = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_START);
+        trap_select_BT = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_SELECT);
+        liftMAX = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.LIFT1);
+        liftMAX.setCurrentLimit(40, 40, 0);
+        liftMAX.initClosedLoop(3.0,0.0,0.0,0.0);
 
-
-private Timer timer = new Timer();
-
-
-private static final double Lift_AMP_Time = 2.0;
-private boolean isLifting = false;
-private boolean isOperating = false;
-
-
-
-@Override
-public void init(){
-    left_raize_AMP = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_SHOULDER);
-    left_raize_AMP.addInputListener(this);
-    trap_start_BT = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_START);
-    trap_start_BT.addInputListener(this);
-    trap_select_BT = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_SELECT);
-    trap_select_BT.addInputListener(this);
-
-    liftMAX = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.LIFT1);
-    liftMAX.setCurrentLimit(40, 40, 0);
-
-    
-    
-} 
-@Override
-public void resetState(){
-    timer.reset();
-    timer.start();
-    
-} 
-@Override  
-public void update(){
-    if(isOperating && timer.hasElapsed(Lift_AMP_Time)){
-        liftMAX.setSpeed(isLifting ? 1.0 : -1.0);
-    } else { 
-        liftMAX.setSpeed(0);
-        isOperating = false;
-        timer.stop();
+        left_raize_AMP.addInputListener(this);
+        trap_start_BT.addInputListener(this);
+        trap_select_BT.addInputListener(this);
     }
-    
-}
 
-@Override
-public void inputUpdate(Input source){
-    if (left_raize_AMP.getValue()) {
-        if (!isOperating){
-            isOperating = true;
-            isLifting = true;
-           resetState();
+    @Override
+    public void inputUpdate(Input source) {
+        if (source == left_raize_AMP) {
+            if (left_raize_AMP.getValue() && !isOperating) {
+                isLifting = true;
+                isOperating = true;
+                timer.reset();
+                timer.start();
+            } else if (!left_raize_AMP.getValue() && isOperating && isLifting) {
+                isLifting = false;
+                liftDuration = timer.get();
+                timer.reset();
+                timer.start();
+            }
+        } else if (source == trap_select_BT || source == trap_start_BT) {
+            isSelectPressed = trap_select_BT.getValue();
+            isStartPressed = trap_start_BT.getValue();
+
+            if (isSelectPressed && isStartPressed && !isTrapOperating) {
+                isTrapOperating = true;
+                trapTimer.reset();
+                trapTimer.start();
+            }
         }
     }
-    else{
-        if(isOperating && isLifting){
-            isLifting = false;
-          resetState();
+
+    @Override
+    public void update() {
+        if (isOperating) {
+            if ((isLifting && timer.hasElapsed(LIFT_AMP_TIME)) || (!isLifting && timer.hasElapsed(liftDuration))) {
+                resetState();
+            } else {
+                liftMAX.setSpeed(isLifting ? 1.0 : -1.0);
+            }
         }
+
+        if (isTrapOperating && trapTimer.hasElapsed(TRAP_TIME)) {
+            resetState();
+        } else if (isTrapOperating) {
+            liftMAX.setSpeed(1.0);
+        }
+    }
+
+    @Override
+    public void selfTest() {
         
     }
 
-}
-@Override
-public void selfTest(){
-    
-}
+    @Override
+    public void resetState() {
+        
+        timer.reset();
+        trapTimer.reset();
 
-@Override
-public String getName(){
-    return "lift";
-    
-}
+        
+        isOperating = false;
+        isLifting = false;
+        isTrapOperating = false;
+        isSelectPressed = false;
+        isStartPressed = false;
 
+        
+        liftMAX.setSpeed(0);
+    }
+
+    @Override
+    public String getName() {
+        return "lift";
+    }
 }

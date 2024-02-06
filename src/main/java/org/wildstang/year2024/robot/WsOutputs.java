@@ -28,7 +28,7 @@ public enum WsOutputs implements Outputs {
     DRIVE4("Module 4 Drive Motor", new WsSparkConfig(CANConstants.DRIVE4, WsMotorControllers.SPARK_FLEX_BRUSHLESS)),
     ANGLE4("Module 4 Angle Motor", new WsSparkConfig(CANConstants.ANGLE4, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     LIFT1("Lift 1 Motor", new WsSparkConfig(CANConstants.LIFT1, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
-    VORTEXFOLOW( "Lift 2 Motor", new WsSparkFollowerConfig("Lift 1",CANConstants.LIFTFOLLOW2, WsMotorControllers.SPARK_MAX_BRUSHLESS,true)),
+    LIFTFOLLOW2( "Lift 2 Motor", new WsSparkFollowerConfig("Lift 1 Motor",CANConstants.LIFTFOLLOW2, WsMotorControllers.SPARK_MAX_BRUSHLESS,true)),
 
     // ---------------------------------
     // Other Motors
