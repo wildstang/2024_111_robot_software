@@ -12,7 +12,7 @@ import org.wildstang.year2024.robot.CANConstants;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.targeting.LimeConsts;
+import org.wildstang.year2024.subsystems.targeting.VisionConsts;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -78,7 +78,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private Timer autoTimer = new Timer();
 
     private WsVision limelight;
-    private LimeConsts LC;
 
     public enum driveType {TELEOP, AUTO, CROSS};
     public driveType driveState;
@@ -165,7 +164,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     }
 
     public void initInputs() {
-        LC = new LimeConsts();
 
         leftStickX = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_JOYSTICK_X);
         leftStickX.addInputListener(this);

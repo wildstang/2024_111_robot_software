@@ -14,14 +14,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
 
-    public WsLL front = new WsLL("limelight-front");
-    public WsLL back = new WsLL("limelight-back");
+    public WsPV front = new WsPV("photonvision", true);
+    public WsPV back = new WsPV("object detection", false);
 
-    public LimeConsts LC;
+    public VisionConsts LC;
 
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
-    
+    public double[] distances = {0.0, 0.0, 0.0};
+    public double[] speeds = {0.0, 0.0, 0.0};
+    public double[] angles = {0.0, 0.0, 0.0};
+    public int last = distances.length-1;
+
+    public boolean isBlue;
+
+    private DigitalInput driverLeftShoulder;
 
     @Override
     public void inputUpdate(Input source) {
@@ -30,9 +37,12 @@ public class WsVision implements Subsystem {
 
     @Override
     public void init() {
-        LC = new LimeConsts();
-
+        LC = new VisionConsts();
+        front.update();
+        back.update();
         resetState();
+        driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
+        driverLeftShoulder.addInputListener(this);
     }
 
     @Override
@@ -54,5 +64,26 @@ public class WsVision implements Subsystem {
     @Override
     public String getName() {
         return "Ws Vision";
+    }
+
+    public double getSpeed(){
+        double inputDistance = front.distanceToTarget(isBlue);
+        if (inputDistance < distances[0]) return speeds[0];
+        for (int i = 1; i < distances.length; i++){
+            if (inputDistance < distances[i]){
+                return speeds[i-1] + (speeds[i]-speeds[i-1])*(inputDistance-distances[i-1])/(distances[i]-distances[i-1]);
+            }
+        }
+        return speeds[last] + (inputDistance-distances[last])*(speeds[last]-speeds[last-1])/(distances[last]-distances[last-1]);
+    }
+    public double getAngle(){
+        double inputDistance = front.distanceToTarget(isBlue);
+        if (inputDistance < distances[0]) return angles[0];
+        for (int i = 1; i < distances.length; i++){
+            if (inputDistance < distances[i]){
+                return angles[i-1] + (angles[i]-angles[i-1])*(inputDistance-distances[i-1])/(distances[i]-distances[i-1]);
+            }
+        }
+        return angles[last] + (inputDistance-distances[last])*(angles[last]-angles[last-1])/(distances[last]-distances[last-1]);
     }
 }
