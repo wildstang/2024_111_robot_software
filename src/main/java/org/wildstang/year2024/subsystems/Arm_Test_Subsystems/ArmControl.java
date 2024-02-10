@@ -10,13 +10,15 @@ import org.wildstang.year2024.robot.WsOutputs;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class ArmControl implements Subsystem {
     private WsSpark ArmNeo;
     private DigitalInput Rotate_Positive, Rotate_Negative;
     private double targetAngle = 0.0;
     private final double BaseAngle = 2.0;
     private int logicNumber = 0;
-    private final double  MAX_Angle = 90; // This maximum angle of rotation of Arm
+    private final double  MAX_Angle = 180; // This maximum angle of rotation of Arm
     private final double  MIN_Angle = 0; // This minimum angle of rotation of Arm
 
     @Override
@@ -44,12 +46,12 @@ public class ArmControl implements Subsystem {
         Rotate_Negative = (DigitalInput) Core.getInputManager().getInput(WsInputs.OPERATOR_LEFT_SHOULDER);
         Rotate_Negative.addInputListener(this);
 
-        ArmNeo = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.ARMNEO);
+        ArmNeo = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.ARM_PIVOT);
         AbsoluteEncoder absEncoder = ArmNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
         absEncoder.setPositionConversionFactor(360.00);
 
 
-        ArmNeo.initClosedLoop(0.1, 0.0, 0.0, 0.0, absEncoder, false);
+        ArmNeo.initClosedLoop(0.1, 0.0, 0.0, 0.0, absEncoder);
 
         ArmNeo.setBrake();
 
@@ -59,6 +61,7 @@ public class ArmControl implements Subsystem {
     @Override
     public void update() {
         ArmNeo.setPosition(targetAngle);
+        SmartDashboard.putNumber("arm angle", targetAngle);
     }
 
     @Override
