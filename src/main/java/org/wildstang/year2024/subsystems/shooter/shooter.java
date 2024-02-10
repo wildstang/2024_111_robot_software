@@ -11,6 +11,8 @@ import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class shooter implements Subsystem {
     private WsSpark Vortex;
@@ -46,8 +48,8 @@ public class shooter implements Subsystem {
 
     @Override
     public void init() {
-        Vortex = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.VORTEX1);
-        NeoMotor1 = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.NEOMOTOR1);// add another motors if needed as following motors 
+        Vortex = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER);
+        NeoMotor1 = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.KICKER);// add another motors if needed as following motors 
 
         rightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
         rightTrigger.addInputListener(this);
@@ -79,6 +81,7 @@ public class shooter implements Subsystem {
          else{
             NeoMotor1.stop();
         }
+        SmartDashboard.putNumber("Shooter speed", VortexAllMotorsSpeed);
     }
 
     @Override
