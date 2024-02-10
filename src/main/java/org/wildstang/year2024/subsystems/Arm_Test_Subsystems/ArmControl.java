@@ -61,7 +61,8 @@ public class ArmControl implements Subsystem {
     @Override
     public void update() {
         ArmNeo.setPosition(targetAngle);
-        SmartDashboard.putNumber("arm angle", targetAngle);
+        SmartDashboard.putNumber("arm angle target", targetAngle);
+        SmartDashboard.putNumber("arm angle", ArmNeo.getPosition());
     }
 
     @Override
