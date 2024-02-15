@@ -16,7 +16,8 @@ public class ArmControl implements Subsystem {
     private WsSpark ArmNeo;
     private DigitalInput Rotate_Positive, Rotate_Negative;
     private double targetAngle = 0.0;
-    private final double BaseAngle = 2.0;
+    private final double BaseAngle = 180.0;
+    private AbsoluteEncoder absEncoder;
     private int logicNumber = 0;
     private final double  MAX_Angle = 180; // This maximum angle of rotation of Arm
     private final double  MIN_Angle = 0; // This minimum angle of rotation of Arm
@@ -46,8 +47,8 @@ public class ArmControl implements Subsystem {
         Rotate_Negative = (DigitalInput) Core.getInputManager().getInput(WsInputs.OPERATOR_LEFT_SHOULDER);
         Rotate_Negative.addInputListener(this);
 
-        ArmNeo = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.ARM_PIVOT);
-        AbsoluteEncoder absEncoder = ArmNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
+        ArmNeo = (WsSpark) WsOutputs.ARM_PIVOT.get();
+        absEncoder = ArmNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
         absEncoder.setPositionConversionFactor(360.00);
 
 
@@ -55,14 +56,14 @@ public class ArmControl implements Subsystem {
 
         ArmNeo.setBrake();
 
-        ArmNeo.setCurrentLimit(40, 40, 0);  
+        ArmNeo.setCurrentLimit(20, 20, 0);  
     }
 
     @Override
     public void update() {
         ArmNeo.setPosition(targetAngle);
         SmartDashboard.putNumber("arm angle target", targetAngle);
-        SmartDashboard.putNumber("arm angle", ArmNeo.getPosition());
+        SmartDashboard.putNumber("arm angle", absEncoder.getPosition());
     }
 
     @Override

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class shooter implements Subsystem {
     private WsSpark Vortex;
     private WsSpark Vortex2;
-    private double VortexAllMotorsSpeed = 0.5;
+    private double VortexAllMotorsSpeed = 1.0;
     private WsSpark NeoMotor1;
     private double NeoMotorSpeed = 1;
     private AnalogInput leftTrigger;
@@ -28,7 +28,7 @@ public class shooter implements Subsystem {
     private boolean rightTriggerPressed = false;
     private static final double MAX_SPEED = 1.0;
     private static final double MIN_SPEED = 0.0;
-    private static final double SPEED_STEP = 0.01;
+    private static final double SPEED_STEP = 0.05;
 
 
 
