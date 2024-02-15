@@ -15,7 +15,7 @@ public class Test_lift implements Subsystem {
 
 
 
-    private WsSpark lift1;
+    private WsSpark lift1, lift2;
     private DigitalInput lockLiftButton;
     private AnalogInput joyStickUpInput;
    // private DigitalInput liftPreset1;
@@ -30,8 +30,10 @@ public class Test_lift implements Subsystem {
 
     @Override
     public void init() {
-        lift1 = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.LIFT1);   
+        lift1 = (WsSpark) WsOutputs.LIFT.get();   
         motorSetUp(lift1);
+        lift2 = (WsSpark) WsOutputs.LIFT2.get();
+        motorSetUp(lift2);
 
         joyStickUpInput = (WsJoystickAxis) Core.getInputManager().getInput(WsInputs.OPERATOR_LEFT_JOYSTICK_Y);
         joyStickUpInput.addInputListener(this);
@@ -50,7 +52,6 @@ public class Test_lift implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
-        // TODO Auto-generated method stub
 
         if (Math.abs(joyStickUpInput.getValue()) > 0.05 && source == joyStickUpInput && isLiftLocked == false) {
             liftSpeed = joyStickUpInput.getValue();
@@ -91,32 +92,26 @@ public class Test_lift implements Subsystem {
 
 
     private void motorSetUp(WsSpark setupMotor){
-        setupMotor.setCurrentLimit(80, 20, 10000);
-        setupMotor.enableVoltageCompensation();
+        setupMotor.setCurrentLimit(50, 50, 0);
     }
-
 
     @Override
     public void selfTest() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'selfTest'");
     }
 
     @Override
     public void update() {
-        // TODO Auto-generated method stub
         lift1.setSpeed(liftSpeed);
+        lift2.setSpeed(liftSpeed);
     }
 
     @Override
     public void resetState() {
-        // TODO Auto-generated method stub
         liftSpeed = 0;
     }
 
     @Override
     public String getName() {
-        // TODO Auto-generated method stub
         return ("Test_lift");
     }
 

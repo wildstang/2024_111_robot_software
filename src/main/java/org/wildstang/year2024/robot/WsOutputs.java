@@ -34,7 +34,8 @@ public enum WsOutputs implements Outputs {
     FEED("Feed", new WsSparkConfig(CANConstants.FEED, WsMotorControllers.SPARK_MAX_BRUSHED)),
     KICKER("Kicker", new WsSparkConfig(CANConstants.KICKER, WsMotorControllers.SPARK_MAX_BRUSHED)),
     ARM_PIVOT("Arm Pivot", new WsSparkConfig(CANConstants.ARM_PIVOT, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
-    // LIFT("Lift", new WsSparkConfig(CANConstants.LIFT, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
+    LIFT("Lift", new WsSparkConfig(CANConstants.LIFT, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
+    LIFT2("Lift2", new WsSparkConfig(CANConstants.LIFT_FOLLOWER, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     // LIFT_FOLLOWER("Lift Follower", new WsSparkFollowerConfig("Lift", CANConstants.LIFT_FOLLOWER, WsMotorControllers.SPARK_MAX_BRUSHLESS, true)),
 
     // ---------------------------------
