@@ -20,8 +20,8 @@ public class shooter implements Subsystem {
     private double VortexAllMotorsSpeed = 1.0;
     private WsSpark NeoMotor1;
     private double NeoMotorSpeed = 1;
-    private AnalogInput leftTrigger;
-    private AnalogInput rightTrigger;
+    private AnalogInput leftTrigger, lt2;
+    private AnalogInput rightTrigger, rt2;
     private DigitalInput dpadUp;
     private DigitalInput dpadDown;
     private boolean leftTriggerPressed = false;
@@ -37,8 +37,8 @@ public class shooter implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
-        leftTriggerPressed = leftTrigger.getValue() > 0.15;
-        rightTriggerPressed = Math.abs(rightTrigger.getValue()) > 0.15;
+        leftTriggerPressed = leftTrigger.getValue() > 0.15 || lt2.getValue() > 0.15;
+        rightTriggerPressed = Math.abs(rightTrigger.getValue()) > 0.15 || Math.abs(rt2.getValue()) > 0.15;
         if (dpadUp.getValue()) {
             VortexAllMotorsSpeed = Math.min(VortexAllMotorsSpeed + SPEED_STEP, MAX_SPEED);
         }
@@ -57,13 +57,17 @@ public class shooter implements Subsystem {
         Vortex2.setCurrentLimit(50, 50, 0);
         NeoMotor1.setCurrentLimit(50,50,0);
 
-        rightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.OPERATOR_RIGHT_TRIGGER);
+        rightTrigger = (AnalogInput) WsInputs.DRIVER_RIGHT_TRIGGER.get();
         rightTrigger.addInputListener(this);
-        leftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.OPERATOR_LEFT_TRIGGER);
+        leftTrigger = (AnalogInput) WsInputs.DRIVER_LEFT_TRIGGER.get();
         leftTrigger.addInputListener(this);
-        dpadUp = (DigitalInput) Core.getInputManager().getInput(WsInputs.OPERATOR_DPAD_UP);
+        rt2 = (AnalogInput) WsInputs.OPERATOR_RIGHT_TRIGGER.get();
+        rt2.addInputListener(this);
+        lt2 = (AnalogInput) WsInputs.OPERATOR_LEFT_TRIGGER.get();
+        lt2.addInputListener(this);
+        dpadUp = (DigitalInput) WsInputs.OPERATOR_DPAD_UP.get();
         dpadUp.addInputListener(this);
-        dpadDown = (DigitalInput) Core.getInputManager().getInput(WsInputs.OPERATOR_DPAD_DOWN);
+        dpadDown = (DigitalInput) WsInputs.OPERATOR_DPAD_DOWN.get();
         dpadDown.addInputListener(this);
     }
 
@@ -83,7 +87,7 @@ public class shooter implements Subsystem {
             Vortex.stop();
             Vortex2.stop();
         }
-        if (rightTriggerPressed){
+        if (rightTriggerPressed && leftTriggerPressed){
             NeoMotor1.setSpeed(NeoMotorSpeed);
         }
          else{
