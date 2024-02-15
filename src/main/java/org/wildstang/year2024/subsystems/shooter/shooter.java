@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class shooter implements Subsystem {
     private WsSpark Vortex;
-    private WsSpark Vortex2;
     private double VortexAllMotorsSpeed = 1.0;
     private WsSpark NeoMotor1;
     private double NeoMotorSpeed = 1;
@@ -50,11 +49,9 @@ public class shooter implements Subsystem {
     @Override
     public void init() {
         Vortex = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER);
-        Vortex2 = (WsSpark) WsOutputs.SHOOTER2.get();
         NeoMotor1 = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.KICKER);// add another motors if needed as following motors 
 
         Vortex.setCurrentLimit(50,50,0);
-        Vortex2.setCurrentLimit(50, 50, 0);
         NeoMotor1.setCurrentLimit(50,50,0);
 
         rightTrigger = (AnalogInput) WsInputs.DRIVER_RIGHT_TRIGGER.get();
@@ -81,11 +78,9 @@ public class shooter implements Subsystem {
         if (leftTriggerPressed) {
             VortexAllMotorsSpeed = Math.min(Math.max(VortexAllMotorsSpeed, MIN_SPEED), MAX_SPEED);
             Vortex.setSpeed(VortexAllMotorsSpeed);
-            Vortex2.setSpeed(-VortexAllMotorsSpeed);
         }
          else {
             Vortex.stop();
-            Vortex2.stop();
         }
         if (rightTriggerPressed && leftTriggerPressed){
             NeoMotor1.setSpeed(NeoMotorSpeed);

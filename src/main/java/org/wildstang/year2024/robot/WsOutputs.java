@@ -28,15 +28,13 @@ public enum WsOutputs implements Outputs {
     DRIVE4("Module 4 Drive Motor", new WsSparkConfig(CANConstants.DRIVE4, WsMotorControllers.SPARK_FLEX_BRUSHLESS)),
     ANGLE4("Module 4 Angle Motor", new WsSparkConfig(CANConstants.ANGLE4, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     SHOOTER("Shooter", new WsSparkConfig(CANConstants.SHOOTER, WsMotorControllers.SPARK_FLEX_BRUSHLESS)),
-    SHOOTER2("Shooter2", new WsSparkConfig(CANConstants.SHOOTER_FOLLOWER, WsMotorControllers.SPARK_FLEX_BRUSHLESS)),
-    //SHOOTER_FOLLOWER("Shooter Follower", new WsSparkFollowerConfig("Shooter", CANConstants.SHOOTER_FOLLOWER, WsMotorControllers.SPARK_FLEX_BRUSHLESS, true)),
+    SHOOTER_FOLLOWER("Shooter Follower", new WsSparkFollowerConfig("Shooter", CANConstants.SHOOTER_FOLLOWER, WsMotorControllers.SPARK_FLEX_BRUSHLESS, true)),
     INTAKE("Intake", new WsSparkConfig(CANConstants.INTAKE, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     FEED("Feed", new WsSparkConfig(CANConstants.FEED, WsMotorControllers.SPARK_MAX_BRUSHED)),
     KICKER("Kicker", new WsSparkConfig(CANConstants.KICKER, WsMotorControllers.SPARK_MAX_BRUSHED)),
     ARM_PIVOT("Arm Pivot", new WsSparkConfig(CANConstants.ARM_PIVOT, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     LIFT("Lift", new WsSparkConfig(CANConstants.LIFT, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
-    LIFT2("Lift2", new WsSparkConfig(CANConstants.LIFT_FOLLOWER, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
-    // LIFT_FOLLOWER("Lift Follower", new WsSparkFollowerConfig("Lift", CANConstants.LIFT_FOLLOWER, WsMotorControllers.SPARK_MAX_BRUSHLESS, true)),
+    LIFT_FOLLOWER("Lift Follower", new WsSparkFollowerConfig("Lift", CANConstants.LIFT_FOLLOWER, WsMotorControllers.SPARK_MAX_BRUSHLESS, true)),
 
     // ---------------------------------
     // Other Motors
