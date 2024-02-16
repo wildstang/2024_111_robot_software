@@ -1,5 +1,6 @@
 package org.wildstang.year2024.subsystems.Notepath;
 
+import org.wildstang.framework.io.inputs.AnalogInput;
 import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
 import org.wildstang.framework.subsystems.Subsystem;
@@ -12,7 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class notepath implements Subsystem {
 
-    private DigitalInput aButton, bButton, driverRightShoulder;
+    private DigitalInput aButton, bButton;
+    private AnalogInput driverRightTrigger;
     private WsSpark feed, intake;
 
     private final double speed = 1.0;
@@ -25,7 +27,7 @@ public class notepath implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
-        if (aButton.getValue() || driverRightShoulder.getValue()) direction = 1;
+        if (aButton.getValue() || driverRightTrigger.getValue()>0.15) direction = 1;
         else if (bButton.getValue()) direction = -1;
         else direction = 0;
     }
@@ -41,8 +43,8 @@ public class notepath implements Subsystem {
         aButton.addInputListener(this);
         bButton = (DigitalInput) WsInputs.OPERATOR_FACE_RIGHT.get();
         bButton.addInputListener(this);
-        driverRightShoulder = (DigitalInput) WsInputs.DRIVER_RIGHT_SHOULDER.get();
-        driverRightShoulder.addInputListener(this);
+        driverRightTrigger = (AnalogInput) WsInputs.DRIVER_RIGHT_TRIGGER.get();
+        driverRightTrigger.addInputListener(this);
     }
 
     @Override

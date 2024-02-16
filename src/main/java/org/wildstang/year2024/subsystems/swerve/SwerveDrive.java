@@ -34,12 +34,12 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private AnalogInput leftStickX;//translation joystick x
     private AnalogInput leftStickY;//translation joystick y
     private AnalogInput rightStickX;//rot joystick
-    private AnalogInput rightTrigger;//thrust, score when aiming
+    private AnalogInput rightTrigger;//intake, score when aiming
     private AnalogInput leftTrigger;//scoring to speaker
-    private DigitalInput rightBumper;//intake
+    private DigitalInput rightBumper;//slowdown
     private DigitalInput leftBumper;//lift up to amp
     private DigitalInput select;//gyro reset
-    private DigitalInput start;//snake mode
+    private DigitalInput start;//endgame toggle
     private DigitalInput faceUp;//rotation lock 0 degrees
     private DigitalInput faceRight;//rotation lock 90 degrees
     private DigitalInput faceLeft;//rotation lock 270 degrees
@@ -105,14 +105,14 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
 
         //determine snake or pid locks
-        if (start.getValue() && (Math.abs(xSpeed) > 0.1 || Math.abs(ySpeed) > 0.1)) {
-            rotLocked = true;
-            isSnake = true;
-            rotTarget = swerveHelper.getDirection(xSpeed, ySpeed);
-        }
-        else {
-            isSnake = false;
-        }
+        // if (start.getValue() && (Math.abs(xSpeed) > 0.1 || Math.abs(ySpeed) > 0.1)) {
+        //     rotLocked = true;
+        //     isSnake = true;
+        //     rotTarget = swerveHelper.getDirection(xSpeed, ySpeed);
+        // }
+        // else {
+        //     isSnake = false;
+        // }
         if (source == faceUp && faceUp.getValue()){
             if (faceLeft.getValue()) rotTarget = 300.0;
             else if (faceRight.getValue()) rotTarget = 60.0;
@@ -147,10 +147,15 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         
         //assign thrust
-        thrustValue = 1 - DriveConstants.DRIVE_THRUST + DriveConstants.DRIVE_THRUST * Math.abs(rightTrigger.getValue());
-        xSpeed *= thrustValue;
-        ySpeed *= thrustValue;
-        rotSpeed *= thrustValue;
+        // thrustValue = 1 - DriveConstants.DRIVE_THRUST + DriveConstants.DRIVE_THRUST * Math.abs(rightTrigger.getValue());
+        // xSpeed *= thrustValue;
+        // ySpeed *= thrustValue;
+        // rotSpeed *= thrustValue;
+        if (rightBumper.getValue()){
+            xSpeed *= (1 - DriveConstants.DRIVE_THRUST);
+            ySpeed *= (1 - DriveConstants.DRIVE_THRUST);
+            rotSpeed *= (1 - DriveConstants.DRIVE_THRUST);
+        }
 
     }
  
