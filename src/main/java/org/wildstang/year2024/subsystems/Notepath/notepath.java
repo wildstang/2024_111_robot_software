@@ -13,12 +13,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class notepath implements Subsystem {
 
-    private DigitalInput aButton, bButton;
+    private DigitalInput aButton, bButton, driverLeftShoulder;
     private AnalogInput driverRightTrigger;
     private WsSpark feed, intake;
 
     private final double speed = 1.0;
     private double direction = 0;
+    private boolean isAmp = false;
 
 
 
@@ -30,6 +31,8 @@ public class notepath implements Subsystem {
         if (aButton.getValue() || driverRightTrigger.getValue()>0.15) direction = 1;
         else if (bButton.getValue()) direction = -1;
         else direction = 0;
+
+        isAmp = driverLeftShoulder.getValue() && driverRightTrigger.getValue() > 0.15;
     }
 
     @Override
@@ -45,6 +48,8 @@ public class notepath implements Subsystem {
         bButton.addInputListener(this);
         driverRightTrigger = (AnalogInput) WsInputs.DRIVER_RIGHT_TRIGGER.get();
         driverRightTrigger.addInputListener(this);
+        driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
+        driverLeftShoulder.addInputListener(this);
     }
 
     @Override
@@ -54,8 +59,14 @@ public class notepath implements Subsystem {
 
     @Override
     public void update() {
-        feed.setSpeed(direction * speed);
-        intake.setSpeed(direction*speed);
+        if (isAmp){
+            intake.setSpeed(0.0);
+            feed.setSpeed(-speed);
+
+        } else {
+            feed.setSpeed(direction * speed);
+            intake.setSpeed(direction*speed);
+        }
         SmartDashboard.putNumber("feed speed", direction * speed);
     }
 

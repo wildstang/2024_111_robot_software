@@ -16,12 +16,13 @@ public class Test_lift implements Subsystem {
 
 
     private WsSpark lift1;
-    private DigitalInput lockLiftButton;
     private AnalogInput joyStickUpInput;
-   // private DigitalInput liftPreset1;
-   // private DigitalInput liftPreset2;
-    private boolean isLiftLocked = false;
+   private DigitalInput liftPreset1;
+   private DigitalInput liftPreset2;
     private double liftSpeed = 0;
+    private double liftPos = 0.0;
+    private final double liftBottom = 0.0;
+    private final double liftTop = 15.0;
 
 
 
@@ -36,14 +37,12 @@ public class Test_lift implements Subsystem {
         joyStickUpInput = (WsJoystickAxis) Core.getInputManager().getInput(WsInputs.OPERATOR_LEFT_JOYSTICK_Y);
         joyStickUpInput.addInputListener(this);
 
-        lockLiftButton = (DigitalInput) Core.getInputManager().getInput(WsInputs.OPERATOR_LEFT_JOYSTICK_BUTTON);
-        lockLiftButton.addInputListener(this);
 
-       // liftPreset1 = (DigitalInput) Core.getInputManager().getInput(WsInputs."Button Preset is Assiagned to");
-      // liftPreset1.addInputListener(this);
+       liftPreset1 = (DigitalInput) Core.getInputManager().getInput(WsInputs.OPERATOR_FACE_LEFT);
+       liftPreset1.addInputListener(this);
 
-       // liftPreset2 = (DigitalInput) Core.getInputManager().getInput(WsInputs."Button Preset is Assiagned to");
-       // liftPreset2.addInputListener(this);
+       liftPreset2 = (DigitalInput) Core.getInputManager().getInput(WsInputs.OPERATOR_FACE_UP);
+       liftPreset2.addInputListener(this);
 
     }
 
@@ -51,46 +50,33 @@ public class Test_lift implements Subsystem {
     @Override
     public void inputUpdate(Input source) {
 
-        if (Math.abs(joyStickUpInput.getValue()) > 0.05 && source == joyStickUpInput && isLiftLocked == false) {
+        if (Math.abs(joyStickUpInput.getValue()) > 0.15) {
             liftSpeed = joyStickUpInput.getValue();
         }
         else {
             liftSpeed = 0;
         }
 
-        /*if (liftPreset1.getValue() && source == joyStickUpInput && isLiftLocked == false) {
-            setPosition("Where motor should move to");
-        }
-        else {
-            liftSpeed = 0;
-        }*/
-
-        /*if (liftPreset2.getValue() && source == joyStickUpInput && isLiftLocked == false) {
-            setPosition("Where motor should move to");
-        }
-        else {
-            liftSpeed = 0;
-        }*/
-
-        if(lockLiftButton.getValue() && source == lockLiftButton && isLiftLocked == true) {
-            isLiftLocked = false;
+        if (liftPreset1.getValue() && source == liftPreset1) {
+            liftPos = liftBottom;
         }
 
-        if(lockLiftButton.getValue() && source == lockLiftButton && isLiftLocked == false) {
-            isLiftLocked = true;
+        if (liftPreset2.getValue() && source == liftPreset2) {
+            liftPos = liftTop;
         }
-
         
     }
 
-  /*  public void setPosition(double newPosition){
-        if (newPosition < 0) lift1.setPosition(0);
+   public void setPosition(double newPosition){
+        if (newPosition < liftBottom) lift1.setPosition(liftBottom);
+        if (newPosition > liftTop) lift1.setPosition(liftTop);
         else lift1.setPosition(newPosition);
-    } */
+    } 
 
 
     private void motorSetUp(WsSpark setupMotor){
         setupMotor.setCurrentLimit(50, 50, 0);
+        setupMotor.initClosedLoop(0.1, 0.0, 0.0, 0.0);
     }
 
     @Override
@@ -99,12 +85,14 @@ public class Test_lift implements Subsystem {
 
     @Override
     public void update() {
-        lift1.setSpeed(liftSpeed);
+        liftPos += liftSpeed;
+        setPosition(liftPos);
     }
 
     @Override
     public void resetState() {
         liftSpeed = 0;
+        liftPos = 0.0;
     }
 
     @Override
