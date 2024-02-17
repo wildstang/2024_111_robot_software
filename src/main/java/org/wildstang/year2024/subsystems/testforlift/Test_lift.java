@@ -10,6 +10,8 @@ import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class Test_lift implements Subsystem {
 
@@ -22,7 +24,7 @@ public class Test_lift implements Subsystem {
     private double liftSpeed = 0;
     private double liftPos = 0.0;
     private final double liftBottom = 0.0;
-    private final double liftTop = 15.0;
+    private final double liftTop = 33.5;
 
 
 
@@ -69,14 +71,15 @@ public class Test_lift implements Subsystem {
 
    public void setPosition(double newPosition){
         if (newPosition < liftBottom) lift1.setPosition(liftBottom);
-        if (newPosition > liftTop) lift1.setPosition(liftTop);
-        else lift1.setPosition(newPosition);
+        else if (newPosition > liftTop) lift1.setPosition(liftTop);
+        lift1.setPosition(newPosition);
     } 
 
 
     private void motorSetUp(WsSpark setupMotor){
-        setupMotor.setCurrentLimit(50, 50, 0);
         setupMotor.initClosedLoop(0.1, 0.0, 0.0, 0.0);
+        setupMotor.setCoast();
+        setupMotor.setCurrentLimit(50, 50, 0);
     }
 
     @Override
@@ -86,7 +89,11 @@ public class Test_lift implements Subsystem {
     @Override
     public void update() {
         liftPos += liftSpeed;
-        setPosition(liftPos);
+        if (liftPos < liftBottom) liftPos = liftBottom;
+        if (liftPos > liftTop) liftPos = liftTop;
+        lift1.setPosition(liftPos);
+        SmartDashboard.putNumber("lift target", liftPos);
+        SmartDashboard.putNumber("lift position", lift1.getPosition());
     }
 
     @Override
