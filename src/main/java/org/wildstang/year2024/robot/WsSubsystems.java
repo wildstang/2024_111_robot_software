@@ -3,6 +3,7 @@ package org.wildstang.year2024.robot;
 import org.wildstang.framework.core.Subsystems;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
+import org.wildstang.year2024.subsystems.shooter.shooter;
 
 /**
  * All subsystems are enumerated here.
@@ -12,7 +13,8 @@ public enum WsSubsystems implements Subsystems {
 
     // enumerate subsystems
     WS_VISION("Ws Vision", WsVision.class),
-    SWERVE_DRIVE("Swerve Drive", SwerveDrive.class)
+    SWERVE_DRIVE("Swerve Drive", SwerveDrive.class),
+    SHOOTER("Shooter", Shooter.class)
     ;
 
     /**
