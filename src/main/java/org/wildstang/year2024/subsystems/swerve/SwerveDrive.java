@@ -12,6 +12,7 @@ import org.wildstang.year2024.robot.CANConstants;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
+import org.wildstang.year2024.subsystems.notepath.Notepath;
 import org.wildstang.year2024.subsystems.targeting.LimeConsts;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 
@@ -37,15 +38,20 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private AnalogInput rightTrigger;//thrust
     private AnalogInput leftTrigger;//scoring autodrive
     // private DigitalInput rightBumper;//robot centric control
+
+    private DigitalInput rightBumper;
     private DigitalInput leftBumper;//hp station pickup
     private DigitalInput select;//gyro reset
     private DigitalInput start;//snake mode
     private DigitalInput faceUp;//rotation lock 0 degrees
     private DigitalInput faceRight;//rotation lock 90 degrees
     private DigitalInput faceLeft;//rotation lock 270 degrees
+
+    // A Button for auto Intaking
     private DigitalInput faceDown;//rotation lock 180 degrees
     private DigitalInput dpadLeft;//defense mode
     private DigitalInput rightStickButton;//auto drive override
+
 
     private double xSpeed;
     private double ySpeed;
@@ -78,13 +84,26 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private Timer autoTimer = new Timer();
 
     private WsVision limelight;
+    private Notepath notepath;
     private LimeConsts LC;
 
-    public enum driveType {TELEOP, AUTO, CROSS};
+    public enum driveType {TELEOP, AUTO, CROSS, NOTE};
     public driveType driveState;
 
     @Override
     public void inputUpdate(Input source) {
+
+        // Arbuitrary button which will have to be changed, I just didnt like the complexity of using right trigger
+        if (source == rightBumper) {
+            if (rightBumper.getValue() && !notepath.intakeFull && limelight.objectVisible()) {
+                driveState = driveType.NOTE;    
+            } else {
+                driveState = driveType.TELEOP;
+            }
+        }
+        
+
+
 
         //determine if we are in cross or teleop
         if (driveState != driveType.AUTO && dpadLeft.getValue()) {
@@ -181,6 +200,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         // rightBumper.addInputListener(this);
         leftBumper = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_SHOULDER);
         leftBumper.addInputListener(this);
+        rightBumper = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_SHOULDER);
+        rightBumper.addInputListener(this);
         select = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_SELECT);
         select.addInputListener(this);
         start = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_START);
@@ -214,6 +235,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //create default swerveSignal
         swerveSignal = new SwerveSignal(new double[]{0.0, 0.0, 0.0, 0.0}, new double[]{0.0, 0.0, 0.0, 0.0});
         limelight = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
+        notepath = (Notepath) Core.getSubsystemManager().getSubsystem(WsSubsystems.NOTEPATH);
+
         odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.2794), new Translation2d(0.2794, -0.2794),
             new Translation2d(-0.2794, 0.2794), new Translation2d(-0.2794, -0.2794)), odoAngle(), odoPosition(), new Pose2d());
     }
@@ -231,10 +254,27 @@ public class SwerveDrive extends SwerveDriveTemplate {
             this.swerveSignal = swerveHelper.setCross();
             drive();
         }
+        if (driveState == driveType.NOTE) {
+
+            // Successfuly intaked, should end driving
+            if (notepath.intakeFull) {
+                driveState = driveType.TELEOP;
+            } else {
+                // If we can see the object drive in that direction, otherwise assume we used to see it and keep going straight
+                double angleToNote = 0;
+                if (limelight.objectVisible()) {
+                    angleToNote = limelight.getObjectAngle();
+                }
+                double rotSpeed = swerveHelper.getRotControl(getGyroAngle() - angleToNote, getGyroAngle());
+                // Drive towards note
+                this.swerveSignal = swerveHelper.setDrive(0, 0.30, rotSpeed, angleToNote);
+            }
+
+        }
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
                 //if rotation tracking, replace rotational joystick value with controller generated one
-                rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
+                rotSpeed = swerveHelper.getRotControl(getGyroAngle(), getGyroAngle());
                 if (isSnake) {
                     if (Math.abs(rotSpeed) < 0.05) {
                         rotSpeed = 0;

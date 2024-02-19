@@ -17,8 +17,6 @@ public class WsVision implements Subsystem {
     public WsLL front = new WsLL("limelight-front");
     public WsLL back = new WsLL("limelight-back");
 
-    public LimeConsts LC;
-
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
     
@@ -28,9 +26,22 @@ public class WsVision implements Subsystem {
         
     }
 
+    // Angle to turn to the object
+    public double getObjectAngle() {
+        return back.tx;
+    }
+
+    // Distance to drive to Object
+    public double getObjectDistance() {
+        return  LimeConsts.backMountHeight / Math.tan(-(back.ty + LimeConsts.backMountAngle));
+    }
+
+    public boolean objectVisible() {
+        return back.TargetInView();
+    }
+
     @Override
     public void init() {
-        LC = new LimeConsts();
 
         resetState();
     }

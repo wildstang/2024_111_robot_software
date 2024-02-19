@@ -15,8 +15,14 @@ public class Notepath implements Subsystem {
     // State variables
     private double intakeSpeed, feedSpeed, kickSpeed;
     private boolean completingIntake;
+    
+    public boolean intakeFull;
 
     private WsSpark feed, intake, kick;
+
+    // Left trigger to shoot speaker and left shoulder to shoot amp
+    // Righ trigger to shoot
+    // Right shoulder to intake
     private AnalogInput driverRightTrigger, driverLeftTrigger;
     private DigitalInput driverRightShoulder, driverLeftShoulder;
     
@@ -35,13 +41,13 @@ public class Notepath implements Subsystem {
                 feedSpeed = -1.0;
             }
         // Detects note, intaking done
-        } else {
-            kickSpeed = 0;
-            feedSpeed = 0;
         }
         if (intakeSensor.getValue()) {
             completingIntake = false;
-        } 
+            intakeFull = true;
+        } else {
+            intakeFull = false;
+        }
         if ((driverRightShoulder.getValue() || completingIntake) && (intakeSensor.getValue() == false)) {
             intakeSpeed = 1.0;
         } else {
