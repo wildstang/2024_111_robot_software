@@ -17,7 +17,7 @@ public class WsVision implements Subsystem {
     public WsPV front = new WsPV("photonvision", true);
     public WsPV back = new WsPV("object detection", false);
 
-    public VisionConsts LC;
+    public VisionConsts VC;
 
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
@@ -32,14 +32,14 @@ public class WsVision implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
-        
+
     }
 
     @Override
     public void init() {
-        LC = new VisionConsts();
-        front.update();
-        back.update();
+        VC = new VisionConsts();
+
+        //same as update()
         resetState();
         driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
         driverLeftShoulder.addInputListener(this);
@@ -66,6 +66,24 @@ public class WsVision implements Subsystem {
         return "Ws Vision";
     }
 
+    //can back see stage AT?
+    //can front see speaker AT?
+    //can back see amp AT?
+    //can back see gamepiece?
+
+    //tx for front
+    //ty for front
+
+    //tx for gamepiece (back)
+
+    //3D values for amp (back)
+    //3D values for stage (back)
+
+    //field angle for stage AT we are seeing (back)
+
+    //toggle between AT and gamepiece for back
+
+    //Stuart's stuff that I don't understand:
     public double getSpeed(){
         double inputDistance = front.distanceToTarget(isBlue);
         if (inputDistance < distances[0]) return speeds[0];

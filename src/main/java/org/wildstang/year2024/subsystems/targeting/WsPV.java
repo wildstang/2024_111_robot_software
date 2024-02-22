@@ -16,7 +16,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsPV {
-    
+
     public PhotonCamera camera;
     public String cameraID;
     AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -33,8 +33,9 @@ public class WsPV {
     public Transform3d aprilTag = new Transform3d();
     public Pose3d estimatedPose = new Pose3d();
 
+    //whether the cam detects ATs or Notes
     public boolean isAT;
-    
+
 
     public WsPV(String cameraID, boolean isAprilTag){
         this.cameraID = cameraID;
@@ -53,14 +54,16 @@ public class WsPV {
             target = result.getBestTarget();
             tx = target.getYaw();
             ty = target.getPitch();
+
+            //only used if it is an AT cam
             if(isAT){
                 tid = target.getFiducialId();
                 aprilTag = target.getBestCameraToTarget();
-                estimatedPose = PhotonUtils.estimateFieldToRobotAprilTag(aprilTag, 
+                estimatedPose = PhotonUtils.estimateFieldToRobotAprilTag(aprilTag,
                     aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), robotToCamera);
             }
-            
-        } 
+
+        }
         updateDashboard();
     }
 
@@ -70,29 +73,29 @@ public class WsPV {
         SmartDashboard.putNumber(cameraID + " Y", ty);
         SmartDashboard.putNumber(cameraID + " X", tx);
     }
-    
 
-    /*
+
+    /**
      * returns what to set rotLocked to
      */
     public double turnToTarget(boolean isBlue){
-        if (isBlue) return getDirection(estimatedPose.getX()*vc.mToIn - vc.blueSpeakerX, 
+        if (isBlue) return getDirection(estimatedPose.getX()*vc.mToIn - vc.blueSpeakerX,
             estimatedPose.getY()*vc.mToIn - vc.blueSpeakerY, isBlue);
-        else return getDirection(estimatedPose.getX()*vc.mToIn - vc.redSpeakerX, 
+        else return getDirection(estimatedPose.getX()*vc.mToIn - vc.redSpeakerX,
             estimatedPose.getY()*vc.mToIn - vc.redSpeakerY, isBlue);
     }
 
-    /*
+    /**
      * returns distance to selected alliances' center of speaker for lookup table use
      */
     public double distanceToTarget(boolean isBlue){
-        if (isBlue) return Math.hypot(estimatedPose.getX()*vc.mToIn - vc.blueSpeakerX, 
+        if (isBlue) return Math.hypot(estimatedPose.getX()*vc.mToIn - vc.blueSpeakerX,
             estimatedPose.getY()*vc.mToIn - vc.blueSpeakerY);
-        else return Math.hypot(estimatedPose.getX()*vc.mToIn - vc.redSpeakerX, 
+        else return Math.hypot(estimatedPose.getX()*vc.mToIn - vc.redSpeakerX,
             estimatedPose.getY()*vc.mToIn - vc.redSpeakerY);
     }
 
-    /*
+    /**
      * input of X and Y in frc field coordinates, returns controller bearing degrees (aka what to plug into rotLocked)
      */
     private double getDirection(double x, double y, boolean isBlue) {
