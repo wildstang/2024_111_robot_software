@@ -42,11 +42,14 @@ public class Notepath implements Subsystem {
         if (intakeSensor.getValue()) {
             completingIntake = false;
         } 
+        //small controls update - we are moving intake to also be driver Right trigger - so no right shoulder
+        //in this class, just the right trigger
         if ((driverRightShoulder.getValue() || completingIntake) && (intakeSensor.getValue() == false)) {
             intakeSpeed = 1.0;
         } else {
             intakeSpeed = 0;
         }
+        //one note - we will want the feed and the intake running during the intaking sequence
     }
 
     @Override
@@ -63,11 +66,14 @@ public class Notepath implements Subsystem {
         feed.setCurrentLimit(80, 20, 10000);
         
         // Init Inputs
+        //the intake senseor will be a LaserCAN
+        // https://github.com/GrappleRobotics/LaserCAN/blob/master/docs/example-java.md
         intakeSensor = (WsDigitalInput) Core.getInputManager().getInput(WsInputs.FEED_SWITCH);
         driverRightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
         driverLeftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
         driverRightShoulder = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_SHOULDER);
         driverLeftShoulder = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_SHOULDER);
+        //add input listeners
     }
 
     @Override
