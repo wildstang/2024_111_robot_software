@@ -8,6 +8,9 @@ import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose3d;
+
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,22 +69,100 @@ public class WsVision implements Subsystem {
         return "Ws Vision";
     }
 
-    //can back see stage AT?
-    //can front see speaker AT?
-    //can back see amp AT?
-    //can back see gamepiece?
+    /*
+     * April Tag IDs:
+     * - Stage: 11, 12, 13, 14, 15, 16
+     * - Speaker: 3, 4, 7, 8
+     * - Amp: 5, 6
+     */
+
+    /**
+     * can back see stage AT?
+     */
+    public boolean backSeesStage(){
+
+        if (VC.stageATs.contains(back.tid)) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+
+    /**
+     * can front see speaker AT?
+     */
+    public boolean frontSeesSpeaker(){
+
+        if (VC.speakerATs.contains(back.tid)) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * can back see amp AT?
+     */
+    public boolean backSeesAmp(){
+
+        if (VC.ampATs.contains(back.tid)) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * can back see gamepiece?
+     */
+    public boolean backSeesNote(){
+
+        if (back.isAT == false && back.result.hasTargets()) {
+
+            return true;
+
+        }
+
+        return false;
+
+    }
 
     //tx for front
+    public double getFrontTx(){
+
+    }
     //ty for front
+    public double getFrontTy(){
+
+    }
 
     //tx for gamepiece (back)
+    public double getNoteTx(){
+
+    }
 
     //3D values for amp (back)
+    public Pose3d getAmpPose(){
+
+    }
     //3D values for stage (back)
+    public Pose3d getStagePose(){
+
+    }
 
     //field angle for stage AT we are seeing (back)
+    public double getFieldAngleForStage(){ //TODO: rename
+
+    }
 
     //toggle between AT and gamepiece for back
+    public void toggleBackPipeline(){
+
+    }
 
     //Stuart's stuff that I don't understand:
     public double getSpeed(){

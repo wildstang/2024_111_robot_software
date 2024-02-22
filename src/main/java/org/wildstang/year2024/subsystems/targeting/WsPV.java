@@ -24,7 +24,7 @@ public class WsPV {
     PhotonPipelineResult result;
     private Transform3d robotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
 
-    private VisionConsts vc = new VisionConsts();
+    private VisionConsts VC = new VisionConsts();
 
     public int tid = 0;
     public double tx = 0;
@@ -35,7 +35,6 @@ public class WsPV {
 
     //whether the cam detects ATs or Notes
     public boolean isAT;
-
 
     public WsPV(String cameraID, boolean isAprilTag){
         this.cameraID = cameraID;
@@ -72,27 +71,35 @@ public class WsPV {
         SmartDashboard.putNumber(cameraID + " tid", tid);
         SmartDashboard.putNumber(cameraID + " Y", ty);
         SmartDashboard.putNumber(cameraID + " X", tx);
+        SmartDashboard.putBoolean(cameraID + " isAT", isAT);
     }
 
+    /**
+     * Toggles between Note and AT detection pipelines
+     */
+    public void togglePipeline() {
+        isAT = !isAT;
+        camera.setPipelineIndex(isAT ? VC.notePipelineIndex : VC.ATPipelineIndex);
+    }
 
     /**
      * returns what to set rotLocked to
      */
     public double turnToTarget(boolean isBlue){
-        if (isBlue) return getDirection(estimatedPose.getX()*vc.mToIn - vc.blueSpeakerX,
-            estimatedPose.getY()*vc.mToIn - vc.blueSpeakerY, isBlue);
-        else return getDirection(estimatedPose.getX()*vc.mToIn - vc.redSpeakerX,
-            estimatedPose.getY()*vc.mToIn - vc.redSpeakerY, isBlue);
+        if (isBlue) return getDirection(estimatedPose.getX()*VC.mToIn - VC.blueSpeakerX,
+            estimatedPose.getY()*VC.mToIn - VC.blueSpeakerY, isBlue);
+        else return getDirection(estimatedPose.getX()*VC.mToIn - VC.redSpeakerX,
+            estimatedPose.getY()*VC.mToIn - VC.redSpeakerY, isBlue);
     }
 
     /**
      * returns distance to selected alliances' center of speaker for lookup table use
      */
     public double distanceToTarget(boolean isBlue){
-        if (isBlue) return Math.hypot(estimatedPose.getX()*vc.mToIn - vc.blueSpeakerX,
-            estimatedPose.getY()*vc.mToIn - vc.blueSpeakerY);
-        else return Math.hypot(estimatedPose.getX()*vc.mToIn - vc.redSpeakerX,
-            estimatedPose.getY()*vc.mToIn - vc.redSpeakerY);
+        if (isBlue) return Math.hypot(estimatedPose.getX()*VC.mToIn - VC.blueSpeakerX,
+            estimatedPose.getY()*VC.mToIn - VC.blueSpeakerY);
+        else return Math.hypot(estimatedPose.getX()*VC.mToIn - VC.redSpeakerX,
+            estimatedPose.getY()*VC.mToIn - VC.redSpeakerY);
     }
 
     /**
