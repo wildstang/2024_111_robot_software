@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class WsVision implements Subsystem {
 
     public WsLL front = new WsLL("limelight-front");
-    public WsLL back = new WsLL("limelight-back");
 
     public LimeConsts LC;
 
@@ -42,13 +41,11 @@ public class WsVision implements Subsystem {
     @Override
     public void update() {
         front.update();
-        back.update();
     }
 
     @Override
     public void resetState() {
         front.update();
-        back.update();
     }
 
     @Override

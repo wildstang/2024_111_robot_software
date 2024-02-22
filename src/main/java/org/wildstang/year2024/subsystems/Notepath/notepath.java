@@ -8,31 +8,36 @@ import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class notepath implements Subsystem {
 
-    private DigitalInput aButton, bButton, driverLeftShoulder;
+    private DigitalInput driverLeftShoulder;
     private AnalogInput driverRightTrigger;
     private WsSpark feed, intake;
 
     private final double speed = 1.0;
     private double direction = 0;
     private boolean isAmp = false;
+    private boolean store = false;
+    private boolean isIntake = false;
 
-
+    private Timer timer = new Timer();
 
    
 
 
     @Override
     public void inputUpdate(Input source) {
-        if (aButton.getValue() || driverRightTrigger.getValue()>0.15) direction = 1;
-        else if (bButton.getValue()) direction = -1;
-        else direction = 0;
+        if (Math.abs(driverRightTrigger.getValue()) > 0.15) timer.reset();
 
-        isAmp = driverLeftShoulder.getValue() && driverRightTrigger.getValue() > 0.15;
+        isIntake = Math.abs(driverRightTrigger.getValue()) > 0.15;
+
+        store = !timer.hasElapsed(0.5);
+
+        isAmp = driverLeftShoulder.getValue() && Math.abs(driverRightTrigger.getValue()) > 0.15;
     }
 
     @Override
@@ -42,14 +47,12 @@ public class notepath implements Subsystem {
         intake = (WsSpark) WsOutputs.INTAKE.get();
         intake.setCurrentLimit(50, 50, 0);
 
-        aButton = (DigitalInput) WsInputs.OPERATOR_FACE_DOWN.get();
-        aButton.addInputListener(this);
-        bButton = (DigitalInput) WsInputs.OPERATOR_FACE_RIGHT.get();
-        bButton.addInputListener(this);
         driverRightTrigger = (AnalogInput) WsInputs.DRIVER_RIGHT_TRIGGER.get();
         driverRightTrigger.addInputListener(this);
         driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
         driverLeftShoulder.addInputListener(this);
+
+        timer.start();
     }
 
     @Override
@@ -62,7 +65,12 @@ public class notepath implements Subsystem {
         if (isAmp){
             intake.setSpeed(0.0);
             feed.setSpeed(-speed);
-
+        } else if (isIntake){
+            feed.setSpeed(1.0);
+            intake.setSpeed(1.0);
+        } else if (store){
+            intake.setSpeed(0.0);
+            feed.setSpeed(-speed * 0.25);
         } else {
             feed.setSpeed(direction * speed);
             intake.setSpeed(direction*speed);
@@ -72,7 +80,8 @@ public class notepath implements Subsystem {
 
     @Override
     public void resetState() {
-        
+        isAmp = false;
+        store = false;
     }
 
     @Override

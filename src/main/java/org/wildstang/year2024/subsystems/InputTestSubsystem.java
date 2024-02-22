@@ -26,12 +26,12 @@ public class InputTestSubsystem implements Subsystem {
         WsInputs.DRIVER_RIGHT_JOYSTICK_Y,
         WsInputs.DRIVER_RIGHT_TRIGGER,
 
-        WsInputs.OPERATOR_LEFT_JOYSTICK_X,
-        WsInputs.OPERATOR_LEFT_JOYSTICK_Y,
-        WsInputs.OPERATOR_LEFT_TRIGGER,
-        WsInputs.OPERATOR_RIGHT_JOYSTICK_X,
-        WsInputs.OPERATOR_RIGHT_JOYSTICK_Y,
-        WsInputs.OPERATOR_RIGHT_TRIGGER
+        // WsInputs.OPERATOR_LEFT_JOYSTICK_X,
+        // WsInputs.OPERATOR_LEFT_JOYSTICK_Y,
+        // WsInputs.OPERATOR_LEFT_TRIGGER,
+        // WsInputs.OPERATOR_RIGHT_JOYSTICK_X,
+        // WsInputs.OPERATOR_RIGHT_JOYSTICK_Y,
+        // WsInputs.OPERATOR_RIGHT_TRIGGER
     };
 
     WsInputs buttons[] = {
@@ -40,10 +40,10 @@ public class InputTestSubsystem implements Subsystem {
         WsInputs.DRIVER_DPAD_UP,
         WsInputs.DRIVER_DPAD_RIGHT,
 
-        WsInputs.OPERATOR_DPAD_LEFT,
-        WsInputs.OPERATOR_DPAD_DOWN,
-        WsInputs.OPERATOR_DPAD_UP,
-        WsInputs.OPERATOR_DPAD_RIGHT,
+        // WsInputs.OPERATOR_DPAD_LEFT,
+        // WsInputs.OPERATOR_DPAD_DOWN,
+        // WsInputs.OPERATOR_DPAD_UP,
+        // WsInputs.OPERATOR_DPAD_RIGHT,
         
         WsInputs.DRIVER_FACE_LEFT,
         WsInputs.DRIVER_FACE_DOWN,
@@ -56,16 +56,16 @@ public class InputTestSubsystem implements Subsystem {
         WsInputs.DRIVER_LEFT_JOYSTICK_BUTTON,
         WsInputs.DRIVER_RIGHT_JOYSTICK_BUTTON,
         
-        WsInputs.OPERATOR_FACE_LEFT,
-        WsInputs.OPERATOR_FACE_DOWN,
-        WsInputs.OPERATOR_FACE_UP,
-        WsInputs.OPERATOR_FACE_RIGHT,
-        WsInputs.OPERATOR_LEFT_SHOULDER,
-        WsInputs.OPERATOR_RIGHT_SHOULDER,
-        WsInputs.OPERATOR_SELECT,
-        WsInputs.OPERATOR_START,
-        WsInputs.OPERATOR_LEFT_JOYSTICK_BUTTON,
-        WsInputs.OPERATOR_RIGHT_JOYSTICK_BUTTON
+        // WsInputs.OPERATOR_FACE_LEFT,
+        // WsInputs.OPERATOR_FACE_DOWN,
+        // WsInputs.OPERATOR_FACE_UP,
+        // WsInputs.OPERATOR_FACE_RIGHT,
+        // WsInputs.OPERATOR_LEFT_SHOULDER,
+        // WsInputs.OPERATOR_RIGHT_SHOULDER,
+        // WsInputs.OPERATOR_SELECT,
+        // WsInputs.OPERATOR_START,
+        // WsInputs.OPERATOR_LEFT_JOYSTICK_BUTTON,
+        // WsInputs.OPERATOR_RIGHT_JOYSTICK_BUTTON
     };
 
     @Override

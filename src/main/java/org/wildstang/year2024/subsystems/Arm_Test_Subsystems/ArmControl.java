@@ -1,5 +1,7 @@
 package org.wildstang.year2024.subsystems.Arm_Test_Subsystems;
 
+import java.util.Map;
+
 import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
@@ -10,42 +12,34 @@ import org.wildstang.year2024.robot.WsOutputs;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmControl implements Subsystem {
     private WsSpark ArmNeo;
-    private DigitalInput Rotate_Positive, Rotate_Negative;
+    private DigitalInput driverStart;
     private double targetAngle = 0.0;
-    private final double BaseAngle = 180.0;
     private AbsoluteEncoder absEncoder;
-    private int logicNumber = 0;
     private final double  MAX_Angle = 180; // This maximum angle of rotation of Arm
     private final double  MIN_Angle = 0; // This minimum angle of rotation of Arm
+    private ShuffleboardTab tab = Shuffleboard.getTab("name");
+    private GenericEntry arm = tab.add("Arm Position", 0.0)
+        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 180)).getEntry();
+    private boolean toUpdate = false;
 
     @Override
     public void inputUpdate(Input source) {
-            if (Rotate_Positive.getValue()) {
-                logicNumber = 1;  
-            } else if (Rotate_Negative.getValue()) {
-                logicNumber =  -1;  
-            } else{
-                logicNumber = 0;
-            }
-               
-            if (logicNumber == 1) {
-                   targetAngle = Math.min(targetAngle + BaseAngle, MAX_Angle);  
-        }        
-            else if (logicNumber == -1) {
-                   targetAngle = Math.max(targetAngle - BaseAngle, MIN_Angle);  
-    }
+    if (driverStart.getValue()) toUpdate = true;
+    else toUpdate = false;
     
 }
     @Override
     public void init() {
-        Rotate_Positive = (DigitalInput) Core.getInputManager().getInput(WsInputs.OPERATOR_RIGHT_SHOULDER);
-        Rotate_Positive.addInputListener(this);
-        Rotate_Negative = (DigitalInput) Core.getInputManager().getInput(WsInputs.OPERATOR_LEFT_SHOULDER);
-        Rotate_Negative.addInputListener(this);
+        driverStart = (DigitalInput) WsInputs.DRIVER_START.get();
+        driverStart.addInputListener(this);
 
         ArmNeo = (WsSpark) WsOutputs.ARM_PIVOT.get();
         absEncoder = ArmNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
@@ -61,7 +55,8 @@ public class ArmControl implements Subsystem {
 
     @Override
     public void update() {
-        ArmNeo.setPosition(targetAngle);
+        if (toUpdate) targetAngle = arm.getDouble(0.0);
+        ArmNeo.setPosition(Math.min(MAX_Angle, Math.max(MIN_Angle, targetAngle)));
         SmartDashboard.putNumber("arm angle target", targetAngle);
         SmartDashboard.putNumber("arm angle", absEncoder.getPosition());
     }
