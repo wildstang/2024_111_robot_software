@@ -61,7 +61,10 @@ public class shooter implements Subsystem {
             if (noteHeld) {
                 angle = 0;
                 vortexMotorsSpeed = 30;
+                //probably make this a. a number from 0 to 1 (like .3)
+                // and b. in shooterconsts
             } else {
+                //we can keep the angle all the way down all the time now
                 angle = ShooterConsts.MAX_ANGLE;
                 vortexMotorsSpeed = 0;
             }
@@ -81,9 +84,11 @@ public class shooter implements Subsystem {
         angleNeo.initClosedLoop(ShooterConsts.P, ShooterConsts.I, ShooterConsts.D, 0, this.angleEncoder);
         // Returns position in degrees instead of rotations
         angleEncoder.setPositionConversionFactor(360.0);
+        //set current limit for angleNeo - probably like 30 for now
 
         // Init Inputs
         leftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
+        //add input listener
 
     }
 

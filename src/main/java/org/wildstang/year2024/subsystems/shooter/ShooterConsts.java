@@ -1,10 +1,10 @@
 package org.wildstang.year2024.subsystems.shooter;
 
 public class ShooterConsts {
-    public static double MAX_ANGLE;
+    public static final double MAX_ANGLE = 180.0;
     // Array containing arrays where the elements are a distance the corresponding speed and angle
-    public static double[][] SHOOTER_POSIIONS;
-    public static double P;
-    public static double I;
-    public static double D;
+    public static final double[][] SHOOTER_POSIIONS = {{}};
+    public static final double P = 0.1;
+    public static final double I = 0.0;
+    public static final double D = 0.0;
 }
