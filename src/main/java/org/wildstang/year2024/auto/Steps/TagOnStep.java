@@ -22,7 +22,7 @@ public class TagOnStep extends AutoStep{
     }
     public void update(){
         swerve.setAutoTag(on, color);
-        limelight.setGamePiece(false);
+        // limelight.setGamePiece(false);
         this.setFinished();
     }
     public void initialize(){
