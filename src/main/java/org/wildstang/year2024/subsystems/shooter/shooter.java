@@ -15,7 +15,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
-public class Shooter implements Subsystem {
+public class shooter implements Subsystem {
 
     // Inputs
     private AnalogInput leftTrigger;
@@ -75,8 +75,8 @@ public class Shooter implements Subsystem {
 
         // Init Motors
         vortexFlywheel.setCurrentLimit(80, 20, 10000);
-        vortexFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.VORTEX1);
-        angleNeo = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.ARMNEO);
+        vortexFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER);
+        angleNeo = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.ARM_PIVOT);
         angleEncoder = angleNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
         angleNeo.initClosedLoop(ShooterConsts.P, ShooterConsts.I, ShooterConsts.D, 0, this.angleEncoder);
         // Returns position in degrees instead of rotations
