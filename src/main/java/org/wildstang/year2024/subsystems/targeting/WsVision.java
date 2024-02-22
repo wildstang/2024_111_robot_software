@@ -134,14 +134,26 @@ public class WsVision implements Subsystem {
     //tx for front
     public double getFrontTx(){
 
+        return front.tx;
+
     }
     //ty for front
     public double getFrontTy(){
+
+        return front.ty;
 
     }
 
     //tx for gamepiece (back)
     public double getNoteTx(){
+
+        if (back.isAT == false) {
+
+            return back.tx;
+
+        }
+
+        return null; //TODO: Do something else
 
     }
 
