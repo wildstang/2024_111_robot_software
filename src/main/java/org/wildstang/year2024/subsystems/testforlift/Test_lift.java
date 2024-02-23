@@ -18,7 +18,7 @@ public class Test_lift implements Subsystem {
    private DigitalInput driverLeftBumper;
     private double liftPos = 0.0;
     private final double liftBottom = 0.0;
-    private final double liftTop = 33.5;
+    private final double liftTop = 34.0;
 
     @Override
     public void init() {
@@ -31,7 +31,7 @@ public class Test_lift implements Subsystem {
     }
 
     private void motorSetUp(WsSpark setupMotor){
-        setupMotor.initClosedLoop(0.1, 0.0, 0.0, 0.0);
+        setupMotor.initClosedLoop(0.2, 0.0, 0.0, 0.0);
         setupMotor.setBrake();
         setupMotor.setCurrentLimit(50, 50, 0);
     }

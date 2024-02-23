@@ -23,6 +23,7 @@ public class notepath implements Subsystem {
     private boolean isAmp = false;
     private boolean store = false;
     private boolean isIntake = false;
+    private boolean isUp = false;
 
     private Timer timer = new Timer();
 
@@ -36,6 +37,10 @@ public class notepath implements Subsystem {
         isIntake = Math.abs(driverRightTrigger.getValue()) > 0.15;
 
         isAmp = driverLeftShoulder.getValue() && Math.abs(driverRightTrigger.getValue()) > 0.15;
+
+        isUp = driverLeftShoulder.getValue();
+
+
     }
 
     @Override
@@ -71,7 +76,7 @@ public class notepath implements Subsystem {
             intake.setSpeed(1.0);
         } else if (store){
             intake.setSpeed(0.0);
-            feed.setSpeed(-speed * 0.25);
+            feed.setSpeed(isUp ? 0.0 : -speed * 0.25);
         } else {
             feed.setSpeed(direction * speed);
             intake.setSpeed(direction*speed);
