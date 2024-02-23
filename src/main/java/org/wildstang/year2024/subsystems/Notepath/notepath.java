@@ -35,8 +35,6 @@ public class notepath implements Subsystem {
 
         isIntake = Math.abs(driverRightTrigger.getValue()) > 0.15;
 
-        store = !timer.hasElapsed(0.5);
-
         isAmp = driverLeftShoulder.getValue() && Math.abs(driverRightTrigger.getValue()) > 0.15;
     }
 
@@ -62,6 +60,9 @@ public class notepath implements Subsystem {
 
     @Override
     public void update() {
+        
+        store = !timer.hasElapsed(2.5);
+
         if (isAmp){
             intake.setSpeed(0.0);
             feed.setSpeed(-speed);

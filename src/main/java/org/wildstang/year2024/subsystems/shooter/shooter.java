@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class shooter implements Subsystem {
     private WsSpark Vortex, Vortex2;
-    private double Vortex1Speed = 1.0;
+    private double Vortex1Speed = 0.8;
     private double Vortex2Speed = 1.0;
     private WsSpark NeoMotor1;
     private double NeoMotorSpeed = 1;
@@ -34,11 +34,11 @@ public class shooter implements Subsystem {
     private boolean rightTriggerPressed = false;
 
     private Timer timer = new Timer();
-    private ShuffleboardTab tab = Shuffleboard.getTab("name");
-    private GenericEntry shooter1 = tab.add("Shooter 1 Value", 0.0)
-        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 0)).getEntry();
-    private GenericEntry shooter2 = tab.add("Shooter 2 Value", 0.0)
-        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 0)).getEntry();
+    private ShuffleboardTab tab = Shuffleboard.getTab("2024 Testing");
+    private GenericEntry shooter1 = tab.add("Shooter 1 Value", 0.8)
+        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();
+    private GenericEntry shooter2 = tab.add("Shooter 2 Value", 0.8)
+        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();
     private boolean toUpdate = false;
 
    
@@ -84,13 +84,20 @@ public class shooter implements Subsystem {
             Vortex1Speed = shooter1.getDouble(0.8);
             Vortex2Speed = shooter2.getDouble(1.0);
         }
+        SmartDashboard.putNumber("Shooter 1 value", Vortex1Speed);
+        SmartDashboard.putNumber("Shooter 2 Value", Vortex2Speed);
+        SmartDashboard.putBoolean("Shooter LT", leftTriggerPressed);
+        SmartDashboard.putNumber("Shooter 1 velocity", Vortex.getVelocity());
+        SmartDashboard.putNumber("Shooter 2 Velocity", Vortex2.getVelocity());
         if (leftTriggerPressed) {
             Vortex.setSpeed(Vortex1Speed);
             Vortex2.setSpeed(Vortex2Speed);
         }
          else {
-            Vortex.stop();
-            Vortex2.stop();
+            // Vortex.stop();
+            // Vortex2.stop();
+            Vortex.setSpeed(0);
+            Vortex2.setSpeed(0);
         }
         if (rightTriggerPressed && leftTriggerPressed){
             NeoMotor1.setSpeed(NeoMotorSpeed);

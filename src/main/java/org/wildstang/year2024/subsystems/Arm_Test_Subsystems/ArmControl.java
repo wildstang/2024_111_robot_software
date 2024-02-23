@@ -25,7 +25,7 @@ public class ArmControl implements Subsystem {
     private AbsoluteEncoder absEncoder;
     private final double  MAX_Angle = 180; // This maximum angle of rotation of Arm
     private final double  MIN_Angle = 0; // This minimum angle of rotation of Arm
-    private ShuffleboardTab tab = Shuffleboard.getTab("name");
+    private ShuffleboardTab tab = Shuffleboard.getTab("2024 Testing");
     private GenericEntry arm = tab.add("Arm Position", 0.0)
         .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 180)).getEntry();
     private boolean toUpdate = false;
