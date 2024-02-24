@@ -26,7 +26,7 @@ public class WsVision implements Subsystem {
 
     public double[] distances = {43.3, 83, 129};
     public double[] speeds = {0.0, 0.0, 0.0};
-    public double[] angles = {180, 127, 95.5};
+    public double[] angles = {180, 127, 101};
     public int last = distances.length-1;
 
     public boolean isBlue = false;

@@ -35,9 +35,9 @@ public class shooter implements Subsystem {
 
     private Timer timer = new Timer();
     private ShuffleboardTab tab = Shuffleboard.getTab("2024 Testing");
-    private GenericEntry shooter1 = tab.add("Shooter 1 Value", 0.8)
+    private GenericEntry shooter1 = tab.add("Shooter 1 Value", 1.0)
         .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();
-    private GenericEntry shooter2 = tab.add("Shooter 2 Value", 0.8)
+    private GenericEntry shooter2 = tab.add("Shooter 2 Value", 0.35)
         .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();
     private boolean toUpdate = false;
 

@@ -142,8 +142,8 @@ public class WsLL {
             return isBlue ? 225 : 135 ;
         }
         if (isBlue) return getDirection(blue3D[0] - VC.blueSpeakerX,
-            blue3D[1] - VC.blueSpeakerY-25, isBlue);
+            blue3D[1] - VC.blueSpeakerY, isBlue);
         else return getDirection(blue3D[0] - VC.redSpeakerX,
-            blue3D[1] - VC.redSpeakerY-25, isBlue);
+            blue3D[1] - VC.redSpeakerY, isBlue);
     }
 }
