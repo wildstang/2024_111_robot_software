@@ -72,6 +72,8 @@ public class WsLL {
         SmartDashboard.putBoolean(CameraID + " tv", TargetInView());
         SmartDashboard.putNumber(CameraID + " tid", tid);
         SmartDashboard.putNumber(CameraID + " numTargets", numTargets);
+        SmartDashboard.putNumber("Vision blue x", blue3D[0]);
+        SmartDashboard.putNumber("Vision blue y", blue3D[1]);
     }
     /*
      * returns total latency, capture latency + pipeline latency
@@ -111,10 +113,10 @@ public class WsLL {
      * returns distance to selected alliances' center of speaker for lookup table use
      */
     public double distanceToTarget(boolean isBlue){
-        if (isBlue) return Math.hypot(blue3D[0]*VC.mToIn - VC.blueSpeakerX,
-            blue3D[1]*VC.mToIn - VC.blueSpeakerY);
-        else return Math.hypot(blue3D[0]*VC.mToIn - VC.redSpeakerX,
-            blue3D[1]*VC.mToIn - VC.redSpeakerY);
+        if (isBlue) return Math.hypot(blue3D[0] - VC.blueSpeakerX,
+            blue3D[1] - VC.blueSpeakerY);
+        else return Math.hypot(blue3D[0] - VC.redSpeakerX,
+            blue3D[1] - VC.redSpeakerY);
     }
 
     /**
@@ -139,9 +141,9 @@ public class WsLL {
         if (!TargetInView()){
             return isBlue ? 225 : 135 ;
         }
-        if (isBlue) return getDirection(blue3D[0]*VC.mToIn - VC.blueSpeakerX,
-            blue3D[1]*VC.mToIn - VC.blueSpeakerY, isBlue);
-        else return getDirection(blue3D[0]*VC.mToIn - VC.redSpeakerX,
-            blue3D[1]*VC.mToIn - VC.redSpeakerY, isBlue);
+        if (isBlue) return getDirection(blue3D[0] - VC.blueSpeakerX,
+            blue3D[1] - VC.blueSpeakerY-25, isBlue);
+        else return getDirection(blue3D[0] - VC.redSpeakerX,
+            blue3D[1] - VC.redSpeakerY-25, isBlue);
     }
 }

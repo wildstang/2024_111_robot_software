@@ -66,6 +66,7 @@ public class ArmControl implements Subsystem {
         if (toUpdate) targetAngle = arm.getDouble(0.0);
         if (aiming) ArmNeo.setPosition(Math.min(MAX_Angle, Math.max(MIN_Angle, vision.getAngle())));
         else ArmNeo.setPosition(Math.min(MAX_Angle, Math.max(MIN_Angle, targetAngle)));
+        // ArmNeo.setPosition(Math.min(MAX_Angle, Math.max(MIN_Angle, targetAngle)));
         SmartDashboard.putNumber("arm angle target", targetAngle);
         SmartDashboard.putNumber("arm angle", absEncoder.getPosition());
     }

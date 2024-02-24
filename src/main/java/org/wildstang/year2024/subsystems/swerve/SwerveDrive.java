@@ -120,19 +120,19 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (source == faceLeft && faceLeft.getValue()){
             if (faceUp.getValue()) rotTarget = 300.0;
-            else if (faceDown.getValue()) rotTarget = 210.0;
+            else if (faceDown.getValue()) rotTarget = 240.0;
             else rotTarget = 270.0;
             rotLocked = true;
         }
         if (source == faceDown && faceDown.getValue()){
-            if (faceLeft.getValue()) rotTarget = 210.0;
-            else if (faceRight.getValue()) rotTarget = 150.0;
+            if (faceLeft.getValue()) rotTarget = 240.0;
+            else if (faceRight.getValue()) rotTarget = 120.0;
             else rotTarget = 180.0;
             rotLocked = true;
         }
         if (source == faceRight && faceRight.getValue()){
             if (faceUp.getValue()) rotTarget = 60.0;
-            else if (faceDown.getValue()) rotTarget = 150.0;
+            else if (faceDown.getValue()) rotTarget = 120.0;
             else rotTarget = 90.0;
             rotLocked = true;
         }
@@ -144,7 +144,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (rotSpeed != 0) {
             rotLocked = false;
         }
-        if (leftTrigger.getValue() > 0.15){
+        if (leftTrigger.getValue() > 0.15 && vision.front.TargetInView()){
             rotLocked = true;
             rotTarget = vision.front.turnToTarget(isBlue);
         }
