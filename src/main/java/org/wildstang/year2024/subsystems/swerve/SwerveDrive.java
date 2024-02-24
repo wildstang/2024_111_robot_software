@@ -62,6 +62,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private boolean autoOverride;
     private boolean isBlue = false;
     private boolean autoTag = false;
+    private boolean isVision = false;
     
     private final double mToIn = 39.37;
 
@@ -146,8 +147,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (leftTrigger.getValue() > 0.15 && vision.front.TargetInView()){
             rotLocked = true;
-            rotTarget = vision.front.turnToTarget(isBlue);
-        }
+            //rotTarget = vision.front.turnToTarget(isBlue);
+            isVision = true;
+        } else isVision = false;
         
         //assign thrust
         // thrustValue = 1 - DriveConstants.DRIVE_THRUST + DriveConstants.DRIVE_THRUST * Math.abs(rightTrigger.getValue());
@@ -237,6 +239,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
                 //if rotation tracking, replace rotational joystick value with controller generated one
+                if (isVision) rotTarget = vision.front.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 if (isSnake) {
                     if (Math.abs(rotSpeed) < 0.05) {
