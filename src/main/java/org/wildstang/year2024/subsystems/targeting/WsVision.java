@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
 
-    public WsPV front = new WsPV("photonvision", true);
-    public WsPV back = new WsPV("object detection", false);
+    public WsLL front = new WsLL("limelight");
+    // public WsPV back = new WsPV("object detection", false);
 
     public VisionConsts VC;
 
@@ -29,7 +29,7 @@ public class WsVision implements Subsystem {
     public double[] angles = {0.0, 0.0, 0.0};
     public int last = distances.length-1;
 
-    public boolean isBlue;
+    public boolean isBlue = false;
 
     private DigitalInput driverLeftShoulder;
 
@@ -55,6 +55,9 @@ public class WsVision implements Subsystem {
     @Override
     public void update() {
         front.update();
+        SmartDashboard.putNumber("Vision getAngle", getAngle());
+        SmartDashboard.putNumber("Vision distToTarget", front.distanceToTarget(isBlue));
+        SmartDashboard.putNumber("Vision angleToRot", front.turnToTarget(isBlue));
     }
 
     @Override
@@ -74,107 +77,6 @@ public class WsVision implements Subsystem {
      * - Amp: 5, 6
      */
 
-    /**
-     * can back see stage AT?
-     */
-    public boolean backSeesStage(){
-
-        if (VC.stageATs.contains(back.tid)) {
-            return true;
-        }
-
-        return false;
-
-    }
-
-
-    /**
-     * can front see speaker AT?
-     */
-    public boolean frontSeesSpeaker(){
-
-        if (VC.speakerATs.contains(back.tid)) {
-            return true;
-        }
-
-        return false;
-
-    }
-
-    /**
-     * can back see amp AT?
-     */
-    public boolean backSeesAmp(){
-
-        if (VC.ampATs.contains(back.tid)) {
-            return true;
-        }
-
-        return false;
-
-    }
-
-    /**
-     * can back see gamepiece?
-     */
-    public boolean backSeesNote(){
-
-        if (back.isAT == false && back.result.hasTargets()) {
-
-            return true;
-
-        }
-
-        return false;
-
-    }
-
-    //tx for front
-    public double getFrontTx(){
-
-        return front.tx;
-
-    }
-    //ty for front
-    public double getFrontTy(){
-
-        return front.ty;
-
-    }
-
-    //tx for gamepiece (back)
-    // public double getNoteTx(){
-
-    //     if (back.isAT == false) {
-
-    //         return back.tx;
-
-    //     }
-
-    //     return null; //TODO: Do something else
-
-    // }
-
-    //3D values for amp (back)
-    // public Pose3d getAmpPose(){
-
-    // }
-    // //3D values for stage (back)
-    // public Pose3d getStagePose(){
-
-    // }
-
-    // //field angle for stage AT we are seeing (back)
-    // public double getFieldAngleForStage(){ //TODO: rename
-
-    // }
-
-    //toggle between AT and gamepiece for back
-    public void toggleBackPipeline(){
-
-    }
-
-    //Stuart's stuff that I don't understand:
     public double getSpeed(){
         double inputDistance = front.distanceToTarget(isBlue);
         if (inputDistance < distances[0]) return speeds[0];

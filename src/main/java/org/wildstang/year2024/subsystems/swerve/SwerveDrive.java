@@ -12,7 +12,6 @@ import org.wildstang.year2024.robot.CANConstants;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.targeting.VisionConsts;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -61,7 +60,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private double pathXOffset = 0;
     private double pathYOffset = 0;
     private boolean autoOverride;
-    private boolean isBlue;
+    private boolean isBlue = false;
     private boolean autoTag = false;
     
     private final double mToIn = 39.37;
@@ -144,6 +143,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //if the rotational joystick is being used, the robot should not be auto tracking heading
         if (rotSpeed != 0) {
             rotLocked = false;
+        }
+        if (leftTrigger.getValue() > 0.15){
+            rotLocked = true;
+            rotTarget = vision.front.turnToTarget(isBlue);
         }
         
         //assign thrust
