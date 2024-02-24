@@ -12,7 +12,7 @@ import org.wildstang.year2024.robot.CANConstants;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.targeting.LimeConsts;
+import org.wildstang.year2024.subsystems.targeting.VisionConsts;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 
 import edu.wpi.first.math.geometry.Pose2d;
