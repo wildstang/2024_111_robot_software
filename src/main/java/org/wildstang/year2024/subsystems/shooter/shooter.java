@@ -33,6 +33,21 @@ public class shooter implements Subsystem {
 
     private WsVision wsVision;
 
+    public void updateState(double distance) {
+
+            // Assumes array is in order of distance
+            for (int i = 0; i < ShooterConsts.SHOOTER_POSIIONS.length; i++) {
+                double[] position = ShooterConsts.SHOOTER_POSIIONS[i];
+                if (distance > position[0])
+                {
+                    // Linear interpolation between two points
+                    // Speed = speed1 + slope between points * change in distance
+                    vortexMotorsSpeed = position[1] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][1] - position[1]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
+                    angle = position[2] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][2] - position[2]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
+                    break;
+                }
+            }
+    }
 
     @Override
     public void inputUpdate(Input source) {
@@ -44,28 +59,14 @@ public class shooter implements Subsystem {
         double distanceToSpeaker = wsVision.distanceToSpeaker();
         // Aim if trigger pressed and Speaker in sight
         if (leftTriggerPressed && distanceToSpeaker != -1) {
-        
-            // Assumes array is in order of distance
-            for (int i = 0; i < ShooterConsts.SHOOTER_POSIIONS.length; i++) {
-                double[] position = ShooterConsts.SHOOTER_POSIIONS[i];
-                if (distanceToSpeaker > position[0])
-                {
-                    // Linear interpolation between two points
-                    // Speed = speed1 + slope between points * change in distance
-                    vortexMotorsSpeed = position[1] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][1] - position[1]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
-                    angle = position[2] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][2] - position[2]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
-                    break;
-                }
-            }
+            updateState(distanceToSpeaker);
         } else {
             if (noteHeld) {
                 angle = 0;
-                vortexMotorsSpeed = 30;
-                //probably make this a. a number from 0 to 1 (like .3)
-                // and b. in shooterconsts
+                vortexMotorsSpeed = ShooterConsts.IDLE_SPEED;
             } else {
                 //we can keep the angle all the way down all the time now
-                angle = ShooterConsts.MAX_ANGLE;
+                angle = ShooterConsts.MIN_ANGLE;
                 vortexMotorsSpeed = 0;
             }
         }
@@ -88,8 +89,7 @@ public class shooter implements Subsystem {
 
         // Init Inputs
         leftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
-        //add input listener
-
+        leftTrigger.addInputListener(this);
     }
 
     @Override
