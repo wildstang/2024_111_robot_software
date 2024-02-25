@@ -132,7 +132,6 @@ public enum WsInputs implements Inputs {
     // ********************************
     // Digital IOs
     // ********************************
-    FEED_SWITCH("Feed limit switch", new WsDigitalInputConfig(9, false)),
 
     // -------------------------------
     // Networked sensors

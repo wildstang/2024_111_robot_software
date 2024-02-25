@@ -9,8 +9,12 @@ import org.wildstang.hardware.roborio.inputs.WsDigitalInput;
 import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
+import au.grapplerobotics.LaserCan;
+
 
 public class Notepath implements Subsystem {
+
+    private final double normalIntakeDistance = -1;
 
     // State variables
     private double intakeSpeed, feedSpeed, kickSpeed;
@@ -18,9 +22,9 @@ public class Notepath implements Subsystem {
 
     private WsSpark feed, intake, kick;
     private AnalogInput driverRightTrigger, driverLeftTrigger;
-    private DigitalInput driverRightShoulder, driverLeftShoulder;
+    private DigitalInput driverLeftShoulder;
     
-    private WsDigitalInput intakeSensor;
+    private LaserCan lc;
 
     @Override
     public void inputUpdate(Input source) {
@@ -39,17 +43,29 @@ public class Notepath implements Subsystem {
             kickSpeed = 0;
             feedSpeed = 0;
         }
-        if (intakeSensor.getValue()) {
+        if (!hasNote()) {
             completingIntake = false;
         } 
         //small controls update - we are moving intake to also be driver Right trigger - so no right shoulder
         //in this class, just the right trigger
-        if ((driverRightShoulder.getValue() || completingIntake) && (intakeSensor.getValue() == false)) {
+        if ((driverRightTrigger.getValue() > 0.15 || completingIntake) && (!hasNote())) {
             intakeSpeed = 1.0;
+            feedSpeed = 1.0;
         } else {
             intakeSpeed = 0;
+            feedSpeed = 1.0;
         }
         //one note - we will want the feed and the intake running during the intaking sequence
+    }
+
+    public boolean hasNote() {
+        LaserCan.Measurement measurement = lc.getMeasurement();
+        if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+            return (measurement.distance_mm > normalIntakeDistance);
+        } else {
+        System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
+            return true;
+        }
     }
 
     @Override
@@ -68,12 +84,14 @@ public class Notepath implements Subsystem {
         // Init Inputs
         //the intake senseor will be a LaserCAN
         // https://github.com/GrappleRobotics/LaserCAN/blob/master/docs/example-java.md
-        intakeSensor = (WsDigitalInput) Core.getInputManager().getInput(WsInputs.FEED_SWITCH);
+        lc = new LaserCan(0);
+
         driverRightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
+        driverRightTrigger.addInputListener(this);
         driverLeftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
-        driverRightShoulder = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_SHOULDER);
+        driverLeftTrigger.addInputListener(this);
         driverLeftShoulder = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_SHOULDER);
-        //add input listeners
+        driverLeftShoulder.addInputListener(this);
     }
 
     @Override
