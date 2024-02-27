@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class shooter implements Subsystem {
-    private WsSpark Vortex, Vortex2;
+    private WsSpark Vortex, Vortex2, shooterNeo;
     private double Vortex1Speed = 0.8;
     private double Vortex2Speed = 1.0;
     private WsSpark NeoMotor1;
@@ -57,10 +57,12 @@ public class shooter implements Subsystem {
     public void init() {
         Vortex = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER);
         Vortex2 = (WsSpark) WsOutputs.SHOOTER_2.get();
+        shooterNeo = (WsSpark) WsOutputs.SHOOTER_LOW.get();
         NeoMotor1 = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.KICKER);// add another motors if needed as following motors 
 
         Vortex.setCurrentLimit(50,50,0);
         Vortex2.setCurrentLimit(50, 50, 0);
+        shooterNeo.setCurrentLimit(50, 50, 0);
         NeoMotor1.setCurrentLimit(50,50,0);
 
         rightTrigger = (AnalogInput) WsInputs.DRIVER_RIGHT_TRIGGER.get();
@@ -90,14 +92,16 @@ public class shooter implements Subsystem {
         SmartDashboard.putNumber("Shooter 1 velocity", Vortex.getVelocity());
         SmartDashboard.putNumber("Shooter 2 Velocity", Vortex2.getVelocity());
         if (leftTriggerPressed) {
-            Vortex.setSpeed(Vortex1Speed);
+            Vortex.setSpeed(Vortex2Speed);
             Vortex2.setSpeed(Vortex2Speed);
+            shooterNeo.setSpeed(Vortex1Speed);
         }
          else {
             // Vortex.stop();
             // Vortex2.stop();
             Vortex.setSpeed(0);
             Vortex2.setSpeed(0);
+            shooterNeo.setSpeed(0);
         }
         if (rightTriggerPressed && leftTriggerPressed){
             NeoMotor1.setSpeed(NeoMotorSpeed);

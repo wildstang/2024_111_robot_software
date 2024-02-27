@@ -35,6 +35,7 @@ public enum WsOutputs implements Outputs {
     ARM_PIVOT("Arm Pivot", new WsSparkConfig(CANConstants.ARM_PIVOT, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
     LIFT("Lift", new WsSparkConfig(CANConstants.LIFT, WsMotorControllers.SPARK_MAX_BRUSHLESS, true)),
     LIFT_FOLLOWER("Lift Follower", new WsSparkFollowerConfig("Lift", CANConstants.LIFT_FOLLOWER, WsMotorControllers.SPARK_MAX_BRUSHLESS, true)),
+    SHOOTER_LOW("Shooter Low", new WsSparkConfig(CANConstants.SHOOTER_LOW, WsMotorControllers.SPARK_MAX_BRUSHLESS)),
 
     // ---------------------------------
     // Other Motors

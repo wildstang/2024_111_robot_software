@@ -35,7 +35,6 @@ public final class CANConstants {
     public static final int ARM_PIVOT = 25;
     public static final int LIFT = 26;
     public static final int LIFT_FOLLOWER = 27;
-    public static final int CLIMB = 28;
-    public static final int CLIMB_FOLLOWER = 29;
+    public static final int SHOOTER_LOW = 28;
     
 }

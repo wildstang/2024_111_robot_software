@@ -62,6 +62,7 @@ public class SwervePathFollowerStep extends AutoStep {
             }
             //update values the robot is tracking to
             m_drive.setAutoValues( getVelocity(),getHeading(), getAccel(), 2.0*xOffset,2.0*yOffset );
+            m_drive.setAutoHeading(getRotation());
             prevVelocity = getVelocity();
             prevTime = timer.get();
             }
@@ -76,10 +77,16 @@ public class SwervePathFollowerStep extends AutoStep {
         return mToIn * Math.hypot(pathtraj.sample(timer.get()).velocityX, pathtraj.sample(timer.get()).velocityY);
     }
     public double getHeading(){
-        if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360; 
-        else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
+        return ((-Math.atan2(pathtraj.sample(timer.get()).velocityY, 
+            pathtraj.sample(timer.get()).velocityX)*180/Math.PI)+360)%360;
+        // if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360; 
+        // else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
     }
     public double getAccel(){
         return (getVelocity() - prevVelocity) / (timer.get() - prevTime);
+    }
+    public double getRotation(){
+        if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
+        else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
     }
 }
