@@ -1,10 +1,12 @@
 package org.wildstang.year2024.subsystems;
 
+import org.wildstang.framework.core.Core;
 //input
 import org.wildstang.framework.io.inputs.Input;
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.hardware.roborio.inputs.WsJoystickButton;
 import org.wildstang.year2024.robot.WsInputs;
+import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 
 //output
@@ -46,6 +48,7 @@ public class LEDSubsystem implements Subsystem {
     private boolean canSeeAmp;
     private boolean canSeeSpeaker;
     private boolean canSeeNote;
+    private WsVision visionSubsystem;
 
     //colors
     private final Color cyan = new Color(0, 255, 255);
@@ -72,6 +75,9 @@ public class LEDSubsystem implements Subsystem {
         WsJoystickButton intakeButton = (WsJoystickButton) WsInputs.OPERATOR_DPAD_DOWN.get(); //TODO: change to actual button once we decide which one it is.
         intakeButton.addInputListener(this);
 
+        //vision
+        visionSubsystem = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
+
     }
 
     /**
@@ -81,7 +87,7 @@ public class LEDSubsystem implements Subsystem {
     public void update() {
 
         //figure out the state of things
-        robotHasNote = WsVision.backSeesNote();
+        robotHasNote = visionSubsystem.backSeesNote();
 
         //update the LED based on the state of things
         if (robotHasNote) {
