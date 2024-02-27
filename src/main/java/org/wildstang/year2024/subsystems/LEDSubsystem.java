@@ -87,7 +87,7 @@ public class LEDSubsystem implements Subsystem {
     public void update() {
 
         //figure out the state of things
-        robotHasNote = visionSubsystem.backSeesNote();
+        canSeeNote = visionSubsystem.backSeesNote();
 
         //update the LED based on the state of things
         if (robotHasNote) {
