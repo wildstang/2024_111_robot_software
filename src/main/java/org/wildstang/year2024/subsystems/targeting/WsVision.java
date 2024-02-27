@@ -145,7 +145,7 @@ public class WsVision implements Subsystem {
     }
 
     //tx for gamepiece (back)
-    public double getNoteTx(){
+    public double getBackTx(){
 
         if (back.isAT == false) {
 
