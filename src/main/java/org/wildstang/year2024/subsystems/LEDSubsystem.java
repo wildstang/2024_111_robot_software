@@ -5,8 +5,9 @@ import org.wildstang.framework.io.inputs.Input;
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.hardware.roborio.inputs.WsJoystickButton;
 import org.wildstang.year2024.robot.WsInputs;
+import org.wildstang.year2024.subsystems.targeting.WsVision;
 
-//ouput
+//output
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
@@ -80,6 +81,7 @@ public class LEDSubsystem implements Subsystem {
     public void update() {
 
         //figure out the state of things
+        robotHasNote = WsVision.backSeesNote();
 
         //update the LED based on the state of things
         if (robotHasNote) {
