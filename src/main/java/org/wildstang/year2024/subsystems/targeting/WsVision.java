@@ -153,27 +153,41 @@ public class WsVision implements Subsystem {
 
         }
 
-        return null; //TODO: Do something else
+        return 0.0;
 
     }
 
     //3D values for amp (back)
-    public Pose3d getAmpPose(){
+    public Pose3d getBackPose() {
 
-    }
-    //3D values for stage (back)
-    public Pose3d getStagePose(){
+        return back.estimatedPose;
 
     }
 
     //field angle for stage AT we are seeing (back)
-    public double getFieldAngleForStage(){ //TODO: rename
+    public double getFieldAngleForStage() {
 
-    }
+        if (backSeesStage()) {
 
-    //toggle between AT and gamepiece for back
-    public void toggleBackPipeline(){
+            if (back.tid == 13 || back.tid == 14) {
 
+                return 0.0;
+
+            } else if (back.tid == 15 || back.tid == 11) {
+
+                return 240.0;
+
+            } else if (back.tid == 12 || back.tid == 16) {
+
+                return 120.0;
+
+            }
+
+            return 0.0;
+
+        }
+
+        return 0.0;
     }
 
     //Stuart's stuff that I don't understand:
