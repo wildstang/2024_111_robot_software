@@ -79,6 +79,9 @@ public class LEDSubsystem implements Subsystem {
     @Override
     public void update() {
 
+        //figure out the state of things
+
+        //update the LED based on the state of things
         if (robotHasNote) {
 
             if (intakeButtonHeld) {
