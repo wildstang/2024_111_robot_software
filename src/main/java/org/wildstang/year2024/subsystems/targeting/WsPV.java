@@ -107,8 +107,8 @@ public class WsPV {
      */
     private double getDirection(double x, double y, boolean isBlue) {
         double measurement = Math.toDegrees(Math.atan2(x,y));
-        if (isBlue) measurement -= 90;
-        else measurement += 90;
+        if (isBlue) measurement += 90;
+        else measurement -= 90;
         if (measurement < 0) {
             measurement = 360 + measurement;
         }
