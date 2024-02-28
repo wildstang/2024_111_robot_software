@@ -5,6 +5,7 @@ import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 import org.wildstang.year2024.subsystems.testforlift.Test_lift;
 import org.wildstang.year2024.subsystems.Arm_Test_Subsystems.ArmControl;
+import org.wildstang.year2024.subsystems.LED.LedController;
 import org.wildstang.year2024.subsystems.Notepath.notepath;
 import org.wildstang.year2024.subsystems.shooter.shooter;
 
@@ -20,7 +21,8 @@ public enum WsSubsystems implements Subsystems {
     SHOOTER("Shooter", shooter.class),
     ARM("Arm Control", ArmControl.class),
     NOTEPATH("Notepath", notepath.class),
-    LIFT("Test_lift", Test_lift.class)
+    LIFT("Test_lift", Test_lift.class),
+    LED("Led Controller", LedController.class)
     ;
 
     /**

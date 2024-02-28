@@ -94,4 +94,7 @@ public class notepath implements Subsystem {
     public String getName() {
         return"Notepath";
     }
+    public double getCurrent(){
+        return intake.getController().getOutputCurrent();
+    }
 }
