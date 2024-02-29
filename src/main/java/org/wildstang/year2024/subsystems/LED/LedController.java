@@ -23,8 +23,6 @@ public class LedController implements Subsystem {
     private int port = 0;//port
     private int length = 15;//length
 
-    private boolean isAiming = false;
-
 
     @Override
     public void update(){

@@ -17,12 +17,10 @@ public class TestProgram extends AutoProgram{
     
     protected void defineSteps(){
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
-        addStep(new SetGyroStep(180.0, swerve));
-        AutoParallelStepGroup group1 = new AutoParallelStepGroup();
-        group1.addStep(new PathHeadingStep(180.0, swerve));
-        addStep(group1);
-        addStep(new StartOdometryStep(3.0, 5.0, 180.0, true));
-        addStep(new SwervePathFollowerStep(Choreo.getTrajectory("ChoreoTest"), swerve, true));
+        addStep(new SetGyroStep(0.0, swerve));
+        addStep(new PathHeadingStep(180.0, swerve));
+        addStep(new StartOdometryStep(2.0, 5.0, 0.0, true));
+        addStep(new SwervePathFollowerStep(Choreo.getTrajectory("TestSlow"), swerve, true));
     }
 
     public String toString(){

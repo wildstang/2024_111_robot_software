@@ -61,7 +61,7 @@ public class SwervePathFollowerStep extends AutoStep {
                 xOffset = localRobotPose.getY() - (8.016 - localAutoPose.getY());
             }
             //update values the robot is tracking to
-            m_drive.setAutoValues( getVelocity(),getHeading(), getAccel(), 2.0*xOffset,2.0*yOffset );
+            m_drive.setAutoValues( getVelocity(),getHeading(), getAccel(), 0.0*xOffset,0.0*yOffset );
             m_drive.setAutoHeading(getRotation());
             prevVelocity = getVelocity();
             prevTime = timer.get();
