@@ -82,6 +82,7 @@ public class notepath implements Subsystem {
             intake.setSpeed(direction*speed);
         }
         SmartDashboard.putNumber("feed speed", direction * speed);
+        SmartDashboard.putNumber("Intake Current", getCurrent());
     }
 
     @Override
