@@ -12,6 +12,7 @@ import org.wildstang.year2024.subsystems.targeting.WsVision;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Timer;
 
 public class LedController implements Subsystem {
 
@@ -19,17 +20,19 @@ public class LedController implements Subsystem {
     private AddressableLED led;
     private AddressableLEDBuffer ledBuffer;
     private notepath notepath;
+    private Timer timer =  new Timer();
 
     private int port = 0;//port
-    private int length = 15;//length
+    private int length = 45;//length
 
 
     @Override
     public void update(){
-        if (notepath.getCurrent() > 15.0){
-            setRGB(0, 255, 255);
+        if (notepath.getCurrent() > 25.0 && timer.hasElapsed(0.05)){
+            setRGB(255, 128, 0);
         } else {
-            setRGB(255, 255, 0);
+            setRGB(0, 0, 0);
+            if (notepath.getCurrent() < 25.0) timer.reset();
         }
         led.setData(ledBuffer);
         led.start();
@@ -56,6 +59,7 @@ public class LedController implements Subsystem {
         led.setData(ledBuffer);
         led.start();
         resetState();
+        timer.start();
     }
 
     @Override

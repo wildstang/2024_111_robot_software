@@ -60,7 +60,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private double pathXOffset = 0;
     private double pathYOffset = 0;
     private boolean autoOverride;
-    private boolean isBlue = false;
+    private boolean isBlue = true;
     private boolean autoTag = false;
     private boolean isVision = false;
     
@@ -160,6 +160,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
             xSpeed *= (1 - DriveConstants.DRIVE_THRUST);
             ySpeed *= (1 - DriveConstants.DRIVE_THRUST);
             rotSpeed *= (1 - DriveConstants.DRIVE_THRUST);
+        } else if (leftBumper.getValue()){
+            xSpeed *= 0.25;
+            ySpeed *= 0.25;
+            rotSpeed *= 0.25;
         }
 
     }

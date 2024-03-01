@@ -29,7 +29,7 @@ public class WsVision implements Subsystem {
     public double[] angles = {180, 127, 101};
     public int last = distances.length-1;
 
-    public boolean isBlue = false;
+    public boolean isBlue = true;
 
     private DigitalInput driverLeftShoulder;
 

@@ -1,5 +1,6 @@
 package org.wildstang.framework.auto.steps;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
@@ -84,7 +85,9 @@ public class SwervePathFollowerStep extends AutoStep {
         return mToIn * Math.hypot(pathtraj.sample(timer.get()).velocityX, pathtraj.sample(timer.get()).velocityY);
     }
     public double getHeading(){
-        return ((-Math.atan2(pathtraj.sample(timer.get()).velocityY, 
+        if (isBlue) return ((-Math.atan2(pathtraj.sample(timer.get()).velocityY, 
+            pathtraj.sample(timer.get()).velocityX)*180/Math.PI)+360)%360;
+        else return ((-Math.atan2(-pathtraj.sample(timer.get()).velocityY, 
             pathtraj.sample(timer.get()).velocityX)*180/Math.PI)+360)%360;
         // if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360; 
         // else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
@@ -103,8 +106,8 @@ public class SwervePathFollowerStep extends AutoStep {
 
         var traj_file = new File(traj_dir, fileName + ".traj");
         try {
-    //   var reader = new BufferedReader(new FileReader(traj_file));
-    var reader = (new FileReader(traj_file));
+      var reader = new BufferedReader(new FileReader(traj_file));
+    //var reader = (new FileReader(traj_file));
       return  gson.fromJson(reader, ChoreoTrajectory.class);
     //   return traj;
     } catch (Exception ex) {
