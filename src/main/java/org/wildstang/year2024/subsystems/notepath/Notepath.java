@@ -18,12 +18,15 @@ public class Notepath implements Subsystem {
 
     // State variables
     private double intakeSpeed, feedSpeed, kickSpeed;
-    private boolean completingIntake;
+    private Intake intakeState; 
+
+    public enum Intake { CHILL, SPINNING, INTAKING, REVERSE };
+
 
     private WsSpark feed, intake, kick;
     private AnalogInput driverRightTrigger, driverLeftTrigger;
     private DigitalInput driverLeftShoulder;
-    
+
     private LaserCan lc;
 
     @Override
@@ -38,33 +41,25 @@ public class Notepath implements Subsystem {
             } else if (driverLeftShoulder.getValue()) {
                 feedSpeed = -1.0;
             }
-        // Detects note, intaking done
-        } else {
-            kickSpeed = 0;
-            feedSpeed = 0;
-        }
-        if (!hasNote()) {
-            completingIntake = false;
         } 
-        //small controls update - we are moving intake to also be driver Right trigger - so no right shoulder
-        //in this class, just the right trigger
-        if ((driverRightTrigger.getValue() > 0.15 || completingIntake) && (!hasNote())) {
-            intakeSpeed = 1.0;
-            feedSpeed = 1.0;
+        // Intaking
+        if ((driverRightTrigger.getValue() > 0.15)) {
+            intakeState = Intake.SPINNING;
         } else {
-            intakeSpeed = 0;
-            feedSpeed = 1.0;
+            // We never left spinning state, give up
+            if (intakeState == Intake.SPINNING) {
+                intakeState = Intake.CHILL;    
+            }
         }
-        //one note - we will want the feed and the intake running during the intaking sequence
     }
 
-    public boolean hasNote() {
+    public double laserDistance() {
         LaserCan.Measurement measurement = lc.getMeasurement();
         if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-            return (measurement.distance_mm > normalIntakeDistance);
+            return (measurement.distance_mm);
         } else {
         System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
-            return true;
+            return 9000;
         }
     }
 
@@ -102,8 +97,35 @@ public class Notepath implements Subsystem {
 
     @Override
     public void update() {
-        if (intakeHasGrabbed()) {
-            completingIntake = true;
+        switch (intakeState) {
+            case CHILL:
+            break;
+            case SPINNING:
+                // Change condition
+                if (laserDistance() < NotepathConsts.FRAME_DIST) {
+                    intakeState = Intake.INTAKING;
+                // Normal state action
+                } else {
+                    intakeSpeed = 1.0;
+                    feedSpeed = 1.0;
+                    break;
+                }
+            case INTAKING:
+                if (laserDistance() <= NotepathConsts.REVERSE_INTAKE_DIST) {
+                    intakeState = Intake.REVERSE;
+                } else {
+                    intakeSpeed = 1.0;
+                    feedSpeed = 1.0;
+                }
+            case REVERSE:
+                if (laserDistance() >= NotepathConsts.NORMAL_NOTE_DIST) {
+                    intakeSpeed = 0;
+                    feedSpeed = 0;
+                } else {
+                    feedSpeed = -0.25;
+                    intakeSpeed = 0;
+                }
+            break;
         }
 
         intake.setSpeed(intakeSpeed);
