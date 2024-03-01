@@ -118,10 +118,10 @@ public class Shooter implements Subsystem {
             }    
         }
         if (position == POSITION.CLOSE){
-            angleNeo.setPosition(autoClose);
+            angle = autoClose;
         }
         if (position == POSITION.FAR){
-            angleNeo.setPosition(autoFar);
+            angle = autoFar;
         }
     }
 

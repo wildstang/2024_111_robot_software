@@ -25,6 +25,7 @@ private Shooter shooter;
     @Override
     public void update() {
         shooter.autoScore();
+        this.setFinished();
     }
 
     @Override
