@@ -15,18 +15,19 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
-public class shooter implements Subsystem {
+public class Shooter implements Subsystem {
 
     // Inputs
     private AnalogInput leftTrigger;
 
     // Motors
     private WsSpark vortexFlywheel;
+    private WsSpark neoFlywheel;
     private WsSpark angleNeo;
     private AbsoluteEncoder angleEncoder;
 
     // State variables
-    private double vortexMotorsSpeed = 0;
+    private double speed = 0;
     private double angle;
     private boolean leftTriggerPressed;
     private boolean noteHeld;
@@ -42,7 +43,7 @@ public class shooter implements Subsystem {
                 {
                     // Linear interpolation between two points
                     // Speed = speed1 + slope between points * change in distance
-                    vortexMotorsSpeed = position[1] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][1] - position[1]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
+                    speed = position[1] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][1] - position[1]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
                     angle = position[2] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][2] - position[2]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
                     break;
                 }
@@ -63,11 +64,11 @@ public class shooter implements Subsystem {
         } else {
             if (noteHeld) {
                 angle = 0;
-                vortexMotorsSpeed = ShooterConsts.IDLE_SPEED;
+                speed = ShooterConsts.IDLE_SPEED;
             } else {
                 //we can keep the angle all the way down all the time now
                 angle = ShooterConsts.MIN_ANGLE;
-                vortexMotorsSpeed = 0;
+                speed = 0;
             }
         }
     }
@@ -78,14 +79,21 @@ public class shooter implements Subsystem {
 
 
         // Init Motors
-        vortexFlywheel.setCurrentLimit(80, 20, 10000);
-        vortexFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER);
+        vortexFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER_FOLLOWER);
+
+        neoFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER_NEO);
+
         angleNeo = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.ARM_PIVOT);
         angleEncoder = angleNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
+
+        // PID
         angleNeo.initClosedLoop(ShooterConsts.P, ShooterConsts.I, ShooterConsts.D, 0, this.angleEncoder);
         // Returns position in degrees instead of rotations
         angleEncoder.setPositionConversionFactor(360.0);
-        //set current limit for angleNeo - probably like 30 for now
+        //set current limit 
+        angleNeo.setCurrentLimit(30, 30, 100);
+        vortexFlywheel.setCurrentLimit(80, 20, 10000);
+
 
         // Init Inputs
         leftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
@@ -100,7 +108,8 @@ public class shooter implements Subsystem {
 
     @Override
     public void update() {
-        vortexFlywheel.setSpeed(vortexMotorsSpeed);
+        vortexFlywheel.setSpeed(speed);
+        neoFlywheel.setSpeed(speed * ShooterConsts.SPIN_RATIO);
         angleNeo.setPosition(angle);
     }
 

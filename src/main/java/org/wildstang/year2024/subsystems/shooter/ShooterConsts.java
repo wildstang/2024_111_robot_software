@@ -9,4 +9,5 @@ public class ShooterConsts {
     public static final double P = 0.1;
     public static final double I = 0.0;
     public static final double D = 0.0;
+    public static final double SPIN_RATIO = 65 / 100;
 }
