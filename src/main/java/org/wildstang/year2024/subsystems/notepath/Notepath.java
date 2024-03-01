@@ -41,7 +41,10 @@ public class Notepath implements Subsystem {
             } else if (driverLeftShoulder.getValue()) {
                 feedSpeed = -1.0;
             }
-        } 
+        } else {
+            kickSpeed = 0.0;
+            feedSpeed = 0.0;
+        }
         // Intaking
         if ((driverRightTrigger.getValue() > 0.15)) {
             intakeState = Intake.SPINNING;
