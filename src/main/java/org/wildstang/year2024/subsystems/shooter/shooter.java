@@ -104,7 +104,7 @@ public class Shooter implements Subsystem {
         angleNeo.setPosition(angle);
     }
 
-    public void autoScore(POSITIOn position){
+    public void autoScore(POSITION position){
 
         if (position == POSITION.AUTO){
         double distanceToSpeaker = WsVision.distanceToSpeaker();
