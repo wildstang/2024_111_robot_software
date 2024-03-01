@@ -114,6 +114,10 @@ public class Shooter implements Subsystem {
         }
     }
 
+    public void setSpeed(double speed){
+        this.vortexMotorsSpeed = speed;
+    }
+
     @Override
     public void resetState() {
         vortexFlywheel.setSpeed(0);
