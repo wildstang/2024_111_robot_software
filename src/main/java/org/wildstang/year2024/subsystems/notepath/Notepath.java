@@ -10,6 +10,9 @@ import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import au.grapplerobotics.LaserCan;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Notepath implements Subsystem {
@@ -100,6 +103,8 @@ public class Notepath implements Subsystem {
 
     @Override
     public void update() {
+        SmartDashboard.putNumber("Laser Can distance (mm)", laserDistance());
+
         switch (intakeState) {
             case CHILL:
             break;
