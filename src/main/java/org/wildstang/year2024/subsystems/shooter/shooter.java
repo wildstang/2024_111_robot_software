@@ -32,7 +32,7 @@ public class Shooter implements Subsystem {
     private boolean noteHeld;
 
     // Auto
-    public enum POSITION {CLOSE, FAR, AUTO};
+    public boolean isClose;
     private double autoClose = 0.5;
     private double autoFar = 0.3;
 
@@ -104,23 +104,12 @@ public class Shooter implements Subsystem {
         angleNeo.setPosition(angle);
     }
 
-    public void autoScore(POSITION position){
+    public void autoSetAngle(boolean isClose) {
 
-        if (position == POSITION.AUTO){
-        double distanceToSpeaker = WsVision.distanceToSpeaker();
-            for (int i = 0; i < ShooterConsts.SHOOTER_POSIIONS.length; i++) {
-                double[] position = ShooterConsts.SHOOTER_POSIIONS[i];
-                if (distanceToSpeaker > position[0]) {
-                    vortexMotorsSpeed = position[1] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][1] - position[1]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
-                    angle = position[2] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][2] - position[2]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
-                    break;
-                }
-            }    
-        }
-        if (position == POSITION.CLOSE){
+        if (isClose == true){
             angle = autoClose;
         }
-        if (position == POSITION.FAR){
+        if (isClose == false){
             angle = autoFar;
         }
     }
