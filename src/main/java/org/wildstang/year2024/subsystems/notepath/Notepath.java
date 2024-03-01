@@ -17,13 +17,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Notepath implements Subsystem {
 
-    private final double normalIntakeDistance = -1;
-
     // State variables
     private double intakeSpeed, feedSpeed, kickSpeed;
     private Intake intakeState; 
 
-    public enum Intake { CHILL, SPINNING, INTAKING, REVERSE };
+    private enum Intake { CHILL, SPINNING, INTAKING, REVERSE };
 
 
     private WsSpark feed, intake, kick;
@@ -50,16 +48,40 @@ public class Notepath implements Subsystem {
         }
         // Intaking
         if ((driverRightTrigger.getValue() > 0.15)) {
-            intakeState = Intake.SPINNING;
+            startIntaking();
         } else {
             // We never left spinning state, give up
             if (intakeState == Intake.SPINNING) {
-                intakeState = Intake.CHILL;    
+                stopIntaking();;    
             }
         }
     }
 
-    public double laserDistance() {
+    public void startIntaking() {
+        intakeState = Intake.SPINNING;
+    }
+
+    public void stopIntaking() {
+        intakeState = Intake.CHILL;
+    }
+
+    public void shootSpeaker() {
+        feedSpeed = 1.0;
+        kickSpeed = 1.0;
+    }
+
+    public void shootAmp() {
+        feedSpeed = -1.0;
+    }
+
+    // Turn off motors
+    public void stop() {
+        feedSpeed = 0.0;
+        kickSpeed = 0.0;
+        intakeSpeed = 0.0;
+    }
+
+    private double laserDistance() {
         LaserCan.Measurement measurement = lc.getMeasurement();
         if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
             return (measurement.distance_mm);
