@@ -1,4 +1,4 @@
-package main.java.org.wildstang.year2024.auto.Steps;
+package org.wildstang.year2024.auto.Steps;
 
 import org.wildstang.framework.auto.AutoStep;
 import org.wildstang.framework.core.Core;
@@ -30,7 +30,7 @@ public class ShooterPresetAngle extends AutoStep {
     
         @Override
         public String toString() {
-            return "ShooterStep";
+            return "Shooter Preset Angle";
         }
     
     
