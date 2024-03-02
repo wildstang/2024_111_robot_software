@@ -72,6 +72,8 @@ public class WsPV {
         SmartDashboard.putNumber(cameraID + " Y", ty);
         SmartDashboard.putNumber(cameraID + " X", tx);
         SmartDashboard.putBoolean(cameraID + " isAT", isAT);
+        SmartDashboard.putNumber(cameraID + "poseX", estimatedPose.getX()*VC.mToIn);
+        SmartDashboard.putNumber(cameraID + "posey", estimatedPose.getY()*VC.mToIn);
     }
 
     /**
@@ -116,6 +118,9 @@ public class WsPV {
             measurement = measurement - 360;
         }
         return measurement;
+    }
+    public boolean TargetInView(){
+        return tid>0;
     }
 
 }

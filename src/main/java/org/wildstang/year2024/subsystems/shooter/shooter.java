@@ -35,10 +35,10 @@ public class shooter implements Subsystem {
 
     private Timer timer = new Timer();
     private ShuffleboardTab tab = Shuffleboard.getTab("2024 Testing");
-    private GenericEntry shooter1 = tab.add("Shooter 1 Value", 1.0)
-        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();
-    private GenericEntry shooter2 = tab.add("Shooter 2 Value", 0.35)
-        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();
+    // private GenericEntry shooter1 = tab.add("Shooter 1 Value", 1.0)
+    //     .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();
+    // private GenericEntry shooter2 = tab.add("Shooter 2 Value", 0.65)
+    //     .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 1)).getEntry();
     private boolean toUpdate = false;
 
    
@@ -82,19 +82,19 @@ public class shooter implements Subsystem {
 
     @Override
     public void update() {
-        if (toUpdate){
-            Vortex1Speed = shooter1.getDouble(0.8);
-            Vortex2Speed = shooter2.getDouble(1.0);
-        }
+        // if (toUpdate){
+        //     Vortex1Speed = shooter1.getDouble(0.8);
+        //     Vortex2Speed = shooter2.getDouble(1.0);
+        // }
         SmartDashboard.putNumber("Shooter 1 value", Vortex1Speed);
         SmartDashboard.putNumber("Shooter 2 Value", Vortex2Speed);
         SmartDashboard.putBoolean("Shooter LT", leftTriggerPressed);
         SmartDashboard.putNumber("Shooter 1 velocity", Vortex.getVelocity());
         SmartDashboard.putNumber("Shooter 2 Velocity", Vortex2.getVelocity());
         if (leftTriggerPressed) {
-            Vortex.setSpeed(Vortex2Speed);
-            Vortex2.setSpeed(Vortex2Speed);
-            shooterNeo.setSpeed(Vortex1Speed);
+            Vortex.setSpeed(-1.0);
+            Vortex2.setSpeed(-1.0);
+            shooterNeo.setSpeed(0.65);
         }
          else {
             // Vortex.stop();

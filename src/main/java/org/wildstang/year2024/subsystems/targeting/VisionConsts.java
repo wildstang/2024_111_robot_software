@@ -4,8 +4,8 @@ import java.util.List;
 
 public class VisionConsts {
 
-    public final double inToM = 1/25.4;
-    public final double mToIn = 25.4;
+    public final double inToM = 1/39.71;
+    public final double mToIn = 39.71;
 
     public final double blueSpeakerX = 9.5;//in
     public final double blueSpeakerY = 218.42;//in

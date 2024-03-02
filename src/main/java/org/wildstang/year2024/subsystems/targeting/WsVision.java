@@ -17,16 +17,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
 
-    public WsLL front = new WsLL("limelight-front");
+    public WsPV front = new WsPV("photon-front", true);
     // public WsPV back = new WsPV("object detection", false);
 
     public VisionConsts VC;
 
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
-    public double[] distances = {43.3, 83, 129};
+    // public double[] distances = {43.3, 83, 129};
+    public double[] distances = {41, 50, 70, 105, 146};
     public double[] speeds = {0.0, 0.0, 0.0};
-    public double[] angles = {180, 127, 101};
+    // public double[] angles = {180, 127, 101};
+    public double[] angles = {175, 145, 127, 93, 75};
     public int last = distances.length-1;
 
     public boolean isBlue = true;
