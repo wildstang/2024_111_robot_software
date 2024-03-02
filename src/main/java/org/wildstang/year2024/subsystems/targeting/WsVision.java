@@ -31,6 +31,14 @@ public class WsVision implements Subsystem {
         return (LimeConsts.APRIL_TAG_HEIGHTS[(int) front.tid] - LimeConsts.VERTICAL_LIMELIGHT_MOUNT) / Math.tan(front.tv);
     }
 
+    public double distanceToSpeaker() {
+        // Make sure we see a AprilTag
+        if (!front.TargetInView()) { return -1; }
+        // Make sure it is the speaker AprilTag
+        if (front.tid != 7 && front.tid != 4) { return -1; }
+        return (LimeConsts.APRIL_TAG_HEIGHTS[(int) front.tid] - LimeConsts.VERTICAL_LIMELIGHT_MOUNT) / Math.tan(front.tv);
+    }
+
     @Override
     public void init() {
         resetState();
