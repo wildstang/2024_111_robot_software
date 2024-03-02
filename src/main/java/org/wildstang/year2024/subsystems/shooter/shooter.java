@@ -114,6 +114,17 @@ public class Shooter implements Subsystem {
         }
     }
 
+    public void autoAim(){
+        for (int i = 0; i < ShooterConsts.SHOOTER_POSIIONS.length; i++) {
+                    double[] position = ShooterConsts.SHOOTER_POSIIONS[i];
+                    if (distanceToSpeaker > position[0])
+                    {
+                        angle = position[2] + ((ShooterConsts.SHOOTER_POSIIONS[i + 1][2] - position[2]) / (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[0])) * (ShooterConsts.SHOOTER_POSIIONS[i + 1][0] - position[1]);
+                        break;
+                    }
+            }    
+    }    
+
     public void setSpeed(double speed){
         this.vortexMotorsSpeed = speed;
     }
