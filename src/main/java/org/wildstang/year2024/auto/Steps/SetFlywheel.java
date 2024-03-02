@@ -4,16 +4,14 @@ import org.wildstang.framework.auto.AutoStep;
 import org.wildstang.framework.core.Core;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.shooter.Shooter;
-import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
-import org.wildstang.year2024.subsystems.targeting.WsVision;
 
-public class FlywheelOn extends AutoStep {
+public class SetFlywheel extends AutoStep {
 
-private Shooter shooter;
-public double speed;
+    private Shooter shooter;
+    private boolean on;
 
-    public FlywheelOn(){
-
+    public SetFlywheel(boolean on){
+        this.on = on;
     }
     @Override 
     public void initialize(){
@@ -22,7 +20,7 @@ public double speed;
 
     @Override
     public void update() {
-        shooter.setSpeed(speed);
+        shooter.setFlywheel(on);
         this.setFinished();
     }
 

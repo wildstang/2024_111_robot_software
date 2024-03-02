@@ -3,7 +3,7 @@ package org.wildstang.year2024.robot;
 import org.wildstang.framework.core.Subsystems;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
-import org.wildstang.year2024.subsystems.shooter.shooter;
+import org.wildstang.year2024.subsystems.shooter.Shooter;
 
 /**
  * All subsystems are enumerated here.

@@ -4,17 +4,15 @@ import org.wildstang.framework.auto.AutoStep;
 import org.wildstang.framework.core.Core;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.shooter.Shooter;
-import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
-import org.wildstang.year2024.subsystems.targeting.WsVision;
 
-public class ShooterPresetAngle extends AutoStep {
+public class ShooterSetAngle extends AutoStep {
 
-    private boolean isClose;
+    private double angle;
     
     private Shooter shooter;
     
-        public ShooterPresetAngle(boolean position){
-            this.isClose = position; 
+        public ShooterSetAngle(double angle){
+            this.angle = angle; 
         }
     
         @Override 
@@ -24,7 +22,7 @@ public class ShooterPresetAngle extends AutoStep {
     
         @Override
         public void update() {
-            shooter.autoSetAngle(isClose);
+            shooter.setAngle(angle);
             this.setFinished();
         }
     
