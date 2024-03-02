@@ -63,6 +63,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private boolean isBlue = true;
     private boolean autoTag = false;
     private boolean isVision = false;
+    private boolean isCurrentLow = false;
     
     private final double mToIn = 39.37;
 
@@ -164,6 +165,17 @@ public class SwerveDrive extends SwerveDriveTemplate {
             xSpeed *= 0.25;
             ySpeed *= 0.25;
             rotSpeed *= 0.25;
+        }
+        if (leftTrigger.getValue() > 0.15 && !isCurrentLow){
+            for (int i = 0; i < 4; i++){
+                modules[i].setDriveCurrent(DriveConstants.DRIVE_CURRENT_LIMIT - 15);
+            }
+            isCurrentLow = true;
+        } else if (isCurrentLow && leftTrigger.getValue() < 0.15){
+            for (int i = 0; i < 4; i++){
+                modules[i].setDriveCurrent(DriveConstants.DRIVE_CURRENT_LIMIT);
+            }
+            isCurrentLow = false;
         }
 
     }

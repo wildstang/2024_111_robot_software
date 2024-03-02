@@ -26,6 +26,7 @@ public class notepath implements Subsystem {
     private boolean isUp = false;
 
     private Timer timer = new Timer();
+    private Timer intakeTimer = new Timer();
 
    
 
@@ -56,6 +57,7 @@ public class notepath implements Subsystem {
         driverLeftShoulder.addInputListener(this);
 
         timer.start();
+        intakeTimer.start();
     }
 
     @Override
@@ -69,17 +71,17 @@ public class notepath implements Subsystem {
         store = !timer.hasElapsed(2.5);
 
         if (isAmp){
-            intake.setSpeed(0.0);
+            setIntake(0.0);
             feed.setSpeed(-speed);
         } else if (isIntake){
             feed.setSpeed(1.0);
-            intake.setSpeed(1.0);
+            setIntake(1.0);
         } else if (store){
-            intake.setSpeed(0.0);
+            setIntake(0.0);
             feed.setSpeed(isUp ? 0.0 : -speed * 0.25);
         } else {
             feed.setSpeed(direction * speed);
-            intake.setSpeed(direction*speed);
+            setIntake(direction*speed);
         }
         SmartDashboard.putNumber("feed speed", direction * speed);
         SmartDashboard.putNumber("Intake Current", getCurrent());
@@ -97,5 +99,13 @@ public class notepath implements Subsystem {
     }
     public double getCurrent(){
         return intake.getController().getOutputCurrent();
+    }
+    public void setIntake(double speed){
+        if (speed == 0){
+            intakeTimer.reset();
+            intake.setSpeed(0);
+        } else if (speed>0){
+            intake.setSpeed(Math.min(1.0, 4.0*intakeTimer.get()));
+        }
     }
 }

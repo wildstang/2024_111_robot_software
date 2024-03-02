@@ -161,4 +161,7 @@ public class SwerveModule {
     public SwerveModulePosition odoPosition(){
         return new SwerveModulePosition(getPosition()*0.0254*0.98, new Rotation2d(Math.toRadians(360-getAngle())));
     }
+    public void setDriveCurrent(int newCurrentLimit){
+        driveMotor.setCurrentLimit(newCurrentLimit, newCurrentLimit, 0);
+    }
 }
