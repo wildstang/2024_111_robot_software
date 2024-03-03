@@ -14,24 +14,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
 
-    public WsLL front = new WsLL("limelight-front");
-    public WsLL back = new WsLL("limelight-back");
-
-    public LimeConsts LC;
+    public WsLL front = new WsLL("limelight-left");
+    public WsLL back = new WsLL("limelight-left");
 
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
-    
-
     @Override
     public void inputUpdate(Input source) {
-        
+    }
+
+    public double distanceToSpeaker() {
+        // Make sure we see a AprilTag
+        if (!front.TargetInView()) { return -1; }
+        // Make sure it is the speaker AprilTag
+        if (front.tid != 7 && front.tid != 4) { return -1; }
+        return (LimeConsts.APRIL_TAG_HEIGHTS[(int) front.tid] - LimeConsts.VERTICAL_LIMELIGHT_MOUNT) / Math.tan(front.tv);
     }
 
     @Override
     public void init() {
-        LC = new LimeConsts();
-
         resetState();
     }
 
