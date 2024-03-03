@@ -6,6 +6,7 @@ import org.wildstang.framework.auto.steps.PathHeadingStep;
 import org.wildstang.framework.auto.steps.SetGyroStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.core.Core;
+import org.wildstang.year2024.auto.Steps.SetFlywheel;
 import org.wildstang.year2024.auto.Steps.SetIntakeSequenceStep;
 import org.wildstang.year2024.auto.Steps.ShootSpeakerStep;
 import org.wildstang.year2024.auto.Steps.ShooterSetAngle;
@@ -20,6 +21,7 @@ import com.choreo.lib.Choreo;
 public class WingAutoProgram extends AutoProgram{
     protected void defineSteps(){
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
+        addStep(new SetFlywheel(true));
         addStep(new ShooterSetAngle(ShooterConsts.SUBWOOFER_ANGLE));
         addStep(new ShootSpeakerStep());
         addStep(new SetIntakeSequenceStep(true));

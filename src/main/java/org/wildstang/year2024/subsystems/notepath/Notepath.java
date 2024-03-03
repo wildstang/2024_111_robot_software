@@ -33,7 +33,7 @@ public class Notepath implements Subsystem {
     @Override
     public void inputUpdate(Input source) {
         // We want to shoot a note
-        if (driverRightTrigger.getValue() > 0.15) {
+        if (driverRightTrigger.getValue() > 0.15 && hasNote()) {
             // Into Speaker
             if (driverLeftTrigger.getValue() > 0.15) {
                 feedSpeed = 1.0;
@@ -50,7 +50,7 @@ public class Notepath implements Subsystem {
         if ((driverRightTrigger.getValue() > 0.15)) {
             startIntaking();
         } else {
-            // We never left spinning state, give up
+            // If driver stops holding down trigger and we never left spinning state, give up
             if (intakeState == Intake.SPINNING) {
                 stopIntaking();;    
             }
@@ -89,6 +89,11 @@ public class Notepath implements Subsystem {
         System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
             return 9000;
         }
+    }
+
+    public boolean hasNote() {
+        // Has reached the centered normal note distance
+        return (laserDistance() > NotepathConsts.NORMAL_NOTE_DIST - 2) && (laserDistance() < NotepathConsts.NORMAL_NOTE_DIST + 2) && intakeState == Intake.CHILL;
     }
 
     @Override
@@ -149,6 +154,7 @@ public class Notepath implements Subsystem {
                 }
             case REVERSE:
                 if (laserDistance() >= NotepathConsts.NORMAL_NOTE_DIST) {
+                    intakeState = Intake.CHILL;
                     intakeSpeed = 0;
                     feedSpeed = 0;
                 } else {
