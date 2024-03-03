@@ -10,4 +10,5 @@ public class ShooterConsts {
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final double SPIN_RATIO = 65 / 100;
+    public static final double SUBWOOFER_ANGLE = -1;
 }
