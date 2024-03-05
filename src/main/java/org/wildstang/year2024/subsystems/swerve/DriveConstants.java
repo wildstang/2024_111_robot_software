@@ -36,7 +36,7 @@ public final class DriveConstants {
     */
     public static final double SLEW_RATE_LIMIT = 3.0;
     /**second order correction for rotation plus driving */
-    public static final double ROT_CORRECTION_FACTOR = 0.4;
+    public static final double ROT_CORRECTION_FACTOR = -0.5;
     /**encoder ticks per revolution, 1.0 for neos */
     public static final double TICKS_PER_REV = 1.0;
     /**PID values for drive P */
@@ -46,11 +46,11 @@ public final class DriveConstants {
     /**PID values for drive D */
     public static final double DRIVE_D = 0.1;
     /**PID values for driveF coefficient of momentum */
-    public static final double DRIVE_F_V = 0.00375;//free speed of 22.2 ft/s becomes 266.4 in/s
+    public static final double DRIVE_F_V = 0.00375 * 157.5/144.5*157.5/142;//free speed of 22.2 ft/s becomes 266.4 in/s
     /**PID values for drive F coefficient of kinetic friction */
     public static final double DRIVE_F_K = 0.016;
     /**PID values for drive F coefficient of inertia */
-    public static final double DRIVE_F_I = 0;//
+    public static final double DRIVE_F_I = 0.0002;//
     /**PID values for angle P */
     public static final double ANGLE_P = 0.01;
     /**PID values for angle I */

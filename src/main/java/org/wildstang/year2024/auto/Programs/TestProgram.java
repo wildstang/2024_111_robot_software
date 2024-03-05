@@ -18,9 +18,9 @@ public class TestProgram extends AutoProgram{
     protected void defineSteps(){
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         addStep(new SetGyroStep(0.0, swerve));
-        addStep(new PathHeadingStep(180.0, swerve));
+        //addStep(new PathHeadingStep(180.0, swerve));
         addStep(new StartOdometryStep(2.0, 5.0, 0.0, true));
-        addStep(new SwervePathFollowerStep("TestSlow", swerve, true));
+        addStep(new SwervePathFollowerStep("TestSlowRotate", swerve, false));
         
  
     }

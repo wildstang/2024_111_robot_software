@@ -21,13 +21,13 @@ public class Auto113 extends AutoProgram {
         addStep(new SetGyroStep(180.0, swerve));
         addStep(new StartOdometryStep(1.3, 5.5, 180.0, true));
         addStep(new AutoStepDelay(500));
-        addStep(new SwervePathFollowerStep("113 Start", swerve, true));
+        addStep(new SwervePathFollowerStep("Start_113", swerve, true));
         addStep(new SwervePathFollowerStep("B get", swerve, true));
         addStep(new SwervePathFollowerStep("B score", swerve, true));
         addStep(new SwervePathFollowerStep("A get", swerve, true));
         addStep(new SwervePathFollowerStep("A score", swerve, true));
-        addStep(new SwervePathFollowerStep("C get", swerve, true));
-        addStep(new SwervePathFollowerStep("C score", swerve, true));
+        // addStep(new SwervePathFollowerStep("C get", swerve, true));
+        // addStep(new SwervePathFollowerStep("C score", swerve, true));
         addStep(new SwervePathFollowerStep("Alt end get", swerve, true));
     }
 

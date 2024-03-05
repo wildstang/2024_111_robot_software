@@ -306,6 +306,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         SmartDashboard.putNumber("Auto velocity", pathVel);
         SmartDashboard.putNumber("Auto translate direction", pathHeading);
         SmartDashboard.putNumber("Auto rotation target", pathTarget);
+        SmartDashboard.putNumber("Odo X", odometry.getPoseMeters().getX()*39.71);
+        SmartDashboard.putNumber("Odo Y", odometry.getPoseMeters().getY()*39.71);
     }
     
     @Override
