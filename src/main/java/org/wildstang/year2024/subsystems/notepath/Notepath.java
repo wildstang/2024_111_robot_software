@@ -21,8 +21,7 @@ public class Notepath implements Subsystem {
     private double intakeSpeed, feedSpeed, kickSpeed;
     private Intake intakeState; 
 
-    private enum Intake { CHILL, SPINNING, INTAKING, REVERSE };
-
+    private enum Intake { CHILL, SPINNING, INTAKING, REVERSE, HAS_NOTE };
 
     private WsSpark feed, intake, kick;
     private AnalogInput driverRightTrigger, driverLeftTrigger;
@@ -32,33 +31,39 @@ public class Notepath implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
-        // We want to shoot a note
-        if (driverRightTrigger.getValue() > 0.15 && hasNote()) {
-            // Into Speaker
-            if (driverLeftTrigger.getValue() > 0.15) {
-                feedSpeed = 1.0;
-                kickSpeed = 1.0;
-            // Into Amp
-            } else if (driverLeftShoulder.getValue()) {
-                feedSpeed = -1.0;
+        if (source != driverRightTrigger) { return; }
+
+        if (hasNote()) {
+            // We want to shoot a note
+            if (driverRightTrigger.getValue() > 0.15) {
+                intakeState = Intake.CHILL;
+                // Into Speaker
+                if (driverLeftTrigger.getValue() > 0.15) {
+                    feedSpeed = 1.0;
+                    kickSpeed = 1.0;
+                // Into Amp
+                } else if (driverLeftShoulder.getValue()) {
+                    feedSpeed = -1.0;
+                }
+            } else {
+                kickSpeed = 0.0;
+                feedSpeed = 0.0;
             }
         } else {
-            kickSpeed = 0.0;
-            feedSpeed = 0.0;
-        }
-        // Intaking
-        if ((driverRightTrigger.getValue() > 0.15)) {
-            startIntaking();
-        } else {
-            // If driver stops holding down trigger and we never left spinning state, give up
-            if (intakeState == Intake.SPINNING) {
-                stopIntaking();;    
+            // Intaking
+            if ((driverRightTrigger.getValue() > 0.15) && !hasNote()) {
+                startIntaking();
+            } else {
+                // If driver stops holding down trigger and we never left spinning state, give up
+                if (intakeState == Intake.SPINNING) {
+                    stopIntaking();;    
+                }
             }
         }
     }
 
     public void startIntaking() {
-        intakeState = Intake.SPINNING;
+        if (intakeState == Intake.CHILL) { intakeState = Intake.SPINNING; }
     }
 
     public void stopIntaking() {
@@ -68,10 +73,12 @@ public class Notepath implements Subsystem {
     public void shootSpeaker() {
         feedSpeed = 1.0;
         kickSpeed = 1.0;
+        intakeState = Intake.CHILL;
     }
 
     public void shootAmp() {
         feedSpeed = -1.0;
+        intakeState = Intake.CHILL;
     }
 
     // Turn off motors
@@ -93,7 +100,7 @@ public class Notepath implements Subsystem {
 
     public boolean hasNote() {
         // Has reached the centered normal note distance
-        return (laserDistance() > NotepathConsts.NORMAL_NOTE_DIST - 2) && (laserDistance() < NotepathConsts.NORMAL_NOTE_DIST + 2) && intakeState == Intake.CHILL;
+        return intakeState == Intake.HAS_NOTE;
     }
 
     @Override
@@ -154,13 +161,14 @@ public class Notepath implements Subsystem {
                 }
             case REVERSE:
                 if (laserDistance() >= NotepathConsts.NORMAL_NOTE_DIST) {
-                    intakeState = Intake.CHILL;
+                    intakeState = Intake.HAS_NOTE;
                     intakeSpeed = 0;
                     feedSpeed = 0;
                 } else {
                     feedSpeed = -0.25;
                     intakeSpeed = 0;
                 }
+            case HAS_NOTE:
             break;
         }
 
