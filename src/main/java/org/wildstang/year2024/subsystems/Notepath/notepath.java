@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class notepath implements Subsystem {
+public class Notepath implements Subsystem {
 
     private DigitalInput driverLeftShoulder;
     private AnalogInput driverRightTrigger;

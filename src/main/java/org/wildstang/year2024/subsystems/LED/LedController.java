@@ -7,7 +7,7 @@ import org.wildstang.framework.io.inputs.Input;
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.Notepath.notepath;
+import org.wildstang.year2024.subsystems.Notepath.Notepath;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -19,7 +19,7 @@ public class LedController implements Subsystem {
     private AnalogInput leftTrigger;
     private AddressableLED led;
     private AddressableLEDBuffer ledBuffer;
-    private notepath notepath;
+    private Notepath notepath;
     private Timer timer =  new Timer();
 
     private int port = 0;//port
@@ -47,7 +47,7 @@ public class LedController implements Subsystem {
     public void init() {
         leftTrigger = (AnalogInput) WsInputs.DRIVER_LEFT_TRIGGER.get();
         leftTrigger.addInputListener(this);
-        notepath = (notepath) Core.getSubsystemManager().getSubsystem(WsSubsystems.NOTEPATH);
+        notepath = (Notepath) Core.getSubsystemManager().getSubsystem(WsSubsystems.NOTEPATH);
         
         //Outputs
         led = new AddressableLED(port);
