@@ -4,19 +4,13 @@ package org.wildstang.year2024.subsystems.targeting;
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.year2024.robot.WsInputs;
 
-import javax.management.loading.PrivateClassLoader;
-
-import org.wildstang.framework.core.Core;
-
 import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
 
