@@ -83,7 +83,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private SwerveDriveOdometry odometry;
     private Timer autoTimer = new Timer();
 
-    private WsVision limelight;
+    private WsVision wsVision;
     private Notepath notepath;
 
     public enum driveType {TELEOP, AUTO, CROSS, NOTE};
@@ -94,7 +94,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
         // Arbuitrary button which will have to be changed, I just didnt like the complexity of using right trigger
         if (source == rightBumper) {
-            if (rightBumper.getValue() && !notepath.intakeFull && limelight.objectVisible()) {
+            if (rightBumper.getValue() && !notepath.intakeFull && wsVision.objectVisible()) {
                 driveState = driveType.NOTE;
             } else {
                 driveState = driveType.TELEOP;
@@ -232,7 +232,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         };
         //create default swerveSignal
         swerveSignal = new SwerveSignal(new double[]{0.0, 0.0, 0.0, 0.0}, new double[]{0.0, 0.0, 0.0, 0.0});
-        limelight = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
+        wsVision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         notepath = (Notepath) Core.getSubsystemManager().getSubsystem(WsSubsystems.NOTEPATH);
 
         odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.2794), new Translation2d(0.2794, -0.2794),
@@ -260,8 +260,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
             } else {
                 // If we can see the object drive in that direction, otherwise assume we used to see it and keep going straight
                 double angleToNote = 0;
-                if (limelight.objectVisible()) {
-                    angleToNote = limelight.getObjectAngle(); //change to getBackTx()
+                if (wsVision.objectVisible()) {
+                    angleToNote = wsVision.getBackTx();
                 }
                 double rotSpeed = swerveHelper.getRotControl(getGyroAngle() - angleToNote, getGyroAngle());
                 // Drive towards note
