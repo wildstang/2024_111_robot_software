@@ -75,7 +75,7 @@ public class WsVision implements Subsystem {
     */
 
     /**
-     * can back see stage AT?
+     * Returns {@code true} if the back cam sees a stage, otherwise {@code false}
      */
     public boolean backSeesStage(){
 
@@ -89,7 +89,7 @@ public class WsVision implements Subsystem {
 
 
     /**
-     * can front see speaker AT?
+     * Returns {@code true} if the front cam sees a speaker, otherwise {@code false}
      */
     public boolean frontSeesSpeaker(){
 
@@ -102,7 +102,7 @@ public class WsVision implements Subsystem {
     }
 
     /**
-     * can back see amp AT?
+     * Returns {@code true} if the back cam sees an amp, otherwise {@code false}
      */
     public boolean backSeesAmp(){
 
@@ -115,7 +115,7 @@ public class WsVision implements Subsystem {
     }
 
     /**
-     * can back see gamepiece?
+     * Returns {@code true} if the back cam sees a note, otherwise {@code false}
      */
     public boolean backSeesNote(){
 
@@ -129,20 +129,27 @@ public class WsVision implements Subsystem {
 
     }
 
-    //tx for front
+    /**
+     * Returns front cam's {@code tx} value
+     */
     public double getFrontTx(){
 
         return front.getTx();
 
     }
-    //ty for front
+
+    /**
+     * Returns front cam's {@code ty} value
+     */
     public double getFrontTy(){
 
         return front.getTy();
 
     }
 
-    //tx for gamepiece (back)
+    /**
+     * Returns back cam's {@code tx} value
+     */
     public double getBackTx(){
 
         if (back.isAT() == false) {
@@ -155,14 +162,18 @@ public class WsVision implements Subsystem {
 
     }
 
-    //3D values for amp (back)
+    /**
+     * Returns the estimated pose of the robot according to the readings from the back cam
+     */
     public Pose3d getBackPose() {
 
         return back.getEstimatedPose();
 
     }
 
-    //field angle for stage AT we are seeing (back)
+    /**
+     * Returns the field angle for the stage AT we are seeing (from the back cam)
+     */
     public double getFieldAngleForStage() {
 
         if (backSeesStage()) {
