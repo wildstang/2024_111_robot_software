@@ -35,19 +35,6 @@ public class WsVision implements Subsystem {
 
     }
 
-    // Angle to turn to the object
-    public double getObjectAngle() {
-        return back.tx;
-    }
-
-    // Distance to drive to Object
-    public double getObjectDistance() {
-        return  LimeConsts.backMountHeight / Math.tan(-(back.ty + LimeConsts.backMountAngle));
-    }
-
-    public boolean objectVisible() {
-        return back.TargetInView();
-    }
 
     @Override
     public void init() {
@@ -81,11 +68,11 @@ public class WsVision implements Subsystem {
     }
 
     /*
-     * April Tag IDs:
-     * - Stage: 11, 12, 13, 14, 15, 16
-     * - Speaker: 3, 4, 7, 8
-     * - Amp: 5, 6
-     */
+    * April Tag IDs:
+    * - Stage: 11, 12, 13, 14, 15, 16
+    * - Speaker: 3, 4, 7, 8
+    * - Amp: 5, 6
+    */
 
     /**
      * can back see stage AT?
@@ -199,6 +186,11 @@ public class WsVision implements Subsystem {
         }
 
         return 0.0;
+    }
+
+    // Distance to drive to Object
+    public double getObjectDistance() {
+        return  VisionConsts.backMountHeight / Math.tan(-(back.getTy() + VisionConsts.backMountAngle));
     }
 
     //Stuart's stuff that I don't understand:

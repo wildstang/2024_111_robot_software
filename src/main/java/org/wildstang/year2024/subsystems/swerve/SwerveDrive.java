@@ -94,7 +94,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
         // Arbuitrary button which will have to be changed, I just didnt like the complexity of using right trigger
         if (source == rightBumper) {
-            if (rightBumper.getValue() && !notepath.intakeFull && wsVision.objectVisible()) {
+            if (rightBumper.getValue() && !notepath.intakeFull && wsVision.backSeesNote()) {
                 driveState = driveType.NOTE;
             } else {
                 driveState = driveType.TELEOP;
@@ -260,7 +260,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
             } else {
                 // If we can see the object drive in that direction, otherwise assume we used to see it and keep going straight
                 double angleToNote = 0;
-                if (wsVision.objectVisible()) {
+                if (wsVision.backSeesNote()) {
                     angleToNote = wsVision.getBackTx();
                 }
                 double rotSpeed = swerveHelper.getRotControl(getGyroAngle() - angleToNote, getGyroAngle());
