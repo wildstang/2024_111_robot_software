@@ -3,6 +3,9 @@ package org.wildstang.year2024.subsystems.targeting;
 // ton of imports
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.year2024.robot.WsInputs;
+
+import javax.management.loading.PrivateClassLoader;
+
 import org.wildstang.framework.core.Core;
 
 import org.wildstang.framework.io.inputs.DigitalInput;
@@ -17,19 +20,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
 
-    public WsPV front = new WsPV("photonvision", true);
-    public WsPV back = new WsPV("object detection", false);
+    private WsPV front = new WsPV("photonvision", true);
+    private WsPV back = new WsPV("object detection", false);
 
-    public VisionConsts VC;
+    private VisionConsts VC;
 
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
-    public double[] distances = {0.0, 0.0, 0.0};
-    public double[] speeds = {0.0, 0.0, 0.0};
-    public double[] angles = {0.0, 0.0, 0.0};
-    public int last = distances.length-1;
+    private double[] distances = {0.0, 0.0, 0.0};
+    private double[] speeds = {0.0, 0.0, 0.0};
+    private double[] angles = {0.0, 0.0, 0.0};
+    private int last = distances.length-1;
 
-    public boolean isBlue;
+    private boolean isBlue;
 
     private DigitalInput driverLeftShoulder;
 
@@ -81,7 +84,7 @@ public class WsVision implements Subsystem {
      */
     public boolean backSeesStage(){
 
-        if (VC.stageATs.contains(back.tid)) {
+        if (VC.stageATs.contains(back.getTid())) {
             return true;
         }
 
@@ -95,7 +98,7 @@ public class WsVision implements Subsystem {
      */
     public boolean frontSeesSpeaker(){
 
-        if (VC.speakerATs.contains(back.tid)) {
+        if (VC.speakerATs.contains(back.getTid())) {
             return true;
         }
 
@@ -108,7 +111,7 @@ public class WsVision implements Subsystem {
      */
     public boolean backSeesAmp(){
 
-        if (VC.ampATs.contains(back.tid)) {
+        if (VC.ampATs.contains(back.getTid())) {
             return true;
         }
 
@@ -121,7 +124,7 @@ public class WsVision implements Subsystem {
      */
     public boolean backSeesNote(){
 
-        if (back.isAT == false && back.result.hasTargets()) {
+        if (back.isAT() == false && back.hasTargets()) {
 
             return true;
 
@@ -134,22 +137,22 @@ public class WsVision implements Subsystem {
     //tx for front
     public double getFrontTx(){
 
-        return front.tx;
+        return front.getTx();
 
     }
     //ty for front
     public double getFrontTy(){
 
-        return front.ty;
+        return front.getTy();
 
     }
 
     //tx for gamepiece (back)
     public double getBackTx(){
 
-        if (back.isAT == false) {
+        if (back.isAT() == false) {
 
-            return back.tx;
+            return back.getTx();
 
         }
 
@@ -160,7 +163,7 @@ public class WsVision implements Subsystem {
     //3D values for amp (back)
     public Pose3d getBackPose() {
 
-        return back.estimatedPose;
+        return back.getEstimatedPose();
 
     }
 
@@ -169,15 +172,15 @@ public class WsVision implements Subsystem {
 
         if (backSeesStage()) {
 
-            if (back.tid == 13 || back.tid == 14) {
+            if (back.getTid() == 13 || back.getTid() == 14) {
 
                 return 0.0;
 
-            } else if (back.tid == 15 || back.tid == 11) {
+            } else if (back.getTid() == 15 || back.getTid() == 11) {
 
                 return 240.0;
 
-            } else if (back.tid == 12 || back.tid == 16) {
+            } else if (back.getTid() == 12 || back.getTid() == 16) {
 
                 return 120.0;
 

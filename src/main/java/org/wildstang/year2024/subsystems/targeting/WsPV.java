@@ -17,24 +17,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsPV {
 
-    public PhotonCamera camera;
-    public String cameraID;
-    AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-    PhotonTrackedTarget target;
-    PhotonPipelineResult result;
+    private PhotonCamera camera;
+    private  String cameraID;
+    private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    private PhotonTrackedTarget target;
+    private PhotonPipelineResult result;
     private Transform3d robotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
 
     private VisionConsts VC = new VisionConsts();
 
-    public int tid = 0;
-    public double tx = 0;
-    public double ty = 0;
-    public boolean tv = false;
-    public Transform3d aprilTag = new Transform3d();
-    public Pose3d estimatedPose = new Pose3d();
+    private int tid = 0;
+    private double tx = 0;
+    private double ty = 0;
+    private boolean tv = false;
+    private Transform3d aprilTag = new Transform3d();
+    private Pose3d estimatedPose = new Pose3d();
 
     //whether the cam detects ATs or Notes
-    public boolean isAT;
+    private boolean isAT;
 
     public WsPV(String cameraID, boolean isAprilTag){
         this.cameraID = cameraID;
@@ -117,5 +117,37 @@ public class WsPV {
         }
         return measurement;
     }
+
+    /*
+     * Getters
+     */
+
+     public int getTid(){
+         return tid;
+     }
+
+     public boolean isAT() {
+        return isAT;
+     }
+
+     public boolean hasTargets(){
+         return result.hasTargets();
+     }
+
+     public double getTx(){
+         return tx;
+     }
+
+     public double getTy(){
+         return ty;
+     }
+
+     public boolean getTv(){
+         return tv;
+     }
+
+     public Pose3d getEstimatedPose(){
+         return estimatedPose;
+     }
 
 }
