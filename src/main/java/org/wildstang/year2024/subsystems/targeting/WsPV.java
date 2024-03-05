@@ -20,21 +20,31 @@ public class WsPV {
 
     private PhotonCamera camera;
     private  String cameraID;
+
     private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    private Transform3d robotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
+    private VisionConsts VC = new VisionConsts();
+
     private PhotonTrackedTarget target;
     private PhotonPipelineResult result;
-    private Transform3d robotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
-
-    private VisionConsts VC = new VisionConsts();
 
     private int tid = 0;
     private double tx = 0;
     private double ty = 0;
     private boolean tv = false;
     private Transform3d aprilTag = new Transform3d();
+
+    /**
+     * The estimated pose of the robot based on:
+     * the pose of the AprilTag relative to the field,
+     * the pose of the camera relative to the AprilTag,
+     * and the pose of the robot relative to the camera.
+     */
     private Pose3d estimatedPose = new Pose3d();
 
-    //whether the cam detects ATs or Notes
+    /**
+     * Whether the cam detects ATs or Notes
+     */
     private boolean isAT;
 
     // Angle to turn to face note
@@ -69,7 +79,6 @@ public class WsPV {
 
     public void update(){
         result = camera.getLatestResult();
-        SmartDashboard.putBoolean("hasTargets", result.hasTargets());
         tv = result.hasTargets();
         if(tv) {
             target = result.getBestTarget();
@@ -81,7 +90,7 @@ public class WsPV {
                 tid = target.getFiducialId();
                 aprilTag = target.getBestCameraToTarget();
                 estimatedPose = PhotonUtils.estimateFieldToRobotAprilTag(aprilTag,
-                    aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), robotToCamera);
+                aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), robotToCamera);
             }
 
         }
@@ -89,6 +98,7 @@ public class WsPV {
     }
 
     public void updateDashboard(){
+        SmartDashboard.putBoolean("hasTargets", result.hasTargets());
         SmartDashboard.putBoolean(cameraID + " tv", tv);
         SmartDashboard.putNumber(cameraID + " tid", tid);
         SmartDashboard.putNumber(cameraID + " Y", ty);
