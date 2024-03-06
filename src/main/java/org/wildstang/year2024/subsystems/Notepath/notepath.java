@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class Notepath implements Subsystem {
+public class notepath implements Subsystem {
 
     private DigitalInput driverLeftShoulder, driverRightShoulder;
     private AnalogInput driverRightTrigger;
@@ -83,7 +83,7 @@ public class Notepath implements Subsystem {
             setIntake(0.0);
             feed.setSpeed(isUp ? 0.0 : -speed * 0.25);
         } else if (reverse){
-            feed.setSpeed(-speed);
+            feed.setSpeed(isUp ? speed : -speed);
             intake.setSpeed(-1.0);
         } else {
             feed.setSpeed(direction * speed);
