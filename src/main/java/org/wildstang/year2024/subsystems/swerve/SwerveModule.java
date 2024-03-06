@@ -164,4 +164,7 @@ public class SwerveModule {
     public void setDriveCurrent(int newCurrentLimit){
         driveMotor.setCurrentLimit(newCurrentLimit, newCurrentLimit, 0);
     }
+    public void tempDriveCurrent(int limit){
+        driveMotor.tempCurrentLimit(limit);
+    }
 }

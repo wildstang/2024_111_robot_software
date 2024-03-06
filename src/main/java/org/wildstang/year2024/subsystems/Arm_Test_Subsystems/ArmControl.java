@@ -25,23 +25,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ArmControl implements Subsystem {
     private WsSpark ArmNeo;
     private DigitalInput driverStart;
+    private DigitalInput dup, ddown;
     private AnalogInput leftTrigger;
     private double targetAngle = 0.0;
     private AbsoluteEncoder absEncoder;
     private final double  MAX_Angle = 180; // This maximum angle of rotation of Arm
     private final double  MIN_Angle = 0; // This minimum angle of rotation of Arm
-    private ShuffleboardTab tab = Shuffleboard.getTab("2024 Testing");
-    private GenericEntry arm = tab.add("Arm Position", 0.0)
-        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 180)).getEntry();
+    private double offset = 0;
+    // private ShuffleboardTab tab = Shuffleboard.getTab("2024 Testing");
+    // private GenericEntry arm = tab.add("Arm Position", 0.0)
+    //     .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0, "max", 180)).getEntry();
     private boolean toUpdate = false;
     private boolean aiming = false;
     private WsVision vision;
 
     @Override
     public void inputUpdate(Input source) {
-        if (driverStart.getValue()) toUpdate = true;
-        else toUpdate = false;
+        // if (driverStart.getValue()) toUpdate = true;
+        // else toUpdate = false;
+        if (driverStart.getValue() && source == driverStart) toUpdate = !toUpdate;
         aiming = leftTrigger.getValue() > 0.15;
+        if (dup.getValue() && source == dup) offset+=2.5;
+        if (ddown.getValue() && source == ddown) offset-=2.5;
     }
 
     @Override
@@ -50,6 +55,10 @@ public class ArmControl implements Subsystem {
         driverStart.addInputListener(this);
         leftTrigger = (AnalogInput) WsInputs.DRIVER_LEFT_TRIGGER.get();
         leftTrigger.addInputListener(this);
+        dup = (DigitalInput) WsInputs.DRIVER_DPAD_UP.get();
+        dup.addInputListener(this);
+        ddown = (DigitalInput) WsInputs.DRIVER_DPAD_DOWN.get();
+        ddown.addInputListener(this);
 
         ArmNeo = (WsSpark) WsOutputs.ARM_PIVOT.get();
         absEncoder = ArmNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
@@ -63,12 +72,15 @@ public class ArmControl implements Subsystem {
 
     @Override
     public void update() {
-        if (toUpdate) targetAngle = arm.getDouble(0.0);
-        if (aiming) ArmNeo.setPosition(Math.min(MAX_Angle, Math.max(MIN_Angle, vision.getAngle())));
+        // if (toUpdate) targetAngle = arm.getDouble(0.0);
+        if (toUpdate) ArmNeo.setPosition(175);
+        else if (aiming) ArmNeo.setPosition(Math.min(MAX_Angle, Math.max(MIN_Angle, vision.getAngle()+offset)));
         else ArmNeo.setPosition(Math.min(MAX_Angle, Math.max(MIN_Angle, targetAngle)));
         // ArmNeo.setPosition(Math.min(MAX_Angle, Math.max(MIN_Angle, targetAngle)));
         SmartDashboard.putNumber("arm angle target", targetAngle);
         SmartDashboard.putNumber("arm angle", absEncoder.getPosition());
+        SmartDashboard.putBoolean("arm subwoofer mode", toUpdate);
+        SmartDashboard.putNumber("arm offset", offset);
     }
 
     @Override

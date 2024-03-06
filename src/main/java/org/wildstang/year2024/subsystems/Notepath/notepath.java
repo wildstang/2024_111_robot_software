@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Notepath implements Subsystem {
 
-    private DigitalInput driverLeftShoulder;
+    private DigitalInput driverLeftShoulder, driverRightShoulder;
     private AnalogInput driverRightTrigger;
     private WsSpark feed, intake;
 
@@ -24,6 +24,7 @@ public class Notepath implements Subsystem {
     private boolean store = false;
     private boolean isIntake = false;
     private boolean isUp = false;
+    private boolean reverse = false;
 
     private Timer timer = new Timer();
     private Timer intakeTimer = new Timer();
@@ -41,7 +42,7 @@ public class Notepath implements Subsystem {
 
         isUp = driverLeftShoulder.getValue();
 
-
+        reverse = driverRightShoulder.getValue();
     }
 
     @Override
@@ -55,6 +56,8 @@ public class Notepath implements Subsystem {
         driverRightTrigger.addInputListener(this);
         driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
         driverLeftShoulder.addInputListener(this);
+        driverRightShoulder = (DigitalInput) WsInputs.DRIVER_RIGHT_SHOULDER.get();
+        driverRightShoulder.addInputListener(this);
 
         timer.start();
         intakeTimer.start();
@@ -79,6 +82,9 @@ public class Notepath implements Subsystem {
         } else if (store){
             setIntake(0.0);
             feed.setSpeed(isUp ? 0.0 : -speed * 0.25);
+        } else if (reverse){
+            feed.setSpeed(-speed);
+            intake.setSpeed(-1.0);
         } else {
             feed.setSpeed(direction * speed);
             setIntake(direction*speed);
