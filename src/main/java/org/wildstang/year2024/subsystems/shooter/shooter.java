@@ -124,4 +124,8 @@ public class shooter implements Subsystem {
     public String getName() {
         return"Shooter";
     }
+    public void turnOn(boolean isOn){
+        leftTriggerPressed = isOn;
+        rightTriggerPressed = isOn;
+    }
 }

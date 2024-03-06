@@ -114,4 +114,7 @@ public class notepath implements Subsystem {
             intake.setSpeed(Math.min(1.0, 4.0*intakeTimer.get()));
         }
     }
+    public void intakeOn(boolean isOn){
+        isIntake = isOn;
+    }
 }
