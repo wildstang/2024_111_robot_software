@@ -25,8 +25,8 @@
                     "controlIntervalCount": 18
                 },
                 {
-                    "x": 6,
-                    "y": 5,
+                    "x": 5.943328857421875,
+                    "y": 4.953978061676025,
                     "heading": 0,
                     "isInitialGuess": false,
                     "translationConstrained": true,

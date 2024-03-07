@@ -28,8 +28,8 @@ public class Auto113 extends AutoProgram {
         addStep(new SwervePathFollowerStep("B score", swerve, isBlue));
         addStep(new SwervePathFollowerStep("A get", swerve, isBlue));
         addStep(new SwervePathFollowerStep("A score", swerve, isBlue));
-        // addStep(new SwervePathFollowerStep("C get", swerve, isBlue));
-        // addStep(new SwervePathFollowerStep("C score", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("C get", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("C score", swerve, isBlue));
         addStep(new SwervePathFollowerStep("Alt end get", swerve, isBlue));
         addStep(new StuffOnStep(false));
     }

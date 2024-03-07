@@ -20,7 +20,7 @@ public class TestProgram extends AutoProgram{
         addStep(new SetGyroStep(0.0, swerve));
         //addStep(new PathHeadingStep(180.0, swerve));
         addStep(new StartOdometryStep(2.0, 5.0, 0.0, true));
-        addStep(new SwervePathFollowerStep("TestSlowRotate", swerve, false));
+        addStep(new SwervePathFollowerStep("TestSlow", swerve, true));
         
  
     }
