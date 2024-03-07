@@ -31,7 +31,8 @@ public class Notepath implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
-        if (source != driverRightTrigger) { return; }
+        //if (source != driverRightTrigger) { return; }
+        //you can just not add inputListeners to any other inputs, and thus it will always be the right trigger
 
         if (hasNote()) {
             // We want to shoot a note
@@ -108,13 +109,13 @@ public class Notepath implements Subsystem {
 
         // Init Outputs
         intake = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.INTAKE);
-        intake.setCurrentLimit(80, 20, 10000);
+        intake.setCurrentLimit(50, 50, 0);
 
         kick = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.KICKER);
-        kick.setCurrentLimit(80, 20, 10000);    
+        kick.setCurrentLimit(50, 50, 0);    
 
         feed = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.FEED);
-        feed.setCurrentLimit(80, 20, 10000);
+        feed.setCurrentLimit(50, 50, 0);
         
         // Init Inputs
         //the intake senseor will be a LaserCAN
@@ -124,9 +125,9 @@ public class Notepath implements Subsystem {
         driverRightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
         driverRightTrigger.addInputListener(this);
         driverLeftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
-        driverLeftTrigger.addInputListener(this);
+        //driverLeftTrigger.addInputListener(this);
         driverLeftShoulder = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_SHOULDER);
-        driverLeftShoulder.addInputListener(this);
+        //driverLeftShoulder.addInputListener(this);
     }
 
     @Override
@@ -179,8 +180,6 @@ public class Notepath implements Subsystem {
 
     @Override
     public void resetState() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resetState'");
     }
 
     public boolean intakeHasGrabbed() { 
