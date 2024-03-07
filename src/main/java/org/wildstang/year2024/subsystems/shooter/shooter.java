@@ -2,6 +2,7 @@ package org.wildstang.year2024.subsystems.shooter;
 
 import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.inputs.AnalogInput;
+import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.hardware.roborio.outputs.WsSpark;
@@ -11,13 +12,19 @@ import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.notepath.Notepath;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 
+import com.google.gson.InstanceCreator;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter implements Subsystem {
 
     // Inputs
     private AnalogInput leftTrigger;
+    private DigitalInput startButton;
+    private DigitalInput dPadUp;
+    private DigitalInput dPadDown;
 
     // Motors
     private WsSpark vortexFlywheel;
@@ -26,6 +33,8 @@ public class Shooter implements Subsystem {
     private AbsoluteEncoder angleEncoder;
 
     // State variables
+    private double aimOffset = 0;
+    private boolean subwooferAimOverride = false;
     private boolean autoAim = false;
     private boolean autoOverride = false;
     private enum Speeds { 
@@ -65,6 +74,16 @@ public class Shooter implements Subsystem {
     @Override
     public void inputUpdate(Input source) {
         leftTriggerPressed = leftTrigger.getValue() > 0.15;
+        if (source == startButton && startButton.getValue()) {
+            subwooferAimOverride = !subwooferAimOverride;
+        }
+        if (source == dPadUp && dPadUp.getValue()) {
+            aimOffset += ShooterConsts.ANGLE_INCREMENT;
+        }
+        if (source == dPadDown && dPadDown.getValue()) {
+            aimOffset -= ShooterConsts.ANGLE_INCREMENT;
+        }
+        SmartDashboard.putNumber("automatic angle offset", aimOffset);
     }
 
     public void setAngle(double angle) {
@@ -100,6 +119,15 @@ public class Shooter implements Subsystem {
         // Init Inputs
         leftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
         leftTrigger.addInputListener(this);
+
+        startButton = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_START);
+        startButton.addInputListener(this);
+
+        dPadDown = (DigitalInput) WsInputs.DRIVER_DPAD_DOWN.get();
+        dPadDown.addInputListener(this);
+
+        dPadUp = (DigitalInput) WsInputs.DRIVER_DPAD_UP.get();
+        dPadUp.addInputListener(this);
     }
 
     @Override
@@ -130,6 +158,9 @@ public class Shooter implements Subsystem {
         
         vortexFlywheel.setSpeed(speed.getPercent());
         neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);
+        if (subwooferAimOverride) {
+            angle = 180;
+        }
         angleNeo.setPosition(angle);
     }
 

@@ -36,7 +36,6 @@ public class Notepath implements Subsystem {
         if (hasNote()) {
             // We want to shoot a note
             if (driverRightTrigger.getValue() > 0.15) {
-                intakeState = Intake.CHILL;
                 // Into Speaker
                 if (driverLeftTrigger.getValue() > 0.15) {
                     feedSpeed = 1.0;
@@ -46,6 +45,7 @@ public class Notepath implements Subsystem {
                     feedSpeed = -1.0;
                 }
             } else {
+                intakeState = Intake.CHILL;
                 kickSpeed = 0.0;
                 feedSpeed = 0.0;
             }
