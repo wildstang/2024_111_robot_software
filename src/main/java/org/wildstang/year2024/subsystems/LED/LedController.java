@@ -17,15 +17,13 @@ import edu.wpi.first.wpilibj.Timer;
 public class LedController implements Subsystem {
 
     private AnalogInput leftTrigger;
-    private AddressableLED led, led2;
-    private AddressableLEDBuffer ledBuffer, ledBuffer2;
+    private AddressableLED led;
+    private AddressableLEDBuffer ledBuffer;
     private notepath notepath;
     private Timer timer =  new Timer();
 
     private int port = 0;//port
-    private int port2 = 1;
     private int length = 45;//length
-    private int length2 = 20;
 
 
     @Override
@@ -36,10 +34,8 @@ public class LedController implements Subsystem {
             setRGB(0, 255, 0);
             if (notepath.getCurrent() < 25.0) timer.reset();
         }
-        // led.setData(ledBuffer);
-        led2.setData(ledBuffer2);
-        // led.start();
-        led2.start();
+        led.setData(ledBuffer);
+        led.start();
     }
 
     @Override
@@ -54,17 +50,12 @@ public class LedController implements Subsystem {
         notepath = (notepath) Core.getSubsystemManager().getSubsystem(WsSubsystems.NOTEPATH);
         
         //Outputs
-        // led = new AddressableLED(port);
-        led2 = new AddressableLED(port2);
-        // ledBuffer = new AddressableLEDBuffer(length);
-        ledBuffer2 = new AddressableLEDBuffer(length2);
-        // led.setLength(ledBuffer.getLength());
-        led2.setLength(ledBuffer2.getLength());
+        led = new AddressableLED(port);
+        ledBuffer = new AddressableLEDBuffer(length);
+        led.setLength(ledBuffer.getLength());
         setRGB(255, 255, 255);
-        // led.setData(ledBuffer);
-        led2.setData(ledBuffer2);
-        // led.start();
-        led2.start();
+        led.setData(ledBuffer);
+        led.start();
         resetState();
         timer.start();
     }
@@ -84,10 +75,7 @@ public class LedController implements Subsystem {
 
     public void setRGB(int red, int green, int blue){
         for (int i = 0; i < length; i++){
-            // ledBuffer.setRGB(i, red, green, blue);
-        }
-        for (int i = 0; i < length2; i++){
-            ledBuffer2.setRGB(i, red, green, blue);
+            ledBuffer.setRGB(i, red, green, blue);
         }
     }
 }

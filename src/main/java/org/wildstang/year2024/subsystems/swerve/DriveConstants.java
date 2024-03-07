@@ -11,11 +11,11 @@ public final class DriveConstants {
     /**speed with which the rotation PID is controlled by */
     public static final double PID_ROTATION = 1.5;
     /**drive motor gear ratio */
-    public static final double DRIVE_RATIO = (45.0*22.0)/(15.0*14.0);
+    public static final double DRIVE_RATIO = 4.0;
     /**angle motor gear ratio */
     //public static final double ANGLE_RATIO = 12.8;
     /**diameter of drive wheel, in inches */
-    public static final double WHEEL_DIAMETER = 3.285;
+    public static final double WHEEL_DIAMETER = 2.73;
     /**offset of module 1, the front left module, in degrees */
     public static final double FRONT_LEFT_OFFSET = -90;
     /**offset of module 2, the front right module, in degrees */
