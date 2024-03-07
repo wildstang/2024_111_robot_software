@@ -109,11 +109,12 @@ public class Shooter implements Subsystem {
 
         // PID
         angleNeo.initClosedLoop(ShooterConsts.P, ShooterConsts.I, ShooterConsts.D, 0, this.angleEncoder);
+        angleNeo.setBrake();
         // Returns position in degrees instead of rotations
         angleEncoder.setPositionConversionFactor(360.0);
         //set current limit 
-        angleNeo.setCurrentLimit(30, 30, 0);
-        vortexFlywheel.setCurrentLimit(80, 20, 0);
+        angleNeo.setCurrentLimit(20, 20, 0);
+        vortexFlywheel.setCurrentLimit(50, 50, 0);
 
 
         // Init Inputs
@@ -167,6 +168,7 @@ public class Shooter implements Subsystem {
     @Override
     public void resetState() {
         vortexFlywheel.setSpeed(0);
+        neoFlywheel.setSpeed(0);
         angleNeo.setPosition(0);
     }
 
