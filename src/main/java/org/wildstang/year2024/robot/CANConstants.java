@@ -28,14 +28,13 @@ public final class CANConstants {
     public static final int ANGLE4 = 18;
 
     public static final int SHOOTER = 20;
-    public static final int SHOOTER_FOLLOWER = 21;
+    public static final int SHOOTER_2 = 21;
     public static final int INTAKE = 22;
     public static final int FEED = 23;
     public static final int KICKER = 24;
     public static final int ARM_PIVOT = 25;
     public static final int LIFT = 26;
     public static final int LIFT_FOLLOWER = 27;
-    public static final int CLIMB = 28;
-    public static final int CLIMB_FOLLOWER = 29;
+    public static final int SHOOTER_LOW = 28;
     
 }

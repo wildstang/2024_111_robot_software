@@ -10,19 +10,22 @@ import org.wildstang.year2024.auto.Steps.StartOdometryStep;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 
-import com.choreo.lib.Choreo;
+import com.choreo.lib.*;
 
 
 public class TestProgram extends AutoProgram{
     
     protected void defineSteps(){
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
-        addStep(new SetGyroStep(180.0, swerve));
-        AutoParallelStepGroup group1 = new AutoParallelStepGroup();
-        group1.addStep(new PathHeadingStep(180.0, swerve));
-        addStep(group1);
-        addStep(new StartOdometryStep(3.0, 5.0, 180.0, true));
-        addStep(new SwervePathFollowerStep(Choreo.getTrajectory("ChoreoTest"), swerve, true));
+        addStep(new SetGyroStep(0.0, swerve));
+        //addStep(new PathHeadingStep(180.0, swerve));
+        addStep(new StartOdometryStep(2.0, 6.0, 0.0, true));
+        addStep(new SwervePathFollowerStep("TestSlow", swerve, true));
+
+        // addStep(new StartOdometryStep(1.0, 5.0, 0.0, true));
+        // addStep(new SwervePathFollowerStep("TestSlowOther", swerve, true));
+        
+ 
     }
 
     public String toString(){

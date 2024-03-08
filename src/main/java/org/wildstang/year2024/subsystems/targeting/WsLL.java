@@ -12,6 +12,8 @@ public class WsLL {
 
     public LimelightHelpers.Results result;
 
+    private VisionConsts VC = new VisionConsts();
+
     public double[] blue3D;
     public double[] red3D;
     public double tid;
@@ -70,6 +72,8 @@ public class WsLL {
         SmartDashboard.putBoolean(CameraID + " tv", TargetInView());
         SmartDashboard.putNumber(CameraID + " tid", tid);
         SmartDashboard.putNumber(CameraID + " numTargets", numTargets);
+        SmartDashboard.putNumber("Vision blue x", blue3D[0]);
+        SmartDashboard.putNumber("Vision blue y", blue3D[1]);
     }
     /*
      * returns total latency, capture latency + pipeline latency
@@ -104,5 +108,42 @@ public class WsLL {
             this.red3D[i] *= mToIn;
             this.blue3D[i] *= mToIn;
         }
+    }
+    /**
+     * returns distance to selected alliances' center of speaker for lookup table use
+     */
+    public double distanceToTarget(boolean isBlue){
+        if (isBlue) return Math.hypot(blue3D[0] - VC.blueSpeakerX,
+            blue3D[1] - VC.blueSpeakerY);
+        else return Math.hypot(blue3D[0] - VC.redSpeakerX,
+            blue3D[1] - VC.redSpeakerY);
+    }
+
+    /**
+     * input of X and Y in frc field coordinates, returns controller bearing degrees (aka what to plug into rotLocked) for turnToTarget
+     */
+    private double getDirection(double x, double y, boolean isBlue) {
+        double measurement = Math.toDegrees(Math.atan2(x,y));
+        if (isBlue) measurement += 90;
+        else measurement -= 90;
+        if (measurement < 0) {
+            measurement = 360 + measurement;
+        }
+        else if (measurement >= 360) {
+            measurement = measurement - 360;
+        }
+        return measurement;
+    }
+    /**
+     * returns what to set rotLocked to
+     */
+    public double turnToTarget(boolean isBlue){
+        if (!TargetInView()){
+            return isBlue ? 225 : 135 ;
+        }
+        if (isBlue) return getDirection(blue3D[0] - VC.blueSpeakerX,
+            blue3D[1] - VC.blueSpeakerY, isBlue);
+        else return getDirection(blue3D[0] - VC.redSpeakerX,
+            blue3D[1] - VC.redSpeakerY, isBlue);
     }
 }

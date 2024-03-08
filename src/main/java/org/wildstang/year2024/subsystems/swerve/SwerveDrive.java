@@ -12,7 +12,6 @@ import org.wildstang.year2024.robot.CANConstants;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.targeting.LimeConsts;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,7 +20,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**Class: SwerveDrive
@@ -34,17 +35,18 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private AnalogInput leftStickX;//translation joystick x
     private AnalogInput leftStickY;//translation joystick y
     private AnalogInput rightStickX;//rot joystick
-    private AnalogInput rightTrigger;//thrust, score when aiming
+    private AnalogInput rightTrigger;//intake, score when aiming
     private AnalogInput leftTrigger;//scoring to speaker
-    private DigitalInput rightBumper;//intake
+    private DigitalInput rightBumper;//slowdown
     private DigitalInput leftBumper;//lift up to amp
     private DigitalInput select;//gyro reset
-    private DigitalInput start;//snake mode
+    private DigitalInput start;//endgame toggle
     private DigitalInput faceUp;//rotation lock 0 degrees
     private DigitalInput faceRight;//rotation lock 90 degrees
     private DigitalInput faceLeft;//rotation lock 270 degrees
     private DigitalInput faceDown;//rotation lock 180 degrees
     private DigitalInput dpadLeft;//defense mode
+    private DigitalInput dpadRight;
 
     private double xSpeed;
     private double ySpeed;
@@ -60,9 +62,12 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private double pathTarget;
     private double pathXOffset = 0;
     private double pathYOffset = 0;
+    private double shootOffset;
     private boolean autoOverride;
-    private boolean isBlue;
+    private boolean isBlue = true;
     private boolean autoTag = false;
+    private boolean isVision = false;
+    private boolean isCurrentLow = false;
     
     private final double mToIn = 39.37;
 
@@ -83,16 +88,17 @@ public class SwerveDrive extends SwerveDriveTemplate {
     public void inputUpdate(Input source) {
 
         //determine if we are in cross or teleop
-        if (driveState != driveType.AUTO && dpadLeft.getValue()) {
-            driveState = driveType.CROSS;
-            for (int i = 0; i < modules.length; i++) {
-                modules[i].setDriveBrake(true);
-            }
-            this.swerveSignal = new SwerveSignal(new double[]{0, 0, 0, 0 }, swerveHelper.setCross().getAngles());
-        }
-        else if (driveState == driveType.CROSS || driveState == driveType.AUTO) {
-            driveState = driveType.TELEOP;
-        }
+        // if (driveState != driveType.AUTO && dpadLeft.getValue()) {
+        //     driveState = driveType.CROSS;
+        //     for (int i = 0; i < modules.length; i++) {
+        //         modules[i].setDriveBrake(true);
+        //     }
+        //     this.swerveSignal = new SwerveSignal(new double[]{0, 0, 0, 0 }, swerveHelper.setCross().getAngles());
+        // }
+        // else if (driveState == driveType.CROSS || driveState == driveType.AUTO) {
+        //     driveState = driveType.TELEOP;
+        // }
+        if (driveState == driveType.AUTO) driveState = driveType.TELEOP;
 
         //get x and y speeds
         xSpeed = swerveHelper.scaleDeadband(leftStickX.getValue(), DriveConstants.DEADBAND);
@@ -101,18 +107,21 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //reset gyro
         if (source == select && select.getValue()) {
             gyro.setYaw(0.0);
+            // if (DriverStation.getAlliance().isPresent()){
+            //     isBlue = DriverStation.getAlliance().get()== Alliance.Blue;
+            // }
             if (rotLocked) rotTarget = 0.0;
         }
 
         //determine snake or pid locks
-        if (start.getValue() && (Math.abs(xSpeed) > 0.1 || Math.abs(ySpeed) > 0.1)) {
-            rotLocked = true;
-            isSnake = true;
-            rotTarget = swerveHelper.getDirection(xSpeed, ySpeed);
-        }
-        else {
-            isSnake = false;
-        }
+        // if (start.getValue() && (Math.abs(xSpeed) > 0.1 || Math.abs(ySpeed) > 0.1)) {
+        //     rotLocked = true;
+        //     isSnake = true;
+        //     rotTarget = swerveHelper.getDirection(xSpeed, ySpeed);
+        // }
+        // else {
+        //     isSnake = false;
+        // }
         if (source == faceUp && faceUp.getValue()){
             if (faceLeft.getValue()) rotTarget = 300.0;
             else if (faceRight.getValue()) rotTarget = 60.0;
@@ -121,19 +130,19 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (source == faceLeft && faceLeft.getValue()){
             if (faceUp.getValue()) rotTarget = 300.0;
-            else if (faceDown.getValue()) rotTarget = 210.0;
+            else if (faceDown.getValue()) rotTarget = 240.0;
             else rotTarget = 270.0;
             rotLocked = true;
         }
         if (source == faceDown && faceDown.getValue()){
-            if (faceLeft.getValue()) rotTarget = 210.0;
-            else if (faceRight.getValue()) rotTarget = 150.0;
+            if (faceLeft.getValue()) rotTarget = 240.0;
+            else if (faceRight.getValue()) rotTarget = 120.0;
             else rotTarget = 180.0;
             rotLocked = true;
         }
         if (source == faceRight && faceRight.getValue()){
             if (faceUp.getValue()) rotTarget = 60.0;
-            else if (faceDown.getValue()) rotTarget = 150.0;
+            else if (faceDown.getValue()) rotTarget = 120.0;
             else rotTarget = 90.0;
             rotLocked = true;
         }
@@ -145,12 +154,35 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (rotSpeed != 0) {
             rotLocked = false;
         }
+        if (leftTrigger.getValue() > 0.15 && vision.front.TargetInView()){
+            rotLocked = true;
+            //rotTarget = vision.front.turnToTarget(isBlue);
+            isVision = true;
+        } else isVision = false;
         
         //assign thrust
-        thrustValue = 1 - DriveConstants.DRIVE_THRUST + DriveConstants.DRIVE_THRUST * Math.abs(rightTrigger.getValue());
-        xSpeed *= thrustValue;
-        ySpeed *= thrustValue;
-        rotSpeed *= thrustValue;
+        // thrustValue = 1 - DriveConstants.DRIVE_THRUST + DriveConstants.DRIVE_THRUST * Math.abs(rightTrigger.getValue());
+        // xSpeed *= thrustValue;
+        // ySpeed *= thrustValue;
+        // rotSpeed *= thrustValue;
+        if (leftBumper.getValue()){
+            xSpeed *= 0.25;
+            ySpeed *= 0.25;
+            rotSpeed *= 0.25;
+        }
+        if (leftTrigger.getValue() > 0.15 && !isCurrentLow){
+            for (int i = 0; i < 4; i++){
+                modules[i].tempDriveCurrent(DriveConstants.DRIVE_CURRENT_LIMIT - 15);
+            }
+            isCurrentLow = true;
+        } else if (isCurrentLow && leftTrigger.getValue() < 0.15){
+            for (int i = 0; i < 4; i++){
+                modules[i].tempDriveCurrent(DriveConstants.DRIVE_CURRENT_LIMIT);
+            }
+            isCurrentLow = false;
+        }
+        if (source == dpadLeft && dpadLeft.getValue()) shootOffset -= 2.5;
+        if (source == dpadRight && dpadRight.getValue()) shootOffset += 2.5;
 
     }
  
@@ -192,6 +224,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         faceDown.addInputListener(this);
         dpadLeft = (DigitalInput) WsInputs.DRIVER_DPAD_LEFT.get();
         dpadLeft.addInputListener(this);
+        dpadRight = (DigitalInput) WsInputs.DRIVER_DPAD_RIGHT.get();
+        dpadRight.addInputListener(this);
     }
 
     public void initOutputs() {
@@ -229,6 +263,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
                 //if rotation tracking, replace rotational joystick value with controller generated one
+                if (isVision) rotTarget = shootOffset + vision.front.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 if (isSnake) {
                     if (Math.abs(rotSpeed) < 0.05) {
@@ -279,6 +314,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         SmartDashboard.putNumber("Auto velocity", pathVel);
         SmartDashboard.putNumber("Auto translate direction", pathHeading);
         SmartDashboard.putNumber("Auto rotation target", pathTarget);
+        SmartDashboard.putNumber("Odo X", odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Odo Y", odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("arm rotation offset", shootOffset);
     }
     
     @Override
@@ -298,6 +336,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
         isFieldCentric = true;
         isSnake = false;
+        shootOffset = 0;
     }
 
     @Override
