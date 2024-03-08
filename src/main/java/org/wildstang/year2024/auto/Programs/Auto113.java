@@ -10,6 +10,7 @@ import org.wildstang.year2024.auto.Steps.StartOdometryStep;
 import org.wildstang.year2024.auto.Steps.StuffOnStep;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
+import org.wildstang.year2024.subsystems.targeting.WsVision;
 
 public class Auto113 extends AutoProgram {
 
@@ -19,17 +20,25 @@ public class Auto113 extends AutoProgram {
     protected void defineSteps() {
         
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
+        WsVision vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         addStep(new SetGyroStep(180.0, swerve));
         addStep(new StartOdometryStep(1.3, 5.5, 180.0, isBlue));
-        addStep(new StuffOnStep(true));
+        //addStep(new StuffOnStep(true));
         addStep(new AutoStepDelay(500));
         addStep(new SwervePathFollowerStep("Start_113", swerve, isBlue));
+        addStep(new AutoStepDelay(200));
         addStep(new SwervePathFollowerStep("B get", swerve, isBlue));
+        addStep(new AutoStepDelay(200));
         addStep(new SwervePathFollowerStep("B score", swerve, isBlue));
+        addStep(new AutoStepDelay(200));
+        // addStep(new StartOdometryStep(vision.front.getPoseX(), vision.front.getPoseY(), swerve.getGyroAngle(), isBlue));
         addStep(new SwervePathFollowerStep("A get", swerve, isBlue));
+        addStep(new AutoStepDelay(200));
         addStep(new SwervePathFollowerStep("A score", swerve, isBlue));
-        addStep(new SwervePathFollowerStep("C get", swerve, isBlue));
-        addStep(new SwervePathFollowerStep("C score", swerve, isBlue));
+        addStep(new AutoStepDelay(200));
+        // addStep(new StartOdometryStep(vision.front.getPoseX(), vision.front.getPoseY(), swerve.getGyroAngle(), isBlue));
+        // addStep(new SwervePathFollowerStep("C get", swerve, isBlue));
+        // addStep(new SwervePathFollowerStep("C score", swerve, isBlue));
         addStep(new SwervePathFollowerStep("Alt end get", swerve, isBlue));
         addStep(new StuffOnStep(false));
     }

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class WsVision implements Subsystem {
 
     public WsPV front = new WsPV("photon-front", true);
-    public WsPV back = new WsPV("photon-back", false);
+    //public WsPV back = new WsPV("photon-back", false);
 
     public VisionConsts VC;
 
@@ -57,13 +57,13 @@ public class WsVision implements Subsystem {
     @Override
     public void update() {
         front.update();
-        back.update();
+        //back.update();
         SmartDashboard.putNumber("Vision getAngle", getAngle());
         SmartDashboard.putNumber("Vision distToTarget", front.distanceToTarget(isBlue));
         SmartDashboard.putNumber("Vision angleToRot", front.turnToTarget(isBlue));
-        SmartDashboard.putNumber("GP X", back.tx);
-        SmartDashboard.putNumber("GP Y", back.ty);
-        SmartDashboard.putBoolean("GP tv", back.TargetInView());
+        // SmartDashboard.putNumber("GP X", back.tx);
+        // SmartDashboard.putNumber("GP Y", back.ty);
+        // SmartDashboard.putBoolean("GP tv", back.TargetInView());
 
     }
 

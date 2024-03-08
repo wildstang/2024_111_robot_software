@@ -25,13 +25,16 @@ public class LedController implements Subsystem {
     private int port = 0;//port
     private int length = 45;//length
 
+    private int[] white = {255,255,255};
+    private int[] orange = {255,128,0};
+
 
     @Override
     public void update(){
         if (notepath.getCurrent() > 25.0 && timer.hasElapsed(0.05)){
-            setRGB(255, 128, 0);
+            setRGB(orange);
         } else {
-            setRGB(0, 255, 0);
+            setRGB(white);
             if (notepath.getCurrent() < 25.0) timer.reset();
         }
         led.setData(ledBuffer);
@@ -77,5 +80,8 @@ public class LedController implements Subsystem {
         for (int i = 0; i < length; i++){
             ledBuffer.setRGB(i, red, green, blue);
         }
+    }
+    public void setRGB(int[] color){
+        setRGB(color[0],color[1],color[2]);
     }
 }

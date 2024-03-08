@@ -122,5 +122,11 @@ public class WsPV {
     public boolean TargetInView(){
         return tid>0;
     }
+    public double getPoseX(){
+        return estimatedPose.getX();
+    }
+    public double getPoseY(){
+        return estimatedPose.getY();
+    }
 
 }

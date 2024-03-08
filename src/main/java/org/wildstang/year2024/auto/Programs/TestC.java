@@ -13,7 +13,7 @@ import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 
 public class TestC extends AutoProgram {
 
-    private boolean isBlue = true;
+    private boolean isBlue = false;
 
     @Override
     protected void defineSteps() {
@@ -21,7 +21,8 @@ public class TestC extends AutoProgram {
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         addStep(new SetGyroStep(180.0, swerve));
         addStep(new StartOdometryStep(8.2, 5.8, 180.0, isBlue));
-        addStep(new SwervePathFollowerStep("B score", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("A get", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("A score", swerve, isBlue));
     }
 
     @Override

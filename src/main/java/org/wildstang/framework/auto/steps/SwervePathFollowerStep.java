@@ -75,6 +75,8 @@ public class SwervePathFollowerStep extends AutoStep {
             prevVelocity = getVelocity();
             prevHeading = getHeading();
             prevTime = timer.get();
+            SmartDashboard.putNumber("PF localX", localRobotPose.getX());
+            SmartDashboard.putNumber("PF path X", localAutoPose.getX());
             }
     }
 
@@ -95,7 +97,7 @@ public class SwervePathFollowerStep extends AutoStep {
         // else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
     }
     private double getHeadingDiff(){
-        return 1.0 + Math.min(0.2, Math.abs(0.005*(getHeading()-prevHeading)/(timer.get()-prevTime)));
+        return 1.0;// + Math.min(0.2, Math.abs(0.005*(getHeading()-prevHeading)/(timer.get()-prevTime)));
     }
     public double getAccel(){
         return (getVelocity() - prevVelocity) / (timer.get() - prevTime);
