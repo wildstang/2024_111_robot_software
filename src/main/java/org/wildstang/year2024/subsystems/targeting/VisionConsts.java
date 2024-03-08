@@ -2,7 +2,13 @@ package org.wildstang.year2024.subsystems.targeting;
 
 import java.util.List;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+
 public class VisionConsts {
+
+    // Should be the right values from onshape
+    public static Pose3d cameraPose = new Pose3d(-11.8,8.5,22.3, new Rotation3d(0.0,-65,11));
 
     public final double inToM = 1/25.4;
     public final double mToIn = 25.4;

@@ -1,5 +1,8 @@
 package org.wildstang.year2024.subsystems.targeting;
 
+import java.util.OptionalDouble;
+
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -33,6 +36,27 @@ public class WsPV {
 
     //whether the cam detects ATs or Notes
     private boolean isAT;
+
+    // Angle to turn to face note
+    public OptionalDouble getNoteAngle() {
+        // Make sure we can actually see a note, optional might not be the best way
+        if (!result.hasTargets()) { return OptionalDouble.empty(); } 
+        
+        // Get angle to camera 
+        double angleToCamera = Math.atan(VisionConsts.cameraPose.getY() / VisionConsts.cameraPose.getY());
+
+        double C = angleToCamera + (90 - (VisionConsts.cameraPose.getRotation().getZ() + ty)); // Yaw
+        // Distance from camera to note
+        double a = (VisionConsts.cameraPose.getZ() / Math.tan(ty + VisionConsts.cameraPose.getRotation().getY())); // Pitch
+        // Distance from camera to robot center
+        double b = (Math.hypot(VisionConsts.cameraPose.getX(), VisionConsts.cameraPose.getY()));
+        // Distance to Note using law of Cosines
+        double c = Math.sqrt((a * a) + (b * b) - 2 * a * b * Math.cos(C));
+        double A = Math.asin((a * Math.sin(C)) / c);
+
+        // tx as if the camera was in the center of the robot facing forward
+        return OptionalDouble.of(90 - (angleToCamera + A));
+    }
 
     public WsPV(String cameraID, boolean isAprilTag){
         this.cameraID = cameraID;
