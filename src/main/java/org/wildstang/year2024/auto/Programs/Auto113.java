@@ -7,7 +7,6 @@ import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
 import org.wildstang.year2024.auto.Steps.StartOdometryStep;
-import org.wildstang.year2024.auto.Steps.StuffOnStep;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
@@ -23,7 +22,6 @@ public class Auto113 extends AutoProgram {
         WsVision vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         addStep(new SetGyroStep(180.0, swerve));
         addStep(new StartOdometryStep(1.3, 5.5, 180.0, isBlue));
-        //addStep(new StuffOnStep(true));
         addStep(new AutoStepDelay(500));
         addStep(new SwervePathFollowerStep("Start_113", swerve, isBlue));
         addStep(new AutoStepDelay(200));
@@ -40,7 +38,6 @@ public class Auto113 extends AutoProgram {
         // addStep(new SwervePathFollowerStep("C get", swerve, isBlue));
         // addStep(new SwervePathFollowerStep("C score", swerve, isBlue));
         addStep(new SwervePathFollowerStep("Alt end get", swerve, isBlue));
-        addStep(new StuffOnStep(false));
     }
 
     @Override
