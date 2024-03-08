@@ -10,7 +10,7 @@ public class ShooterConsts {
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final double SPIN_RATIO = 65.0 / 100.0;
-    public static final double SUBWOOFER_ANGLE = -1;
+    public static final double SUBWOOFER_ANGLE = 175;
     // Degrees increment by dPad
-    public static final double ANGLE_INCREMENT = 10;
+    public static final double ANGLE_INCREMENT = 2.5;
 }

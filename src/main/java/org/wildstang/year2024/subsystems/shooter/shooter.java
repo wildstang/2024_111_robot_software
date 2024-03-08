@@ -83,7 +83,6 @@ public class Shooter implements Subsystem {
         if (source == dPadDown && dPadDown.getValue()) {
             aimOffset -= ShooterConsts.ANGLE_INCREMENT;
         }
-        SmartDashboard.putNumber("automatic angle offset", aimOffset);
     }
 
     public void setAngle(double angle) {
@@ -133,8 +132,6 @@ public class Shooter implements Subsystem {
 
     @Override
     public void selfTest() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'selfTest'");
     }
 
     public void setFlywheel(boolean on) {
@@ -160,9 +157,10 @@ public class Shooter implements Subsystem {
         vortexFlywheel.setSpeed(speed.getPercent());
         neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);
         if (subwooferAimOverride) {
-            angle = 180;
+            angle = ShooterConsts.SUBWOOFER_ANGLE;
         }
         angleNeo.setPosition(angle);
+        SmartDashboard.putNumber("automatic angle offset", aimOffset);
     }
 
     @Override
