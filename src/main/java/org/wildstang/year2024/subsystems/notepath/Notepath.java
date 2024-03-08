@@ -53,7 +53,7 @@ public class Notepath implements Subsystem {
     }
 
     public void startIntaking() {
-        if (intakeState == Intake.CHILL) { intakeState = Intake.SPINNING; }
+        intakeState = Intake.SPINNING; 
     }
 
     public void stopIntaking() {

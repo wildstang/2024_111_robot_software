@@ -25,7 +25,7 @@ public class SetIntakeSequenceStep extends AutoStep{
         notepath = (Notepath) Core.getSubsystemManager().getSubsystem(WsSubsystems.NOTEPATH);
     }
     public String toString(){
-        return "Tag Align On";
+        return "Set Intake Sequence";
     }
     
 }

@@ -26,7 +26,7 @@ public class ShootSpeakerStep extends AutoStep{
         notepath = (Notepath) Core.getSubsystemManager().getSubsystem(WsSubsystems.NOTEPATH);
     }
     public String toString(){
-        return "Tag Align On";
+        return "Shoot Speaker";
     }
     
 }

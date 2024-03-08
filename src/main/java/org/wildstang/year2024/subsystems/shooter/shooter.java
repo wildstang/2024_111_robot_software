@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class shooter implements Subsystem {
 
     // Inputs
-    private AnalogInput leftTrigger;
+    private AnalogInput leftTrigger, leftStickY;
     private DigitalInput startButton;
     private DigitalInput dPadUp;
     private DigitalInput dPadDown;
@@ -73,6 +73,7 @@ public class shooter implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
+        autoAim = false;
         leftTriggerPressed = leftTrigger.getValue() > 0.15;
         if (source == startButton && startButton.getValue()) {
             subwooferAimOverride = !subwooferAimOverride;
@@ -128,6 +129,10 @@ public class shooter implements Subsystem {
 
         dPadUp = (DigitalInput) WsInputs.DRIVER_DPAD_UP.get();
         dPadUp.addInputListener(this);
+
+        //this is just to turn autoaim off in teleop
+        leftStickY = (AnalogInput) WsInputs.DRIVER_LEFT_JOYSTICK_Y.get();
+        leftStickY.addInputListener(this);
     }
 
     @Override
