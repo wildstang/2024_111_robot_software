@@ -281,8 +281,13 @@ public class SwerveDrive extends SwerveDriveTemplate {
             drive();
         }
         if (driveState == driveType.AUTO) {
-            //get controller generated rotation value
-            rotSpeed = Math.max(-0.2, Math.min(0.2, swerveHelper.getRotControl(pathTarget, getGyroAngle())));
+            if (isVision) {
+                rotTarget = shootOffset + vision.front.turnToTarget(isBlue);
+                rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
+            } else {
+                //get controller generated rotation value
+                rotSpeed = Math.max(-0.2, Math.min(0.2, swerveHelper.getRotControl(pathTarget, getGyroAngle())));
+            }
             //ensure rotation is never more than 0.2 to prevent normalization of translation from occuring
             if (autoTag){
                 // xSpeed = limelight.getScoreX(aimOffset);
@@ -438,5 +443,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
     public void setAutoTag(boolean isOn, boolean isBlue){
         autoTag = isOn;
         this.isBlue = isBlue;
+    }
+    public void setVisionAuto(boolean isOn){
+        this.isVision = isOn;
     }
 }

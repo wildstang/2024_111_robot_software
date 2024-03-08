@@ -2,9 +2,12 @@ package org.wildstang.year2024.subsystems.targeting;
 
 import java.util.List;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+
 public class VisionConsts {
 
-    public final double inToM = 1/39.71;
+    public static final double inToM = 1/39.71;
     public final double mToIn = 39.71;
 
     public final double blueSpeakerX = 9.5;//in
@@ -25,5 +28,8 @@ public class VisionConsts {
     public final List<Integer> stageATs = List.of(11, 12, 13, 14, 15, 16);
     public final List<Integer> speakerATs = List.of(3, 4, 7, 8);
     public final List<Integer> ampATs = List.of(5, 6);
+
+    public static Pose3d cameraPose = new Pose3d(-11.8*inToM,8.5*inToM,22.3*inToM, new Rotation3d(0.0,-65*Math.PI/180.0,11*Math.PI/180.0));
+
 
 }

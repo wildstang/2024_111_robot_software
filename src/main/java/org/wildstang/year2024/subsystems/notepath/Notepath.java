@@ -41,6 +41,9 @@ public class Notepath implements Subsystem {
         } else if (rightTrigger.getValue()>0.15 && leftShoulder.getValue()){
             // Into Amp
             intakeState = Intake.AMP;
+        } else if (leftTrigger.getValue()>0.15 || leftShoulder.getValue()){
+            // Cancel intake because LaserCAN now can't see the note
+            intakeState = Intake.CHILL;  
         } else if (rightTrigger.getValue()>0.15 && !hasNote()){
             // Intaking
             startIntaking();
