@@ -10,6 +10,7 @@ import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import au.grapplerobotics.LaserCan;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,48 +20,36 @@ public class Notepath implements Subsystem {
 
     // State variables
     private double intakeSpeed, feedSpeed, kickSpeed;
+    private boolean isReverse;
     private Intake intakeState; 
 
-    private enum Intake { CHILL, SPINNING, INTAKING, REVERSE, HAS_NOTE };
+    private enum Intake { CHILL, SPINNING, INTAKING, REVERSE, AMP, SHOOT };
 
     private WsSpark feed, intake, kick;
-    private AnalogInput driverRightTrigger, driverLeftTrigger;
-    private DigitalInput driverLeftShoulder;
+    private AnalogInput rightTrigger, leftTrigger;
+    private DigitalInput leftShoulder, rightShoulder;
+    private Timer intakeTimer = new Timer();
 
     private LaserCan lc;
 
     @Override
     public void inputUpdate(Input source) {
-        //if (source != driverRightTrigger) { return; }
-        //you can just not add inputListeners to any other inputs, and thus it will always be the right trigger
 
-        if (hasNote()) {
-            // We want to shoot a note
-            if (driverRightTrigger.getValue() > 0.15) {
-                // Into Speaker
-                if (driverLeftTrigger.getValue() > 0.15) {
-                    feedSpeed = 1.0;
-                    kickSpeed = 1.0;
-                // Into Amp
-                } else if (driverLeftShoulder.getValue()) {
-                    feedSpeed = -1.0;
-                }
-            } else {
-                intakeState = Intake.CHILL;
-                kickSpeed = 0.0;
-                feedSpeed = 0.0;
-            }
-        } else {
+        if (rightTrigger.getValue()>0.15 && leftTrigger.getValue() > 0.15){
+            // Into Speaker
+            intakeState = Intake.SHOOT;
+        } else if (rightTrigger.getValue()>0.15 && leftShoulder.getValue()){
+            // Into Amp
+            intakeState = Intake.AMP;
+        } else if (rightTrigger.getValue()>0.15 && !hasNote()){
             // Intaking
-            if ((driverRightTrigger.getValue() > 0.15) && !hasNote()) {
-                startIntaking();
-            } else {
-                // If driver stops holding down trigger and we never left spinning state, give up
-                if (intakeState == Intake.SPINNING) {
-                    stopIntaking();;    
-                }
-            }
+            startIntaking();
+        } else if (rightTrigger.getValue()<0.15 && !hasNote()){
+            // If driver stops holding down trigger and we never left spinning state, give up
+            stopIntaking();;
         }
+
+        isReverse = rightShoulder.getValue();
     }
 
     public void startIntaking() {
@@ -72,14 +61,11 @@ public class Notepath implements Subsystem {
     }
 
     public void shootSpeaker() {
-        feedSpeed = 1.0;
-        kickSpeed = 1.0;
-        intakeState = Intake.CHILL;
+        intakeState = Intake.SHOOT;
     }
 
     public void shootAmp() {
-        feedSpeed = -1.0;
-        intakeState = Intake.CHILL;
+        intakeState = Intake.AMP;
     }
 
     // Turn off motors
@@ -101,7 +87,7 @@ public class Notepath implements Subsystem {
 
     public boolean hasNote() {
         // Has reached the centered normal note distance
-        return intakeState == Intake.HAS_NOTE;
+        return laserDistance() < NotepathConsts.FRAME_DIST;
     }
 
     @Override
@@ -122,18 +108,20 @@ public class Notepath implements Subsystem {
         // https://github.com/GrappleRobotics/LaserCAN/blob/master/docs/example-java.md
         lc = new LaserCan(0);
 
-        driverRightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
-        driverRightTrigger.addInputListener(this);
-        driverLeftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
-        //driverLeftTrigger.addInputListener(this);
-        driverLeftShoulder = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_SHOULDER);
-        //driverLeftShoulder.addInputListener(this);
+        rightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
+        rightTrigger.addInputListener(this);
+        leftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
+        leftTrigger.addInputListener(this);
+        leftShoulder = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_SHOULDER);
+        leftShoulder.addInputListener(this);
+        rightShoulder = (DigitalInput) WsInputs.DRIVER_RIGHT_SHOULDER.get();
+        rightShoulder.addInputListener(this);
+
+        intakeTimer.start();
     }
 
     @Override
     public void selfTest() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'selfTest'");
     }
 
     @Override
@@ -142,54 +130,84 @@ public class Notepath implements Subsystem {
 
         switch (intakeState) {
             case CHILL:
-            break;
+                if (isReverse){
+                    intakeSpeed = -1.0;
+                    feedSpeed = -1.0;
+                    kickSpeed = -1.0;
+                } else {
+                    intakeSpeed = 0;
+                    feedSpeed = 0;
+                    kickSpeed = 0;
+                }
             case SPINNING:
                 // Change condition
                 if (laserDistance() < NotepathConsts.FRAME_DIST) {
                     intakeState = Intake.INTAKING;
                 // Normal state action
+                } else if (isReverse){
+                    intakeState = Intake.CHILL;
                 } else {
                     intakeSpeed = 1.0;
                     feedSpeed = 1.0;
-                    break;
+                    kickSpeed = 0;
                 }
             case INTAKING:
                 if (laserDistance() <= NotepathConsts.REVERSE_INTAKE_DIST) {
                     intakeState = Intake.REVERSE;
+                    feedSpeed = -0.25;
+                    intakeSpeed = 0;
+                    kickSpeed = 0;
+                } else if (isReverse){
+                    intakeState = Intake.CHILL;
                 } else {
                     intakeSpeed = 1.0;
                     feedSpeed = 1.0;
+                    kickSpeed = 0;
                 }
             case REVERSE:
                 if (laserDistance() >= NotepathConsts.NORMAL_NOTE_DIST) {
-                    intakeState = Intake.HAS_NOTE;
+                    intakeState = Intake.CHILL;
                     intakeSpeed = 0;
                     feedSpeed = 0;
+                    kickSpeed = 0;
+                } else if (isReverse){
+                    intakeState = Intake.CHILL;
                 } else {
                     feedSpeed = -0.25;
                     intakeSpeed = 0;
+                    kickSpeed = 0;
                 }
-            case HAS_NOTE:
+            case AMP:
+                intakeSpeed = 0;
+                feedSpeed = isReverse ? 1.0 : -1.0;
+                kickSpeed = 0;
+            case SHOOT:
+                intakeSpeed = 1.0;
+                feedSpeed = 1.0;
+                kickSpeed = 1.0;
             break;
         }
-
-        intake.setSpeed(intakeSpeed);
+        setIntake(intakeSpeed);
         feed.setSpeed(feedSpeed);
         kick.setSpeed(kickSpeed);
     }
 
     @Override
     public void resetState() {
+        isReverse = false;
     }
 
-    public boolean intakeHasGrabbed() { 
-        // If intake not spinning we not intakin
-        return intake.getController().getOutputCurrent() > 15.0;
+    public void setIntake(double speed){
+        if (speed == 0){
+            intakeTimer.reset();
+            intake.setSpeed(0);
+        } else if (speed > 0){
+            intake.setSpeed(Math.min(1.0, 4.0*intakeTimer.get()));
+        }
     }
 
     @Override
     public String getName() {
-        // TODO Auto-generated method stub
         return "FeedSubsystem";
     }
     

@@ -3,11 +3,11 @@ package org.wildstang.year2024.auto.Steps;
 import org.wildstang.framework.auto.AutoStep;
 import org.wildstang.framework.core.Core;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.shooter.Shooter;
+import org.wildstang.year2024.subsystems.shooter.shooter;
 
 public class SetFlywheel extends AutoStep {
 
-    private Shooter shooter;
+    private shooter shooter;
     private boolean on;
 
     public SetFlywheel(boolean on){
@@ -15,7 +15,7 @@ public class SetFlywheel extends AutoStep {
     }
     @Override 
     public void initialize(){
-        shooter = (Shooter) Core.getSubsystemManager().getSubsystem(WsSubsystems.SHOOTER);
+        shooter = (shooter) Core.getSubsystemManager().getSubsystem(WsSubsystems.SHOOTER);
     }
 
     @Override

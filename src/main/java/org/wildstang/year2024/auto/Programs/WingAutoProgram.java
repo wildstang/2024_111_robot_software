@@ -25,8 +25,8 @@ public class WingAutoProgram extends AutoProgram{
         addStep(new ShooterSetAngle(ShooterConsts.SUBWOOFER_ANGLE));
         addStep(new ShootSpeakerStep());
         addStep(new SetIntakeSequenceStep(true));
-        addStep(new SwervePathFollowerStep(Choreo.getTrajectory("NewPath.1"), swerve, true));
-        addStep(new SwervePathFollowerStep(Choreo.getTrajectory("NewPath.2"), swerve, true));
+        addStep(new SwervePathFollowerStep("NewPath.1", swerve, true));
+        addStep(new SwervePathFollowerStep("NewPath.2", swerve, true));
         addStep(new ShootSpeakerStep());
     }
 

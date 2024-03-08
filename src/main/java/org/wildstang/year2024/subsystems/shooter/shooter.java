@@ -18,7 +18,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Shooter implements Subsystem {
+public class shooter implements Subsystem {
 
     // Inputs
     private AnalogInput leftTrigger;
@@ -140,11 +140,12 @@ public class Shooter implements Subsystem {
 
     @Override
     public void update() {
-        double distanceToSpeaker = wsVision.distanceToSpeaker();
         // Aim if trigger pressed and Speaker in sight
-        if ((leftTriggerPressed || autoAim) && distanceToSpeaker != -1) {
+        if (leftTriggerPressed || autoAim) {
             speed = Speeds.MAX;
-            angle = angle(distanceToSpeaker);
+            if (wsVision.front.TargetInView()){
+                angle = wsVision.getAngle();
+            }
         } else if (!autoOverride) {
             if (notepath.hasNote()) {
                 speed = Speeds.IDLE;
@@ -154,7 +155,7 @@ public class Shooter implements Subsystem {
             }
         }
         
-        vortexFlywheel.setSpeed(speed.getPercent());
+        vortexFlywheel.setSpeed(-speed.getPercent());
         neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);
         if (subwooferAimOverride) {
             angle = ShooterConsts.SUBWOOFER_ANGLE;

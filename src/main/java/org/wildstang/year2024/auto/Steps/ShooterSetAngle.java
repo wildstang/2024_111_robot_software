@@ -3,13 +3,13 @@ package org.wildstang.year2024.auto.Steps;
 import org.wildstang.framework.auto.AutoStep;
 import org.wildstang.framework.core.Core;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.shooter.Shooter;
+import org.wildstang.year2024.subsystems.shooter.shooter;
 
 public class ShooterSetAngle extends AutoStep {
 
     private double angle;
     
-    private Shooter shooter;
+    private shooter shooter;
     
         public ShooterSetAngle(double angle){
             this.angle = angle; 
@@ -17,7 +17,7 @@ public class ShooterSetAngle extends AutoStep {
     
         @Override 
         public void initialize(){
-            shooter = (Shooter) Core.getSubsystemManager().getSubsystem(WsSubsystems.SHOOTER);
+            shooter = (shooter) Core.getSubsystemManager().getSubsystem(WsSubsystems.SHOOTER);
         }
     
         @Override
