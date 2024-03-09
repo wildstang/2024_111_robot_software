@@ -104,4 +104,7 @@ public class WsVision implements Subsystem {
         }
         return angles[last] + (inputDistance-distances[last])*(angles[last]-angles[last-1])/(distances[last]-distances[last-1]);
     }
+    public boolean isStage(){
+        return front.tid == 13 || front.tid == 14;
+    }
 }

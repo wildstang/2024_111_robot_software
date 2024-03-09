@@ -158,7 +158,11 @@ public class shooter implements Subsystem {
         if (leftTriggerPressed || autoAim) {
             speed = Speeds.MAX;
             if (wsVision.front.TargetInView()){
-                angle = wsVision.getAngle();
+                if (wsVision.isStage()){
+                    angle = ShooterConsts.FEED_ANGLE;
+                } else {
+                    angle = wsVision.getAngle();
+                }
             }
         } else if (!autoOverride) {
             if (idleTimer.hasElapsed(1.0)) {

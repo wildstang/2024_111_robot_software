@@ -23,21 +23,21 @@ public class Auto113 extends AutoProgram {
         addStep(new SetGyroStep(180.0, swerve));
         addStep(new StartOdometryStep(1.3, 5.5, 180.0, isBlue));
         addStep(new AutoStepDelay(500));
-        addStep(new SwervePathFollowerStep("Start_113", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("Start_113 113", swerve, isBlue));
         addStep(new AutoStepDelay(200));
-        addStep(new SwervePathFollowerStep("B get", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("B get 113", swerve, isBlue));
         addStep(new AutoStepDelay(200));
-        addStep(new SwervePathFollowerStep("B score", swerve, isBlue));
-        addStep(new AutoStepDelay(200));
-        // addStep(new StartOdometryStep(vision.front.getPoseX(), vision.front.getPoseY(), swerve.getGyroAngle(), isBlue));
-        addStep(new SwervePathFollowerStep("A get", swerve, isBlue));
-        addStep(new AutoStepDelay(200));
-        addStep(new SwervePathFollowerStep("A score", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("B score 113", swerve, isBlue));
         addStep(new AutoStepDelay(200));
         // addStep(new StartOdometryStep(vision.front.getPoseX(), vision.front.getPoseY(), swerve.getGyroAngle(), isBlue));
-        // addStep(new SwervePathFollowerStep("C get", swerve, isBlue));
-        // addStep(new SwervePathFollowerStep("C score", swerve, isBlue));
-        addStep(new SwervePathFollowerStep("Alt end get", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("A get 113", swerve, isBlue));
+        addStep(new AutoStepDelay(200));
+        addStep(new SwervePathFollowerStep("A score 113", swerve, isBlue));
+        addStep(new AutoStepDelay(200));
+        // addStep(new StartOdometryStep(vision.front.getPoseX(), vision.front.getPoseY(), swerve.getGyroAngle(), isBlue));
+        // addStep(new SwervePathFollowerStep("C get 113", swerve, isBlue));
+        // addStep(new SwervePathFollowerStep("C score 113", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("Alt end get 113", swerve, isBlue));
     }
 
     @Override
