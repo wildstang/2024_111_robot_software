@@ -2,6 +2,7 @@ package org.wildstang.year2024.robot;
 
 import org.wildstang.framework.core.AutoPrograms;
 import org.wildstang.year2024.auto.Programs.Auto113;
+import org.wildstang.year2024.auto.Programs.Drake;
 import org.wildstang.year2024.auto.Programs.TestA;
 import org.wildstang.year2024.auto.Programs.TestB;
 import org.wildstang.year2024.auto.Programs.TestC;
@@ -21,7 +22,8 @@ public enum WsAutoPrograms implements AutoPrograms {
     AUTO_113("Auto 113 BAC", Auto113.class),
     TESTA("Test A", TestA.class),
     TESTB("Test B", TestB.class),
-    TESTC("Test C", TestC.class)
+    TESTC("Test C", TestC.class),
+    THE_DRAKE("The Drake", Drake.class)
     ;
 
     /**

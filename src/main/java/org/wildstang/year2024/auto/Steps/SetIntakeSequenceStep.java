@@ -3,26 +3,26 @@ package org.wildstang.year2024.auto.Steps;
 import org.wildstang.framework.auto.AutoStep;
 import org.wildstang.framework.core.Core;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.notepath.Notepath;
+import org.wildstang.year2024.subsystems.theFolder.theClass;
 
 public class SetIntakeSequenceStep extends AutoStep{
 
     private boolean turnOn;
-    private Notepath notepath;
+    private theClass RandomThing;
 
     public SetIntakeSequenceStep(boolean on) {
         turnOn = on;
     }
     public void update(){
         if (turnOn) {
-            notepath.startIntaking();
+            RandomThing.startIntaking();
         } else {
-            notepath.stopIntaking();
+            RandomThing.stopIntaking();
         }
         this.setFinished();
     }
     public void initialize(){
-        notepath = (Notepath) Core.getSubsystemManager().getSubsystem(WsSubsystems.NOTEPATH);
+        RandomThing = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
     }
     public String toString(){
         return "Set Intake Sequence";

@@ -1,4 +1,4 @@
-package org.wildstang.year2024.subsystems.notepath;
+package org.wildstang.year2024.subsystems.theFolder;
 
 import org.wildstang.framework.io.inputs.AnalogInput;
 import org.wildstang.framework.io.inputs.DigitalInput;
@@ -16,12 +16,15 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class Notepath implements Subsystem {
+public class theClass implements Subsystem {
 
     // State variables
-    private double intakeSpeed, feedSpeed, kickSpeed;
-    private boolean isReverse;
-    private Intake intakeState; 
+    private double intakeSpeed=0, feedSpeed=0, kickSpeed=0;
+    private boolean isReverse = false;
+    private boolean isFiring = false;
+    private boolean isAmp = false;
+    private boolean isShooting = false;
+    private Intake intakeState = Intake.CHILL; 
 
     private enum Intake { CHILL, SPINNING, INTAKING, REVERSE, AMP, SHOOT };
 
@@ -29,30 +32,34 @@ public class Notepath implements Subsystem {
     private AnalogInput rightTrigger, leftTrigger;
     private DigitalInput leftShoulder, rightShoulder;
     private Timer intakeTimer = new Timer();
+    private Timer feedTimer = new Timer();
 
     private LaserCan lc;
 
     @Override
     public void inputUpdate(Input source) {
 
-        if (rightTrigger.getValue()>0.15 && leftTrigger.getValue() > 0.15){
+        if (Math.abs(rightTrigger.getValue())>0.15 && Math.abs(leftTrigger.getValue()) > 0.15){
             // Into Speaker
             intakeState = Intake.SHOOT;
-        } else if (rightTrigger.getValue()>0.15 && leftShoulder.getValue()){
+        } else if (leftShoulder.getValue()){
             // Into Amp
             intakeState = Intake.AMP;
-        } else if (leftTrigger.getValue()>0.15 || leftShoulder.getValue()){
+        } else if (Math.abs(leftTrigger.getValue())>0.15 || leftShoulder.getValue()){
             // Cancel intake because LaserCAN now can't see the note
             intakeState = Intake.CHILL;  
-        } else if (rightTrigger.getValue()>0.15 && !hasNote()){
+        } else if (Math.abs(rightTrigger.getValue())>0.15 && !hasNote()){
             // Intaking
             startIntaking();
-        } else if (rightTrigger.getValue()<0.15 && !hasNote()){
+        } else if (Math.abs(rightTrigger.getValue())<0.15 && intakeState == Intake.SPINNING){
             // If driver stops holding down trigger and we never left spinning state, give up
             stopIntaking();;
         }
 
         isReverse = rightShoulder.getValue();
+        isFiring = Math.abs(rightTrigger.getValue())>0.15;
+        isShooting = Math.abs(leftTrigger.getValue())>0.15;
+        isAmp = leftShoulder.getValue();
     }
 
     public void startIntaking() {
@@ -84,13 +91,13 @@ public class Notepath implements Subsystem {
             return (measurement.distance_mm);
         } else {
         System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
-            return 9000;
+            return 400;
         }
     }
 
     public boolean hasNote() {
         // Has reached the centered normal note distance
-        return laserDistance() < NotepathConsts.FRAME_DIST;
+        return laserDistance() < 400;
     }
 
     @Override
@@ -121,6 +128,7 @@ public class Notepath implements Subsystem {
         rightShoulder.addInputListener(this);
 
         intakeTimer.start();
+        feedTimer.start();
     }
 
     @Override
@@ -130,9 +138,14 @@ public class Notepath implements Subsystem {
     @Override
     public void update() {
         SmartDashboard.putNumber("Laser Can distance (mm)", laserDistance());
+        
+        intakeSpeed = 0;
+        feedSpeed = 0;
+        kickSpeed = 0;
 
-        switch (intakeState) {
-            case CHILL:
+        // switch (intakeState) {
+        //     case CHILL:
+            if (intakeState == Intake.CHILL){
                 if (isReverse){
                     intakeSpeed = -1.0;
                     feedSpeed = -1.0;
@@ -142,62 +155,93 @@ public class Notepath implements Subsystem {
                     feedSpeed = 0;
                     kickSpeed = 0;
                 }
-            case SPINNING:
+            }
+            // case SPINNING:
                 // Change condition
-                if (laserDistance() < NotepathConsts.FRAME_DIST) {
-                    intakeState = Intake.INTAKING;
+            if (intakeState == Intake.SPINNING){
+                if (laserDistance() < 400) {
+                    if (feedTimer.hasElapsed(0.1)){
+                        intakeState = Intake.INTAKING;
+                    }
                 // Normal state action
                 } else if (isReverse){
                     intakeState = Intake.CHILL;
                 } else {
+                    feedTimer.reset();
                     intakeSpeed = 1.0;
                     feedSpeed = 1.0;
                     kickSpeed = 0;
                 }
-            case INTAKING:
-                if (laserDistance() <= NotepathConsts.REVERSE_INTAKE_DIST) {
-                    intakeState = Intake.REVERSE;
-                    feedSpeed = -0.25;
-                    intakeSpeed = 0;
-                    kickSpeed = 0;
+            }
+            // case INTAKING:
+            if (intakeState == Intake.INTAKING){
+                if (laserDistance() <= 60) {
+                    if (feedTimer.hasElapsed(0.01)){
+                        intakeState = Intake.REVERSE;
+                        feedTimer.reset();
+                        feedSpeed = -0.25;
+                        intakeSpeed = 0;
+                        kickSpeed = 0;
+                    }
                 } else if (isReverse){
                     intakeState = Intake.CHILL;
                 } else {
+                    feedTimer.reset();
                     intakeSpeed = 1.0;
-                    feedSpeed = 1.0;
+                    feedSpeed = 0.5;
                     kickSpeed = 0;
                 }
-            case REVERSE:
-                if (laserDistance() >= NotepathConsts.NORMAL_NOTE_DIST) {
-                    intakeState = Intake.CHILL;
-                    intakeSpeed = 0;
-                    feedSpeed = 0;
-                    kickSpeed = 0;
+            }
+            // case REVERSE:
+            if (intakeState == Intake.REVERSE){
+                // if (laserDistance() >= 205) {
+                    if (feedTimer.hasElapsed(2.5)){
+                        intakeState = Intake.CHILL;
+                        intakeSpeed = 0;
+                        feedSpeed = 0;
+                        kickSpeed = 0;
+                    // }
                 } else if (isReverse){
                     intakeState = Intake.CHILL;
                 } else {
                     feedSpeed = -0.25;
                     intakeSpeed = 0;
-                    kickSpeed = 0;
+                    kickSpeed = -0.25;
                 }
-            case AMP:
+            }
+            // case AMP:
+            if (intakeState == Intake.AMP){
                 intakeSpeed = 0;
-                feedSpeed = isReverse ? 1.0 : -1.0;
+                if (isReverse)feedSpeed = 1.0;
+                else if (isFiring) feedSpeed = -1.0;
+                else feedSpeed = 0;
                 kickSpeed = 0;
-            case SHOOT:
+            }
+            // case SHOOT:
+            if (intakeState == Intake.SHOOT){
                 intakeSpeed = 1.0;
                 feedSpeed = 1.0;
                 kickSpeed = 1.0;
-            break;
-        }
+            }
+            
+        // }
         setIntake(intakeSpeed);
         feed.setSpeed(feedSpeed);
         kick.setSpeed(kickSpeed);
+        SmartDashboard.putNumber("feed feed speed", feedSpeed);
+        SmartDashboard.putNumber("feed intake speed", intakeSpeed);
+        SmartDashboard.putNumber("feed kick speed", kickSpeed);
+        SmartDashboard.putString("feed state", intakeState.toString());
+        SmartDashboard.putBoolean("feed reverse", isReverse);
     }
 
     @Override
     public void resetState() {
         isReverse = false;
+        intakeState = Intake.CHILL;
+        intakeSpeed = 0;
+        feedSpeed = 0;
+        kickSpeed = 0;
     }
 
     public void setIntake(double speed){
@@ -211,7 +255,7 @@ public class Notepath implements Subsystem {
 
     @Override
     public String getName() {
-        return "Notepath";
+        return "TheClass";
     }
     
 }

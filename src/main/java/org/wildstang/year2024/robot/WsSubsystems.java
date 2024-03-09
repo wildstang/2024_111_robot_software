@@ -1,10 +1,10 @@
 package org.wildstang.year2024.robot;
 
 import org.wildstang.framework.core.Subsystems;
-import org.wildstang.year2024.subsystems.notepath.Notepath;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 import org.wildstang.year2024.subsystems.testforlift.Test_lift;
+import org.wildstang.year2024.subsystems.theFolder.theClass;
 import org.wildstang.year2024.subsystems.LED.LedController;
 import org.wildstang.year2024.subsystems.shooter.shooter;
 
@@ -18,7 +18,7 @@ public enum WsSubsystems implements Subsystems {
     WS_VISION("Ws Vision", WsVision.class),
     SWERVE_DRIVE("Swerve Drive", SwerveDrive.class),
     LIFT("Test_lift", Test_lift.class),
-    NOTEPATH("Notepath", Notepath.class),
+    THECLASS("TheClass", theClass.class),
     LED("Led Controller", LedController.class),
     SHOOTER("Shooter", shooter.class),
     ;

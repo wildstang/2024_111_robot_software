@@ -9,13 +9,14 @@ import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.notepath.Notepath;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
+import org.wildstang.year2024.subsystems.theFolder.theClass;
 
 import com.google.gson.InstanceCreator;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class shooter implements Subsystem {
@@ -31,6 +32,8 @@ public class shooter implements Subsystem {
     private WsSpark neoFlywheel;
     private WsSpark angleNeo;
     private AbsoluteEncoder angleEncoder;
+
+    private Timer idleTimer = new Timer();
 
     // State variables
     private double aimOffset = 0;
@@ -54,7 +57,7 @@ public class shooter implements Subsystem {
     private double angle = ShooterConsts.MIN_ANGLE;
     private boolean leftTriggerPressed;
 
-    private Notepath notepath;
+    private theClass RandomThing;
     private WsVision wsVision;
 
     public double angle(double distance) {
@@ -97,7 +100,7 @@ public class shooter implements Subsystem {
     @Override
     public void init() {
         wsVision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
-        notepath = (Notepath) Core.getSubsystemManager().getSubsystem(WsSubsystems.NOTEPATH);
+        RandomThing = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
 
         // Init Motors
         vortexFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER_VORTEX);
@@ -133,6 +136,8 @@ public class shooter implements Subsystem {
         //this is just to turn autoaim off in teleop
         leftStickY = (AnalogInput) WsInputs.DRIVER_LEFT_JOYSTICK_Y.get();
         leftStickY.addInputListener(this);
+
+        idleTimer.start();
     }
 
     @Override
@@ -146,27 +151,34 @@ public class shooter implements Subsystem {
     @Override
     public void update() {
         // Aim if trigger pressed and Speaker in sight
+        if (!RandomThing.hasNote()){
+            idleTimer.reset();
+        }
         if (leftTriggerPressed || autoAim) {
             speed = Speeds.MAX;
             if (wsVision.front.TargetInView()){
                 angle = wsVision.getAngle();
             }
         } else if (!autoOverride) {
-            if (notepath.hasNote()) {
+            if (idleTimer.hasElapsed(1.0)) {
                 speed = Speeds.IDLE;
+                angle = ShooterConsts.MIN_ANGLE;
             } else {
                 angle = ShooterConsts.MIN_ANGLE;
                 speed = Speeds.OFF;
             }
         }
         
-        vortexFlywheel.setSpeed(-speed.getPercent());
+        vortexFlywheel.setSpeed(speed.getPercent());
         neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);
         if (subwooferAimOverride) {
             angle = ShooterConsts.SUBWOOFER_ANGLE;
         }
-        angleNeo.setPosition(angle);
+        angleNeo.setPosition(angle+aimOffset);
         SmartDashboard.putNumber("automatic angle offset", aimOffset);
+        SmartDashboard.putNumber("shooter angle", angle);
+        SmartDashboard.putNumber("shooter speed", speed.getPercent());
+        SmartDashboard.putBoolean("shooter subwoofer override", subwooferAimOverride);
     }
 
     @Override
@@ -174,10 +186,13 @@ public class shooter implements Subsystem {
         vortexFlywheel.setSpeed(0);
         neoFlywheel.setSpeed(0);
         angleNeo.setPosition(0);
+        autoAim = false;
+        leftTriggerPressed = false;
+        autoOverride = false;
     }
 
     @Override
     public String getName() {
-        return "Competition Shooter";
+        return "Shooter";
     }
 }
