@@ -243,8 +243,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //create default swerveSignal
         swerveSignal = new SwerveSignal(new double[]{0.0, 0.0, 0.0, 0.0}, new double[]{0.0, 0.0, 0.0, 0.0});
         vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
-        odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.2794), new Translation2d(0.2794, -0.2794),
-            new Translation2d(-0.2794, 0.2794), new Translation2d(-0.2794, -0.2794)), odoAngle(), odoPosition(), new Pose2d());
+        odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.33), new Translation2d(0.2794, -0.33),
+            new Translation2d(-0.2794, 0.33), new Translation2d(-0.2794, -0.33)), odoAngle(), odoPosition(), new Pose2d());
     }
     
     @Override
@@ -281,7 +281,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
             drive();
         }
         if (driveState == driveType.AUTO) {
-            if (isVision) {
+            if (isVision && vision.front.TargetInView()) {
                 rotTarget = shootOffset + vision.front.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
             } else {
@@ -446,5 +446,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
     }
     public void setVisionAuto(boolean isOn){
         this.isVision = isOn;
+    }
+    public void setAlliance(boolean isBlue){
+        this.isBlue = isBlue;
     }
 }

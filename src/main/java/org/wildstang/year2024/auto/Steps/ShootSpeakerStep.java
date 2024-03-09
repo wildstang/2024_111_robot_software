@@ -15,7 +15,7 @@ public class ShootSpeakerStep extends AutoStep{
     public void update(){
         RandomThing.shootSpeaker();
         // Wait the necessary time before turning off the feed
-        if (timer.advanceIfElapsed(0.2)) {
+        if (timer.advanceIfElapsed(0.5)) {
             timer.stop();
             RandomThing.stop();
             this.setFinished();

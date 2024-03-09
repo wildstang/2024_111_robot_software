@@ -91,6 +91,7 @@ public class shooter implements Subsystem {
 
     public void setAngle(double angle) {
         this.angle = angle;
+        autoOverride = true;
     }
 
     public void autoAim(boolean on) {
@@ -117,7 +118,7 @@ public class shooter implements Subsystem {
         angleEncoder.setPositionConversionFactor(360.0);
         //set current limit 
         angleNeo.setCurrentLimit(20, 20, 0);
-        vortexFlywheel.setCurrentLimit(50, 50, 0);
+        vortexFlywheel.setCurrentLimit(40, 40, 0);
 
 
         // Init Inputs
@@ -194,5 +195,8 @@ public class shooter implements Subsystem {
     @Override
     public String getName() {
         return "Shooter";
+    }
+    public double getShooterVelocity(){
+        return Math.abs(vortexFlywheel.getVelocity());
     }
 }

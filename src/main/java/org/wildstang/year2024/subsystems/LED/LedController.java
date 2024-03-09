@@ -7,6 +7,7 @@ import org.wildstang.framework.io.inputs.Input;
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsSubsystems;
+import org.wildstang.year2024.subsystems.shooter.shooter;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 import org.wildstang.year2024.subsystems.theFolder.theClass;
 
@@ -16,25 +17,34 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class LedController implements Subsystem {
 
-    private AnalogInput leftTrigger;
+    private AnalogInput rightTrigger;
     private AddressableLED led;
     private AddressableLEDBuffer ledBuffer;
     private theClass RandomThing;
+    private shooter flywheel;
     private Timer timer =  new Timer();
 
     private int port = 0;//port
     private int length = 45;//length
 
     private int[] white = {255,255,255};
+    private int[] blue = {0,0,255};
+    private int[] red = {255,0,0};
+    private int[] green = {0,255,0};
     private int[] orange = {255,128,0};
+    
+    private int[] normal = white;
+    private boolean isAuto = false;
 
 
     @Override
     public void update(){
-        if (RandomThing.hasNote()){
+        if (flywheel.getShooterVelocity()>4000){
+            setRGB(green);
+        } else if (RandomThing.hasNote() && !isAuto){
             setRGB(orange);
         } else {
-            setRGB(white);
+            setRGB(normal);
         }
         led.setData(ledBuffer);
         led.start();
@@ -42,14 +52,16 @@ public class LedController implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
+        isAuto = false;
 
     }
 
     @Override
     public void init() {
-        leftTrigger = (AnalogInput) WsInputs.DRIVER_LEFT_TRIGGER.get();
-        leftTrigger.addInputListener(this);
+        rightTrigger = (AnalogInput) WsInputs.DRIVER_RIGHT_TRIGGER.get();
+        rightTrigger.addInputListener(this);
         RandomThing = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
+        flywheel = (shooter) Core.getSubsystemManager().getSubsystem(WsSubsystems.SHOOTER);
         
         //Outputs
         led = new AddressableLED(port);
@@ -82,5 +94,9 @@ public class LedController implements Subsystem {
     }
     public void setRGB(int[] color){
         setRGB(color[0],color[1],color[2]);
+    }
+    public void setAlliance(boolean isBlue){
+        this.normal = isBlue ? blue : red;
+        isAuto = true;
     }
 }

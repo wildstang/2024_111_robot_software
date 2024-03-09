@@ -22,8 +22,6 @@ public class theClass implements Subsystem {
     private double intakeSpeed=0, feedSpeed=0, kickSpeed=0;
     private boolean isReverse = false;
     private boolean isFiring = false;
-    private boolean isAmp = false;
-    private boolean isShooting = false;
     private Intake intakeState = Intake.CHILL; 
 
     private enum Intake { CHILL, SPINNING, INTAKING, REVERSE, AMP, SHOOT };
@@ -50,16 +48,14 @@ public class theClass implements Subsystem {
             intakeState = Intake.CHILL;  
         } else if (Math.abs(rightTrigger.getValue())>0.15 && !hasNote()){
             // Intaking
-            startIntaking();
+            intakeState = Intake.SPINNING;
         } else if (Math.abs(rightTrigger.getValue())<0.15 && intakeState == Intake.SPINNING){
             // If driver stops holding down trigger and we never left spinning state, give up
-            stopIntaking();;
+            intakeState = Intake.CHILL;
         }
 
         isReverse = rightShoulder.getValue();
         isFiring = Math.abs(rightTrigger.getValue())>0.15;
-        isShooting = Math.abs(leftTrigger.getValue())>0.15;
-        isAmp = leftShoulder.getValue();
     }
 
     public void startIntaking() {
@@ -72,10 +68,12 @@ public class theClass implements Subsystem {
 
     public void shootSpeaker() {
         intakeState = Intake.SHOOT;
+        isFiring = true;
     }
 
     public void shootAmp() {
         intakeState = Intake.AMP;
+        isFiring = true;
     }
 
     // Turn off motors
@@ -108,10 +106,10 @@ public class theClass implements Subsystem {
         intake.setCurrentLimit(50, 50, 0);
 
         kick = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.KICKER);
-        kick.setCurrentLimit(50, 50, 0);    
+        kick.setCurrentLimit(30, 30, 0);    
 
         feed = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.FEED);
-        feed.setCurrentLimit(50, 50, 0);
+        feed.setCurrentLimit(30, 30, 0);
         
         // Init Inputs
         //the intake senseor will be a LaserCAN
@@ -211,7 +209,8 @@ public class theClass implements Subsystem {
             }
             // case AMP:
             if (intakeState == Intake.AMP){
-                intakeSpeed = 0;
+                if (isReverse) intakeSpeed = -1.0;
+                else intakeSpeed = 0;
                 if (isReverse)feedSpeed = 1.0;
                 else if (isFiring) feedSpeed = -1.0;
                 else feedSpeed = 0;
@@ -219,9 +218,15 @@ public class theClass implements Subsystem {
             }
             // case SHOOT:
             if (intakeState == Intake.SHOOT){
-                intakeSpeed = 1.0;
-                feedSpeed = 1.0;
-                kickSpeed = 1.0;
+                if (isFiring){
+                    intakeSpeed = 1.0;
+                    feedSpeed = 1.0;
+                    kickSpeed = 1.0;
+                } else {
+                    intakeSpeed = 0;
+                    feedSpeed = 0;
+                    kickSpeed = 0;
+                }
             }
             
         // }
