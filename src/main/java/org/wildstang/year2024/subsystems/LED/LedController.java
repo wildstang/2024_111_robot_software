@@ -31,7 +31,7 @@ public class LedController implements Subsystem {
     private int[] blue = {0,0,255};
     private int[] red = {255,0,0};
     private int[] green = {0,255,0};
-    private int[] orange = {255,128,0};
+    private int[] orange = {255,165,0};
     
     private int[] normal = white;
     private boolean isAuto = false;

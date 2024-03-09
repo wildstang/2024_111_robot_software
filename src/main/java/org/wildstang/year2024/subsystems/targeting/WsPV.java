@@ -122,7 +122,7 @@ public class WsPV {
         return measurement;
     }
     public boolean TargetInView(){
-        return tid>0;
+        return tv;
     }
     public double getPoseX(){
         return estimatedPose.getX();

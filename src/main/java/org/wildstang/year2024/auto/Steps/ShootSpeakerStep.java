@@ -15,11 +15,12 @@ public class ShootSpeakerStep extends AutoStep{
     public void update(){
         RandomThing.shootSpeaker();
         // Wait the necessary time before turning off the feed
-        if (timer.advanceIfElapsed(0.5)) {
-            timer.stop();
-            RandomThing.stop();
-            this.setFinished();
-        }
+        // if (timer.advanceIfElapsed(1.0)) {
+        //     timer.stop();
+        //     RandomThing.stop();
+        //     this.setFinished();
+        // }
+        setFinished();
     }
     public void initialize(){
         RandomThing = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);

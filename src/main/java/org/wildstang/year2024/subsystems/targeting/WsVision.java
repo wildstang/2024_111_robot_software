@@ -28,7 +28,7 @@ public class WsVision implements Subsystem {
     public double[] distances = {41, 50, 70, 105, 146};
     public double[] speeds = {0.0, 0.0, 0.0};
     // public double[] angles = {180, 127, 101};
-    public double[] angles = {175, 145, 127, 93, 75};
+    public double[] angles = {174, 145, 127, 93, 75};
     public int last = distances.length-1;
 
     public boolean isBlue = true;
@@ -61,6 +61,7 @@ public class WsVision implements Subsystem {
         SmartDashboard.putNumber("Vision getAngle", getAngle());
         SmartDashboard.putNumber("Vision distToTarget", front.distanceToTarget(isBlue));
         SmartDashboard.putNumber("Vision angleToRot", front.turnToTarget(isBlue));
+        SmartDashboard.putBoolean("Vision targetinView", front.TargetInView());
         // SmartDashboard.putNumber("GP X", back.tx);
         // SmartDashboard.putNumber("GP Y", back.ty);
         // SmartDashboard.putBoolean("GP tv", back.TargetInView());

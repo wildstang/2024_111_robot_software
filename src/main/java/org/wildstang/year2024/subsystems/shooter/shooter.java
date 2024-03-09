@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class shooter implements Subsystem {
 
     // Inputs
-    private AnalogInput leftTrigger, leftStickY;
+    private AnalogInput leftTrigger, leftStickY, rightTrigger;
     private DigitalInput startButton;
     private DigitalInput dPadUp;
     private DigitalInput dPadDown;
@@ -34,6 +34,7 @@ public class shooter implements Subsystem {
     private AbsoluteEncoder angleEncoder;
 
     private Timer idleTimer = new Timer();
+    private Timer shootTimer = new Timer();
 
     // State variables
     private double aimOffset = 0;
@@ -56,6 +57,8 @@ public class shooter implements Subsystem {
     private Speeds speed;
     private double angle = ShooterConsts.MIN_ANGLE;
     private boolean leftTriggerPressed;
+    private boolean rightTriggerPressed;
+    private double autoassume = 0;
 
     private theClass RandomThing;
     private WsVision wsVision;
@@ -78,6 +81,7 @@ public class shooter implements Subsystem {
     public void inputUpdate(Input source) {
         autoAim = false;
         leftTriggerPressed = leftTrigger.getValue() > 0.15;
+        rightTriggerPressed = Math.abs(rightTrigger.getValue())>0.15;
         if (source == startButton && startButton.getValue()) {
             subwooferAimOverride = !subwooferAimOverride;
         }
@@ -92,6 +96,7 @@ public class shooter implements Subsystem {
     public void setAngle(double angle) {
         this.angle = angle;
         autoOverride = true;
+        autoassume = angle;
     }
 
     public void autoAim(boolean on) {
@@ -105,8 +110,10 @@ public class shooter implements Subsystem {
 
         // Init Motors
         vortexFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER_VORTEX);
+        vortexFlywheel.setCoast();
 
         neoFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER_NEO);
+        neoFlywheel.setCoast();
 
         angleNeo = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.ARM_PIVOT);
         angleEncoder = angleNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
@@ -124,6 +131,8 @@ public class shooter implements Subsystem {
         // Init Inputs
         leftTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_LEFT_TRIGGER);
         leftTrigger.addInputListener(this);
+        rightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
+        rightTrigger.addInputListener(this);
 
         startButton = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_START);
         startButton.addInputListener(this);
@@ -139,6 +148,7 @@ public class shooter implements Subsystem {
         leftStickY.addInputListener(this);
 
         idleTimer.start();
+        shootTimer.start();
     }
 
     @Override
@@ -152,17 +162,20 @@ public class shooter implements Subsystem {
     @Override
     public void update() {
         // Aim if trigger pressed and Speaker in sight
-        if (!RandomThing.hasNote()){
+        if (!RandomThing.hasNote() || rightTriggerPressed){
             idleTimer.reset();
         }
         if (leftTriggerPressed || autoAim) {
             speed = Speeds.MAX;
             if (wsVision.front.TargetInView()){
-                if (wsVision.isStage()){
-                    angle = ShooterConsts.FEED_ANGLE;
-                } else {
+                // if (wsVision.isStage()){
+                //     angle = ShooterConsts.FEED_ANGLE;
+                // } else {
                     angle = wsVision.getAngle();
-                }
+                    shootTimer.reset();
+                // }
+            } else if (autoAim && shootTimer.hasElapsed(0.5)){
+                angle =autoassume;
             }
         } else if (!autoOverride) {
             if (idleTimer.hasElapsed(1.0)) {
@@ -180,6 +193,7 @@ public class shooter implements Subsystem {
             angle = ShooterConsts.SUBWOOFER_ANGLE;
         }
         angleNeo.setPosition(angle+aimOffset);
+        SmartDashboard.putBoolean("isAutoAim", autoAim);
         SmartDashboard.putNumber("automatic angle offset", aimOffset);
         SmartDashboard.putNumber("shooter angle", angle);
         SmartDashboard.putNumber("shooter speed", speed.getPercent());
@@ -193,6 +207,7 @@ public class shooter implements Subsystem {
         angleNeo.setPosition(0);
         autoAim = false;
         leftTriggerPressed = false;
+        rightTriggerPressed = false;
         autoOverride = false;
     }
 
@@ -203,4 +218,12 @@ public class shooter implements Subsystem {
     public double getShooterVelocity(){
         return Math.abs(vortexFlywheel.getVelocity());
     }
+    // public void setShooter(double speed){
+    //     if (speed == 1){
+    //         shootTimer.reset();
+    //         vortexFlywheel.setSpeed(0);
+    //     } else if (speed < 1){
+    //         vortexFlywheel.setSpeed(Math.min(0.0, 1-4.0*shootTimer.get()));
+    //     }
+    // }
 }

@@ -46,7 +46,7 @@ public class theClass implements Subsystem {
         } else if (Math.abs(leftTrigger.getValue())>0.15 || leftShoulder.getValue()){
             // Cancel intake because LaserCAN now can't see the note
             intakeState = Intake.CHILL;  
-        } else if (Math.abs(rightTrigger.getValue())>0.15 && !hasNote()){
+        } else if (Math.abs(rightTrigger.getValue())>0.15){// && !hasNote()){
             // Intaking
             intakeState = Intake.SPINNING;
         } else if (Math.abs(rightTrigger.getValue())<0.15 && intakeState == Intake.SPINNING){
@@ -88,7 +88,7 @@ public class theClass implements Subsystem {
         if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
             return (measurement.distance_mm);
         } else {
-        System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
+        // System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
             return 400;
         }
     }
@@ -106,10 +106,10 @@ public class theClass implements Subsystem {
         intake.setCurrentLimit(50, 50, 0);
 
         kick = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.KICKER);
-        kick.setCurrentLimit(30, 30, 0);    
+        kick.setCurrentLimit(50, 50, 0);    
 
         feed = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.FEED);
-        feed.setCurrentLimit(30, 30, 0);
+        feed.setCurrentLimit(50, 50, 0);
         
         // Init Inputs
         //the intake senseor will be a LaserCAN
@@ -202,7 +202,7 @@ public class theClass implements Subsystem {
                 } else if (isReverse){
                     intakeState = Intake.CHILL;
                 } else {
-                    feedSpeed = -0.25;
+                    feedSpeed = -0.5;
                     intakeSpeed = 0;
                     kickSpeed = -0.25;
                 }
