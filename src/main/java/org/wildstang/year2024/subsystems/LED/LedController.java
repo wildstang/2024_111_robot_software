@@ -22,6 +22,7 @@ public class LedController implements Subsystem {
     private AddressableLEDBuffer ledBuffer;
     private theClass RandomThing;
     private shooter flywheel;
+    private WsVision vision;
     private Timer timer =  new Timer();
 
     private int port = 0;//port
@@ -39,7 +40,7 @@ public class LedController implements Subsystem {
 
     @Override
     public void update(){
-        if (flywheel.getShooterVelocity()>4000){
+        if (flywheel.getShooterVelocity()>5000 && vision.front.TargetInView()){
             setRGB(green);
         } else if (RandomThing.hasNote() && !isAuto){
             setRGB(orange);
@@ -62,6 +63,7 @@ public class LedController implements Subsystem {
         rightTrigger.addInputListener(this);
         RandomThing = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
         flywheel = (shooter) Core.getSubsystemManager().getSubsystem(WsSubsystems.SHOOTER);
+        vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         
         //Outputs
         led = new AddressableLED(port);

@@ -158,6 +158,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
             rotLocked = true;
             //rotTarget = vision.front.turnToTarget(isBlue);
             isVision = true;
+            xSpeed *= 0.7;
+            ySpeed *= 0.7;
+            rotSpeed *= 0.7;
         } else isVision = false;
         
         //assign thrust
