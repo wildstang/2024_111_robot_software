@@ -211,7 +211,7 @@ public class Notepath implements Subsystem {
 
     @Override
     public String getName() {
-        return "FeedSubsystem";
+        return "Notepath";
     }
     
 }

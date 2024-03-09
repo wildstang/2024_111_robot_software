@@ -18,8 +18,8 @@ public enum WsSubsystems implements Subsystems {
     WS_VISION("Ws Vision", WsVision.class),
     SWERVE_DRIVE("Swerve Drive", SwerveDrive.class),
     LIFT("Test_lift", Test_lift.class),
-    LED("Led Controller", LedController.class),
     NOTEPATH("Notepath", Notepath.class),
+    LED("Led Controller", LedController.class),
     SHOOTER("Shooter", shooter.class),
     ;
 
