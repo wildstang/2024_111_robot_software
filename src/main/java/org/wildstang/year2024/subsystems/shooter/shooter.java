@@ -44,6 +44,7 @@ public class shooter implements Subsystem {
     private enum Speeds { 
         OFF(0.0), 
         IDLE(ShooterConsts.IDLE_SPEED), 
+        CYCLE(ShooterConsts.CYCLE_SPEED),
         MAX(100.0);
         private double percent;
 
@@ -168,12 +169,13 @@ public class shooter implements Subsystem {
         if (leftTriggerPressed || autoAim) {
             speed = Speeds.MAX;
             if (wsVision.front.TargetInView()){
-                // if (wsVision.isStage()){
-                //     angle = ShooterConsts.FEED_ANGLE;
-                // } else {
+                if (wsVision.isStage()){
+                    angle = ShooterConsts.FEED_ANGLE;
+                    speed = Speeds.CYCLE;
+                } else {
                     angle = wsVision.getAngle();
                     shootTimer.reset();
-                // }
+                }
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
                 angle =autoassume;
             }

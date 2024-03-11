@@ -107,9 +107,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //reset gyro
         if (source == select && select.getValue()) {
             gyro.setYaw(0.0);
-            // if (DriverStation.getAlliance().isPresent()){
-            //     isBlue = DriverStation.getAlliance().get()== Alliance.Blue;
-            // }
+            if (DriverStation.getAlliance().isPresent()){
+                isBlue = DriverStation.getAlliance().get()== Alliance.Blue;
+            }
             if (rotLocked) rotTarget = 0.0;
         }
 
