@@ -35,6 +35,12 @@ public class WsVision implements Subsystem {
 
     private DigitalInput driverLeftShoulder;
 
+    
+    
+
+    // Pose accounting for velocity
+    public Pose2d deltaPos = 0;
+
     @Override
     public void inputUpdate(Input source) {
 
@@ -57,6 +63,9 @@ public class WsVision implements Subsystem {
     @Override
     public void update() {
         front.update();
+        
+        double ETA = front.distanceToTarget(isblue) / VisionConsts.noteSpeed
+        deltaPos = robotVelocity * ETA; 
         //back.update();
         SmartDashboard.putNumber("Vision getAngle", getAngle());
         SmartDashboard.putNumber("Vision distToTarget", front.distanceToTarget(isBlue));
@@ -85,8 +94,9 @@ public class WsVision implements Subsystem {
      * - Amp: 5, 6
      */
 
+    // Outdated, non longer adjusting shooter speed, only angle
     public double getSpeed(){
-        double inputDistance = front.distanceToTarget(isBlue);
+        double inputDistance = front.distanceToTarget(isBlue, deltaPose);
         if (inputDistance < distances[0]) return speeds[0];
         for (int i = 1; i < distances.length; i++){
             if (inputDistance < distances[i]){
@@ -95,8 +105,9 @@ public class WsVision implements Subsystem {
         }
         return speeds[last] + (inputDistance-distances[last])*(speeds[last]-speeds[last-1])/(distances[last]-distances[last-1]);
     }
+
     public double getAngle(){
-        double inputDistance = front.distanceToTarget(isBlue);
+        double inputDistance = front.distanceToTarget(isBlue, deltaPos);
         if (inputDistance < distances[0]) return angles[0];
         for (int i = 1; i < distances.length; i++){
             if (inputDistance < distances[i]){

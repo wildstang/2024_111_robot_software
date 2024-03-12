@@ -78,6 +78,11 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private WsSwerveHelper swerveHelper = new WsSwerveHelper();
     private SwerveDriveOdometry odometry;
     private Timer autoTimer = new Timer();
+    private Timer velocityTimer = new Timer()
+
+    private Pose2d previous = Pose2d(0,0);
+    public Pose2d robotVelocity;
+    
 
     private WsVision vision;
 
@@ -107,9 +112,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //reset gyro
         if (source == select && select.getValue()) {
             gyro.setYaw(0.0);
-            if (DriverStation.getAlliance().isPresent()){
-                isBlue = DriverStation.getAlliance().get()== Alliance.Blue;
-            }
+            // if (DriverStation.getAlliance().isPresent()){
+            //     isBlue = DriverStation.getAlliance().get()== Alliance.Blue;
+            // }
             if (rotLocked) rotTarget = 0.0;
         }
 
@@ -257,6 +262,11 @@ public class SwerveDrive extends SwerveDriveTemplate {
     @Override
     public void update() {
         odometry.update(odoAngle(), odoPosition());
+
+        robotVelocity = Pose2d((odometry.getPoseMeters().getX() - previous.getX()) / velocityTimer.get(), (odometry.getPoseMeters().getY() - previous.getY()) / velocityTimer.get());
+        Timer.reset();
+    
+        previous = odometry.getPoseMeters();
 
         if (driveState == driveType.CROSS) {
             //set to cross - done in inputupdate

@@ -7,6 +7,9 @@ import edu.wpi.first.math.geometry.Rotation3d;
 
 public class VisionConsts {
 
+    // Note speed in meters per second
+    public static noteSpeed = (2.5) / 0.25
+
     public static final double inToM = 1/39.71;
     public final double mToIn = 39.71;
 

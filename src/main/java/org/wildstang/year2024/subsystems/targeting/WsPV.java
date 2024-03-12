@@ -2,6 +2,7 @@ package org.wildstang.year2024.subsystems.targeting;
 
 import java.util.OptionalDouble;
 
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -27,7 +28,7 @@ public class WsPV {
     private Transform3d robotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
 
     private VisionConsts VC = new VisionConsts();
-
+    
     public int tid = 0;
     public double tx = 0;
     public double ty = 0;
@@ -51,6 +52,7 @@ public class WsPV {
         result = camera.getLatestResult();
         SmartDashboard.putBoolean("hasTargets", result.hasTargets());
         tv = result.hasTargets();
+        
         if(tv) {
             target = result.getBestTarget();
             tx = target.getYaw();
@@ -89,21 +91,29 @@ public class WsPV {
     /**
      * returns what to set rotLocked to
      */
-    public double turnToTarget(boolean isBlue){
-        if (isBlue) return getDirection(estimatedPose.getX()*VC.mToIn - VC.blueSpeakerX,
-            estimatedPose.getY()*VC.mToIn - VC.blueSpeakerY, isBlue);
-        else return getDirection(estimatedPose.getX()*VC.mToIn - VC.redSpeakerX,
-            estimatedPose.getY()*VC.mToIn - VC.redSpeakerY, isBlue);
+    public double turnToTarget(boolean isBlue, Pose2d deltaPose){
+        if (isBlue) return getDirection((estimatedPose + deltaPos).getX()*VC.mToIn - VC.blueSpeakerX,
+            (estimatedPose + deltaPos).getY()*VC.mToIn - VC.blueSpeakerY, isBlue);
+        else return getDirection((estimatedPose + deltaPos).getX()*VC.mToIn - VC.redSpeakerX,
+            (estimatedPose + deltaPos).getY()*VC.mToIn - VC.redSpeakerY, isBlue);
+    }
+
+    public double turnToTarget(boolean isBlue) {
+        return turnToTarget(isBlue, Pose2d(0,0));
     }
 
     /**
      * returns distance to selected alliances' center of speaker for lookup table use
      */
-    public double distanceToTarget(boolean isBlue){
-        if (isBlue) return Math.hypot(estimatedPose.getX()*VC.mToIn - VC.blueSpeakerX,
-            estimatedPose.getY()*VC.mToIn - VC.blueSpeakerY);
-        else return Math.hypot(estimatedPose.getX()*VC.mToIn - VC.redSpeakerX,
-            estimatedPose.getY()*VC.mToIn - VC.redSpeakerY);
+    public double distanceToTarget(boolean isBlue, Pose2d deltaPos){
+        if (isBlue) return Math.hypot((estimatedPose + deltaPos).getX()*VC.mToIn - VC.blueSpeakerX,
+            (estimatedPose + deltaPos).getY()*VC.mToIn - VC.blueSpeakerY);
+        else return Math.hypot((estimatedPose + deltaPos).getX()*VC.mToIn - VC.redSpeakerX,
+            (estimatedPose + deltaPos).getY()*VC.mToIn - VC.redSpeakerY);
+    }
+
+    public double distanceToTarget(boolean isBlue) {
+        return distanceToTarget(isBlue, Pose2d(0,0));
     }
 
     /**
