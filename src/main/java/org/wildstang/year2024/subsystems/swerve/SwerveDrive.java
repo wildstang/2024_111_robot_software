@@ -335,6 +335,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         SmartDashboard.putNumber("Odo X", odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Odo Y", odometry.getPoseMeters().getY());
         SmartDashboard.putNumber("arm rotation offset", shootOffset);
+        SmartDashboard.putBoolean("Alliance Color", DriverStation.getAlliance().isPresent());
     }
     
     @Override
