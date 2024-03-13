@@ -89,11 +89,11 @@ public class WsPV {
     /**
      * returns what to set rotLocked to
      */
-    public double turnToTarget(boolean isBlue){
-        if (isBlue) return getDirection(estimatedPose.getX()*VC.mToIn - VC.blueSpeakerX,
-            estimatedPose.getY()*VC.mToIn - VC.blueSpeakerY, isBlue);
-        else return getDirection(estimatedPose.getX()*VC.mToIn - VC.redSpeakerX,
-            estimatedPose.getY()*VC.mToIn - VC.redSpeakerY, isBlue);
+    public double turnToTarget(boolean isBlue, boolean isStage){
+        if (isBlue) return getDirection(estimatedPose.getX()*VC.mToIn - (isStage ? VC.blueTrussX: VC.blueSpeakerX),
+            estimatedPose.getY()*VC.mToIn - (isStage ? VC.blueTrussY : VC.blueSpeakerY), isBlue);
+        else return getDirection(estimatedPose.getX()*VC.mToIn - (isStage ? VC.redTrussX : VC.redSpeakerX),
+            estimatedPose.getY()*VC.mToIn - (isStage ? VC.redTrussY : VC.redSpeakerY), isBlue);
     }
 
     /**

@@ -60,7 +60,7 @@ public class WsVision implements Subsystem {
         //back.update();
         SmartDashboard.putNumber("Vision getAngle", getAngle());
         SmartDashboard.putNumber("Vision distToTarget", front.distanceToTarget(isBlue));
-        SmartDashboard.putNumber("Vision angleToRot", front.turnToTarget(isBlue));
+        SmartDashboard.putNumber("Vision angleToRot", front.turnToTarget(isBlue, isStage()));
         SmartDashboard.putBoolean("Vision targetinView", front.TargetInView());
         // SmartDashboard.putNumber("GP X", back.tx);
         // SmartDashboard.putNumber("GP Y", back.ty);
