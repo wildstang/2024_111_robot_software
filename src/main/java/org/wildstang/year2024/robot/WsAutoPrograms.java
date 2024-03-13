@@ -1,9 +1,13 @@
 package org.wildstang.year2024.robot;
 
 import org.wildstang.framework.core.AutoPrograms;
+import org.wildstang.year2024.auto.Programs.AltCenterBlue;
+import org.wildstang.year2024.auto.Programs.AltCenterRed;
 import org.wildstang.year2024.auto.Programs.Auto113;
-import org.wildstang.year2024.auto.Programs.Drake;
-import org.wildstang.year2024.auto.Programs.Offsides;
+import org.wildstang.year2024.auto.Programs.CenterBlue;
+import org.wildstang.year2024.auto.Programs.CenterRed;
+import org.wildstang.year2024.auto.Programs.OffsideBlue;
+import org.wildstang.year2024.auto.Programs.OffsideRed;
 import org.wildstang.year2024.auto.Programs.TestProgram;
 
 /**
@@ -14,10 +18,14 @@ public enum WsAutoPrograms implements AutoPrograms {
 
     // enumerate programs
     //SAMPLE_PROGRAM("Sample", SampleAutoProgram.class),
-    TEST_PROGRAM("Test Program", TestProgram.class),
+    //TEST_PROGRAM("Test Program", TestProgram.class),
     //AUTO_113("Auto 113 BAC", Auto113.class),
-    THE_DRAKE("The Drake", Drake.class),
-    OFFSIDES("Offsides", Offsides.class)
+    CENTER_BLUE("Center Blue", CenterBlue.class),
+    CENTER_RED("Center Red", CenterRed.class),
+    OFFSIDE_BLUE("Offside Blue", OffsideBlue.class),
+    OFFSIDE_RED("Offside Red", OffsideRed.class),
+    ALT_CENTER_BLUE("Alt Center Blue", AltCenterBlue.class),
+    ALT_CENTER_RED("Alt Center Red", AltCenterRed.class),
     ;
 
     /**

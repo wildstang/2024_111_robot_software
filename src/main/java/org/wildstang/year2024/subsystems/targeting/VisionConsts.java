@@ -15,9 +15,9 @@ public class VisionConsts {
     public final double redSpeakerX = 641.7;//in
     public final double redSpeakerY = 218.42;//in
 
-    public final double blueTrussX = 180.0;
+    public final double blueTrussX = 140.0;
     public final double blueTrussY = 218.42;
-    public final double redTrussX = 470.0;
+    public final double redTrussX = 510.0;
     public final double redTrussY = 218.42;
 
     //TODO: what are the actual pipeline indices?
