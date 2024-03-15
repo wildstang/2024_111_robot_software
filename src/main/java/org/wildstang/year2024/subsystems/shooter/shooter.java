@@ -174,16 +174,14 @@ public class shooter implements Subsystem {
         if (leftTriggerPressed || autoAim) {
             speed = Speeds.MAX;
             if (wsVision.front.TargetInView()){
-                if (isCycle){
-                    angle = ShooterConsts.FEED_ANGLE;
-                    speed = Speeds.CYCLE;
-                } else {
-                    if (!rightTriggerPressed) angle = wsVision.getAngle();
-                    shootTimer.reset();
-                }
+                if (!rightTriggerPressed) angle = wsVision.getAngle();
+                shootTimer.reset();
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
                 angle =autoassume;
             }
+        } else if (isCycle){
+            speed = Speeds.CYCLE;
+            angle = ShooterConsts.FEED_ANGLE;
         } else if (!autoOverride) {
             if (idleTimer.hasElapsed(1.0)) {
                 speed = Speeds.IDLE;
