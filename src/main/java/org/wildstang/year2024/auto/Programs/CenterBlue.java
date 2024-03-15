@@ -52,7 +52,7 @@ public class CenterBlue extends AutoProgram {
         group1.addStep(group1a);
         addStep(group1);
         addStep(new AutoStepDelay(300));
-        addStep(new ShooterSetAngle(96));
+        addStep(new ShooterSetAngle(99));
         addStep(new ShooterAutoAim(true));
 
         //grab second prestaged and shoot first prestaged
@@ -68,7 +68,7 @@ public class CenterBlue extends AutoProgram {
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
         group4.addStep(new SwervePathFollowerStep("CenterD", swerve, isBlue));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
-        group4a.addStep(new ShooterSetAngle(70));
+        group4a.addStep(new ShooterSetAngle(75));
         group4a.addStep(new AutoStepDelay(500));
         group4a.addStep(new SetIntakeSequenceStep(true));
         group4.addStep(group4a);

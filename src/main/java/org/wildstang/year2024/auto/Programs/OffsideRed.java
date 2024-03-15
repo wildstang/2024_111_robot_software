@@ -43,6 +43,7 @@ public class OffsideRed extends AutoProgram {
 
         // shoot preload
         addStep(new ShootSpeakerStep());
+        addStep(new AutoStepDelay(500));
 
         // grab center E 
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
@@ -51,7 +52,7 @@ public class OffsideRed extends AutoProgram {
         group1a.addStep(new AutoStepDelay(300));
         group1a.addStep(new SetIntakeSequenceStep(true));
         group1a.addStep(new ShooterSetAngle(70));
-        group1a.addStep(new ShooterAutoAim(true));
+        group1a.addStep(new ShooterAutoAim(false));
         group1a.addStep(new VisionOnStep(false));
         group1.addStep(group1a);
         addStep(group1);
@@ -85,9 +86,9 @@ public class OffsideRed extends AutoProgram {
         // addStep(new SetIntakeSequenceStep(true));
         // addStep(new VisionOnStep(false));
 
-        // addStep(new SwervePathFollowerStep("GrabCOffsidered", swerve, isBlue));
+        // addStep(new SwervePathFollowerStep("GrabCOffside", swerve, isBlue));
         // AutoParallelStepGroup group5 = new AutoParallelStepGroup();
-        // group5.addStep(new SwervePathFollowerStep("ScoreCOffsidered", swerve, isBlue));
+        // group5.addStep(new SwervePathFollowerStep("ScoreCOffside", swerve, isBlue));
         // AutoSerialStepGroup group5a = new AutoSerialStepGroup();
         // group5a.addStep(new AutoStepDelay(1000));
         // group5a.addStep(new VisionOnStep(true));

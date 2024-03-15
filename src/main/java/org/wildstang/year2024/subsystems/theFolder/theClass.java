@@ -28,7 +28,7 @@ public class theClass implements Subsystem {
 
     private WsSpark feed, intake, kick;
     private AnalogInput rightTrigger, leftTrigger;
-    private DigitalInput leftShoulder, rightShoulder;
+    private DigitalInput leftShoulder, rightShoulder, aButton;
     private Timer intakeTimer = new Timer();
     private Timer feedTimer = new Timer();
 
@@ -39,6 +39,8 @@ public class theClass implements Subsystem {
 
         if (Math.abs(rightTrigger.getValue())>0.15 && Math.abs(leftTrigger.getValue()) > 0.15){
             // Into Speaker
+            intakeState = Intake.SHOOT;
+        } else if (aButton.getValue() && Math.abs(rightTrigger.getValue())>0.15){
             intakeState = Intake.SHOOT;
         } else if (leftShoulder.getValue()){
             // Into Amp
@@ -124,6 +126,8 @@ public class theClass implements Subsystem {
         leftShoulder.addInputListener(this);
         rightShoulder = (DigitalInput) WsInputs.DRIVER_RIGHT_SHOULDER.get();
         rightShoulder.addInputListener(this);
+        aButton = (DigitalInput) WsInputs.DRIVER_FACE_DOWN.get();
+        aButton.addInputListener(this);
 
         intakeTimer.start();
         feedTimer.start();
@@ -214,7 +218,8 @@ public class theClass implements Subsystem {
                 if (isReverse)feedSpeed = 1.0;
                 else if (isFiring) feedSpeed = -1.0;
                 else feedSpeed = 0;
-                kickSpeed = 0;
+                if (isReverse) kickSpeed = 1.0;
+                else kickSpeed = 0;
             }
             // case SHOOT:
             if (intakeState == Intake.SHOOT){
@@ -255,7 +260,7 @@ public class theClass implements Subsystem {
             intake.setSpeed(0);
         } else if (speed > 0){
             intake.setSpeed(Math.min(1.0, 4.0*intakeTimer.get()));
-        }
+        } else intake.setSpeed(speed);
     }
 
     @Override

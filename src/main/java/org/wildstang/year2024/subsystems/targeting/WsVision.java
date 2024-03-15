@@ -25,10 +25,10 @@ public class WsVision implements Subsystem {
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
     // public double[] distances = {43.3, 83, 129};
-    public double[] distances = {41, 50, 70, 105, 146};
+    public double[] distances = {41, 50, 70, 105, 146};//dist 43 plus 10, 100 is +7.5
     public double[] speeds = {0.0, 0.0, 0.0};
     // public double[] angles = {180, 127, 101};
-    public double[] angles = {174, 145, 127, 93, 75};
+    public double[] angles = {174, 145, 127, 95, 75};
     public int last = distances.length-1;
 
     public boolean isBlue = true;
@@ -107,5 +107,8 @@ public class WsVision implements Subsystem {
     }
     public boolean isStage(){
         return front.tid == 13 || front.tid == 14;
+    }
+    public void setAlliance(boolean alliance){
+        this.isBlue = alliance;
     }
 }

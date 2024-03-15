@@ -175,7 +175,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (leftTrigger.getValue() > 0.15 && !isCurrentLow){
             for (int i = 0; i < 4; i++){
-                modules[i].tempDriveCurrent(DriveConstants.DRIVE_CURRENT_LIMIT - 15);
+                modules[i].tempDriveCurrent(DriveConstants.DRIVE_CURRENT_LIMIT - 20);
             }
             isCurrentLow = true;
         } else if (isCurrentLow && leftTrigger.getValue() < 0.15){
@@ -453,5 +453,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     }
     public void setAlliance(boolean isBlue){
         this.isBlue = isBlue;
+        vision.setAlliance(isBlue);
     }
 }

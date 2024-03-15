@@ -43,6 +43,7 @@ public class OffsideBlue extends AutoProgram {
 
         // shoot preload
         addStep(new ShootSpeakerStep());
+        addStep(new AutoStepDelay(500));
 
         // grab center E 
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
@@ -51,7 +52,7 @@ public class OffsideBlue extends AutoProgram {
         group1a.addStep(new AutoStepDelay(300));
         group1a.addStep(new SetIntakeSequenceStep(true));
         group1a.addStep(new ShooterSetAngle(70));
-        group1a.addStep(new ShooterAutoAim(true));
+        group1a.addStep(new ShooterAutoAim(false));
         group1a.addStep(new VisionOnStep(false));
         group1.addStep(group1a);
         addStep(group1);

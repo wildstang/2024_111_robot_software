@@ -6,6 +6,8 @@ import org.wildstang.year2024.auto.Programs.AltCenterRed;
 import org.wildstang.year2024.auto.Programs.Auto113;
 import org.wildstang.year2024.auto.Programs.CenterBlue;
 import org.wildstang.year2024.auto.Programs.CenterRed;
+import org.wildstang.year2024.auto.Programs.DumbBlue;
+import org.wildstang.year2024.auto.Programs.DumbRed;
 import org.wildstang.year2024.auto.Programs.OffsideBlue;
 import org.wildstang.year2024.auto.Programs.OffsideRed;
 import org.wildstang.year2024.auto.Programs.TestProgram;
@@ -26,6 +28,8 @@ public enum WsAutoPrograms implements AutoPrograms {
     OFFSIDE_RED("Offside Red", OffsideRed.class),
     ALT_CENTER_BLUE("Alt Center Blue", AltCenterBlue.class),
     ALT_CENTER_RED("Alt Center Red", AltCenterRed.class),
+    DUMB_BLUE("Dumb Blue", DumbBlue.class),
+    DUMB_RED("Dumb Red", DumbRed.class)
     ;
 
     /**

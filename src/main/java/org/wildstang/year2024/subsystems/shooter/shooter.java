@@ -23,7 +23,7 @@ public class shooter implements Subsystem {
 
     // Inputs
     private AnalogInput leftTrigger, leftStickY, rightTrigger;
-    private DigitalInput startButton;
+    private DigitalInput startButton, aButton;
     private DigitalInput dPadUp;
     private DigitalInput dPadDown;
 
@@ -41,11 +41,12 @@ public class shooter implements Subsystem {
     private boolean subwooferAimOverride = false;
     private boolean autoAim = false;
     private boolean autoOverride = false;
+    private boolean isCycle = false;
     private enum Speeds { 
         OFF(0.0), 
         IDLE(ShooterConsts.IDLE_SPEED), 
         CYCLE(ShooterConsts.CYCLE_SPEED),
-        MAX(100.0);
+        MAX(1.0);
         private double percent;
 
         public double getPercent() {
@@ -92,6 +93,7 @@ public class shooter implements Subsystem {
         if (source == dPadDown && dPadDown.getValue()) {
             aimOffset -= ShooterConsts.ANGLE_INCREMENT;
         }
+        isCycle = aButton.getValue();
     }
 
     public void setAngle(double angle) {
@@ -127,6 +129,7 @@ public class shooter implements Subsystem {
         //set current limit 
         angleNeo.setCurrentLimit(20, 20, 0);
         vortexFlywheel.setCurrentLimit(40, 40, 0);
+        neoFlywheel.setCurrentLimit(40, 40, 0);
 
 
         // Init Inputs
@@ -137,6 +140,8 @@ public class shooter implements Subsystem {
 
         startButton = (DigitalInput) Core.getInputManager().getInput(WsInputs.DRIVER_START);
         startButton.addInputListener(this);
+        aButton = (DigitalInput) WsInputs.DRIVER_FACE_DOWN.get();
+        aButton.addInputListener(this);
 
         dPadDown = (DigitalInput) WsInputs.DRIVER_DPAD_DOWN.get();
         dPadDown.addInputListener(this);
@@ -169,11 +174,11 @@ public class shooter implements Subsystem {
         if (leftTriggerPressed || autoAim) {
             speed = Speeds.MAX;
             if (wsVision.front.TargetInView()){
-                if (wsVision.isStage()){
+                if (isCycle){
                     angle = ShooterConsts.FEED_ANGLE;
                     speed = Speeds.CYCLE;
                 } else {
-                    angle = wsVision.getAngle();
+                    if (!rightTriggerPressed) angle = wsVision.getAngle();
                     shootTimer.reset();
                 }
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
@@ -200,6 +205,10 @@ public class shooter implements Subsystem {
         SmartDashboard.putNumber("shooter angle", angle);
         SmartDashboard.putNumber("shooter speed", speed.getPercent());
         SmartDashboard.putBoolean("shooter subwoofer override", subwooferAimOverride);
+        SmartDashboard.putNumber("shooter vortex spin", vortexFlywheel.getVelocity());
+        SmartDashboard.putNumber("shooter neo spin", neoFlywheel.getVelocity());
+        SmartDashboard.putNumber("shooter vortex voltage", vortexFlywheel.getController().getAppliedOutput());
+        SmartDashboard.putNumber("shooter neo voltage", neoFlywheel.getController().getAppliedOutput());
     }
 
     @Override
