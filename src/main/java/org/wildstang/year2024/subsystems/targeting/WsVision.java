@@ -25,10 +25,10 @@ public class WsVision implements Subsystem {
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
     // public double[] distances = {43.3, 83, 129};
-    public double[] distances = {41, 50, 70, 105, 146};//dist 43 plus 10, 100 is +7.5
+    public double[] distances = {41, 50, 70, 105, 146};//32 is +15, 82 is +6.5, 110 is +7.5
     public double[] speeds = {0.0, 0.0, 0.0};
     // public double[] angles = {180, 127, 101};
-    public double[] angles = {174, 145, 127, 95, 75};
+    public double[] angles = {174, 145+7.5, 127+75, 95+7.5, 75+9};
     public int last = distances.length-1;
 
     public boolean isBlue = true;

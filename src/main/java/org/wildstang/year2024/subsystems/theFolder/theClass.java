@@ -171,7 +171,7 @@ public class theClass implements Subsystem {
                 } else {
                     feedTimer.reset();
                     intakeSpeed = 1.0;
-                    feedSpeed = 1.0;
+                    feedSpeed = 0.7;
                     kickSpeed = 0;
                 }
             }
@@ -197,7 +197,7 @@ public class theClass implements Subsystem {
             // case REVERSE:
             if (intakeState == Intake.REVERSE){
                 // if (laserDistance() >= 205) {
-                    if (feedTimer.hasElapsed(2.5)){
+                    if (feedTimer.hasElapsed(1.0)){
                         intakeState = Intake.CHILL;
                         intakeSpeed = 0;
                         feedSpeed = 0;
@@ -208,7 +208,7 @@ public class theClass implements Subsystem {
                 } else {
                     feedSpeed = -0.5;
                     intakeSpeed = 0;
-                    kickSpeed = -0.25;
+                    kickSpeed = -0.75;
                 }
             }
             // case AMP:
