@@ -171,7 +171,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (leftBumper.getValue()){
             xSpeed *= 0.25;
             ySpeed *= 0.25;
-            rotSpeed *= 0.25;
         }
         if (leftTrigger.getValue() > 0.15 && !isCurrentLow){
             for (int i = 0; i < 4; i++){

@@ -183,7 +183,7 @@ public class shooter implements Subsystem {
             speed = Speeds.CYCLE;
             angle = ShooterConsts.FEED_ANGLE;
         } else if (!autoOverride) {
-            if (idleTimer.hasElapsed(1.0)) {
+            if (idleTimer.hasElapsed(1.0) && !subwooferAimOverride) {
                 speed = Speeds.IDLE;
                 angle = ShooterConsts.MIN_ANGLE;
             } else {
