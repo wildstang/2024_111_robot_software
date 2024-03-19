@@ -168,6 +168,7 @@ public class shooter implements Subsystem {
     @Override
     public void update() {
         // Aim if trigger pressed and Speaker in sight
+
         if (!RandomThing.hasNote() || rightTriggerPressed){
             idleTimer.reset();
         }
@@ -179,7 +180,13 @@ public class shooter implements Subsystem {
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
                 angle =autoassume;
             }
-        } else if (isCycle){
+        } else if(!leftTriggerPressed) {
+            if (wsVision.front.TargetInView()){
+                if (!rightTriggerPressed) angle = wsVision.getAngle();
+                shootTimer.reset();
+            }
+        }
+        else if (isCycle){
             speed = Speeds.CYCLE;
             angle = ShooterConsts.FEED_ANGLE;
         } else if (!autoOverride) {
