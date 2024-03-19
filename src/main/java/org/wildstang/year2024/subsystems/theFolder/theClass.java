@@ -22,6 +22,8 @@ public class theClass implements Subsystem {
     private double intakeSpeed=0, feedSpeed=0, kickSpeed=0;
     private boolean isReverse = false;
     private boolean isFiring = false;
+    private boolean noteDetected = false;
+    private boolean notePassed = false;
     private Intake intakeState = Intake.CHILL; 
 
     private enum Intake { CHILL, SPINNING, INTAKING, REVERSE, AMP, SHOOT };
@@ -140,15 +142,15 @@ public class theClass implements Subsystem {
     @Override
     public void update() {
         SmartDashboard.putNumber("Laser Can distance (mm)", laserDistance());
+
         
         intakeSpeed = 0;
         feedSpeed = 0;
         kickSpeed = 0;
 
-        // switch (intakeState) {
-        //     case CHILL:
-            if (intakeState == Intake.CHILL){
-                if (isReverse){
+        switch (intakeState) {
+            case CHILL:
+             if (isReverse){
                     intakeSpeed = -1.0;
                     feedSpeed = -1.0;
                     kickSpeed = -1.0;
@@ -157,10 +159,10 @@ public class theClass implements Subsystem {
                     feedSpeed = 0;
                     kickSpeed = 0;
                 }
-            }
-            // case SPINNING:
+            break;
+            case SPINNING:
                 // Change condition
-            if (intakeState == Intake.SPINNING){
+            
                 if (laserDistance() < 400) {
                     if (feedTimer.hasElapsed(0.1)){
                         intakeState = Intake.INTAKING;
@@ -174,28 +176,37 @@ public class theClass implements Subsystem {
                     feedSpeed = 0.7;
                     kickSpeed = 0;
                 }
+            break;
+            case INTAKING:
+            if (laserDistance() < 400 && !noteDetected) {
+                noteDetected = true;
+                notePassed = false;
+                intakeSpeed = 1.0;
+                feedSpeed = 0.5;
+                kickSpeed = 0;
             }
-            // case INTAKING:
-            if (intakeState == Intake.INTAKING){
-                if (laserDistance() <= 60) {
-                    if (feedTimer.hasElapsed(0.01)){
-                        intakeState = Intake.REVERSE;
-                        feedTimer.reset();
-                        feedSpeed = -0.25;
-                        intakeSpeed = 0;
-                        kickSpeed = 0;
-                    }
-                } else if (isReverse){
-                    intakeState = Intake.CHILL;
-                } else {
-                    feedTimer.reset();
-                    intakeSpeed = 1.0;
-                    feedSpeed = 0.5;
-                    kickSpeed = 0;
-                }
+            if (isReverse) {
+                intakeState = Intake.CHILL;
+                noteDetected = false;
+                notePassed = false;
+            } else if (noteDetected && !notePassed) {
+                feedTimer.reset();
+                intakeSpeed = 1.0;
+                feedSpeed = 0.5;
+                kickSpeed = 0;
             }
-            // case REVERSE:
-            if (intakeState == Intake.REVERSE){
+            if (laserDistance() > 60 && noteDetected && !notePassed) {
+                notePassed = true;
+            }
+            if (noteDetected && notePassed) {
+                intakeState = Intake.REVERSE;
+                noteDetected = false;
+                notePassed = false;
+                
+            }
+            break;
+            case REVERSE:
+            
                 // if (laserDistance() >= 205) {
                     if (feedTimer.hasElapsed(1.0)){
                         intakeState = Intake.CHILL;
@@ -210,9 +221,9 @@ public class theClass implements Subsystem {
                     intakeSpeed = 0;
                     kickSpeed = -0.75;
                 }
-            }
-            // case AMP:
-            if (intakeState == Intake.AMP){
+            break;
+            case AMP:
+            
                 if (isReverse) intakeSpeed = -1.0;
                 else intakeSpeed = 0;
                 if (isReverse)feedSpeed = 1.0;
@@ -220,9 +231,9 @@ public class theClass implements Subsystem {
                 else feedSpeed = 0;
                 if (isReverse) kickSpeed = 1.0;
                 else kickSpeed = 0;
-            }
-            // case SHOOT:
-            if (intakeState == Intake.SHOOT){
+            break;
+            case SHOOT:
+            
                 if (isFiring){
                     intakeSpeed = 1.0;
                     feedSpeed = 1.0;
@@ -232,9 +243,9 @@ public class theClass implements Subsystem {
                     feedSpeed = 0;
                     kickSpeed = 0;
                 }
-            }
+            break;
             
-        // }
+        }
         setIntake(intakeSpeed);
         feed.setSpeed(feedSpeed);
         kick.setSpeed(kickSpeed);
