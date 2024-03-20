@@ -30,6 +30,9 @@ public class WsVision implements Subsystem {
     // public double[] angles = {180, 127, 101};
     public double[] angles = {174, 145+7.5, 127+75, 95+7.5, 75+9};
     public int last = distances.length-1;
+    public double HEIGHT_OF_SPEAKER_CENTER = 2.045; 
+    public double HEIGHT_OF_SHOOTER = 0.15; 
+    public double SUBWOOFER_DEPTH = 0.92 / 2;
 
     public boolean isBlue = true;
 
@@ -112,6 +115,6 @@ public class WsVision implements Subsystem {
         this.isBlue = alliance;
     }
     public double side_speed(){
-       return front.analyzeSkew();
+       return front.analyzeSkew_speed();
     }
 }   

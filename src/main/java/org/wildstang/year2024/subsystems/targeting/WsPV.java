@@ -160,7 +160,7 @@ public class WsPV {
     }
 
 
-    public double analyzeSkew() {
+    public double analyzeSkew_speed() {
         double angleTarget = Math.abs(tz);
         
         if (angleTarget >= 160 && angleTarget <= 180) {
@@ -172,5 +172,16 @@ public class WsPV {
         }
         
         
+    }
+    public int analyzeSkew_angle() {
+        int angleTarget = Math.abs((int)tz); 
+        
+        if (angleTarget > 180) {
+            angleTarget = 180; 
+        } else if (angleTarget < 100) {
+            angleTarget = 100; 
+        }
+        
+        return angleTarget; 
     }
 }
