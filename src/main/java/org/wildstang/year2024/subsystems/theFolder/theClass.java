@@ -32,6 +32,8 @@ public class theClass implements Subsystem {
     private Timer intakeTimer = new Timer();
     private Timer feedTimer = new Timer();
 
+    public boolean isInatke = false;
+
     private LaserCan lc;
 
     @Override
@@ -51,6 +53,7 @@ public class theClass implements Subsystem {
         } else if (Math.abs(rightTrigger.getValue())>0.15){// && !hasNote()){
             // Intaking
             intakeState = Intake.SPINNING;
+            isIntake = true;
         } else if (Math.abs(rightTrigger.getValue())<0.15 && intakeState == Intake.SPINNING){
             // If driver stops holding down trigger and we never left spinning state, give up
             intakeState = Intake.CHILL;
@@ -252,6 +255,7 @@ public class theClass implements Subsystem {
         intakeSpeed = 0;
         feedSpeed = 0;
         kickSpeed = 0;
+        isIntake = false;
     }
 
     public void setIntake(double speed){

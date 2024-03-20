@@ -13,6 +13,7 @@ import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
+import org.wildstang.year2024.subsystems.theFolder.theClass;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -65,6 +66,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private boolean autoTag = false;
     private boolean isVision = false;
     private boolean isCurrentLow = false;
+    private booelan isOverride = false;
     
     private final double mToIn = 39.37;
 
@@ -77,6 +79,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private Timer autoTimer = new Timer();
 
     private WsVision vision;
+    private theClass intake;
 
     public enum driveType {TELEOP, AUTO, CROSS, OBJECT};
     public driveType driveState;
@@ -181,8 +184,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
             }
             isCurrentLow = false;
         }
-        if (source == dpadLeft && dpadLeft.getValue()) shootOffset -= 2.5;
-        if (source == dpadRight && dpadRight.getValue()) shootOffset += 2.5;
+
+        if (source == dpadRight && dpadRight.getValue()) isOverride = !isOverride;
+
+        if (intake.isIntake && !isOverride) driveState = driveType.OBJECT;
 
     }
  
@@ -299,6 +304,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 rotSpeed = swerveHelper.getRotControl(0, vision.back.getNoteAngle());
                 this.swerveSignal = swerveHelper.setDrive(0, Math.max(yPower, vision.back.getNoteDistance() * DriveConstants.TRANSLATION_P) , rotSpeed, -vision.back.getNoteAngle());
             }
+            else driveState = driveType.TELEOP;
         }
         SmartDashboard.putNumber("Gyro Reading", getGyroAngle());
         SmartDashboard.putNumber("X Power", xPower);
@@ -323,6 +329,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         rotTarget = 0.0;
         autoOverride = false;
         autoTag = false;
+        isOverride = false;
 
         isFieldCentric = true;
         isSnake = false;
