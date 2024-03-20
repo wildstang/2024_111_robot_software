@@ -13,6 +13,7 @@ import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
+import org.wildstang.year2024.subsystems.theFolder.theClass;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -81,7 +82,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     private WsVision vision;
 
-    public enum driveType {TELEOP, AUTO, CROSS};
+    private theClass intake;
+
+    public enum driveType {TELEOP, AUTO, CROSS, INTAKE};
     public driveType driveState;
 
     @Override
@@ -145,6 +148,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
             else if (faceDown.getValue()) rotTarget = 120.0;
             else rotTarget = 90.0;
             rotLocked = true;
+        }
+        if (intake.isIntake){
+            driveState = driveType.INTAKE;
         }
 
         //get rotational joystick
@@ -247,6 +253,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.33), new Translation2d(0.2794, -0.33),
             new Translation2d(-0.2794, 0.33), new Translation2d(-0.2794, -0.33)), odoAngle(), odoPosition(), new Pose2d());
+        intake = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);              
     }
     
     @Override
@@ -280,6 +287,12 @@ public class SwerveDrive extends SwerveDriveTemplate {
             }
             this.swerveSignal = swerveHelper.setDrive(xSpeed, ySpeed, rotSpeed, getGyroAngle());
             SmartDashboard.putNumber("FR signal", swerveSignal.getSpeed(0));
+            drive();
+        }
+        if (driveState == driveType.INTAKE){
+            rotTarget = vision.back.tx + gyro.getYaw;
+            rotSpeed = swerevHelper.getRotControl(rotTarget, getGyroAngle());
+            this.swerveSignal = swerveHelper.setDrive(xSpeed, ySpeed, rotSpeed, getGyroAngle());
             drive();
         }
         if (driveState == driveType.AUTO) {

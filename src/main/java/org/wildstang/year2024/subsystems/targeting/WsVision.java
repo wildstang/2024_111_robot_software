@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class WsVision implements Subsystem {
 
     public WsPV front = new WsPV("photon-front", true);
-    //public WsPV back = new WsPV("photon-back", false);
+    public WsPV back = new WsPV("photon-back", false);
 
     public VisionConsts VC;
 
