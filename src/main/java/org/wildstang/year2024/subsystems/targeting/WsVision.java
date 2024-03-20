@@ -111,4 +111,10 @@ public class WsVision implements Subsystem {
     public void setAlliance(boolean alliance){
         this.isBlue = alliance;
     }
-}
+     /**
+     * @return true if on blue alliance
+     */
+    public boolean getAlliance() {
+        return isBlue;
+    }
+    }
