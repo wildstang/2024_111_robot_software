@@ -111,4 +111,7 @@ public class WsVision implements Subsystem {
     public void setAlliance(boolean alliance){
         this.isBlue = alliance;
     }
-}
+    public double side_speed(){
+       return front.analyzeSkew();
+    }
+}   

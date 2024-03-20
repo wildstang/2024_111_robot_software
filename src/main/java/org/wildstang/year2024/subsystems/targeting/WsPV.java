@@ -1,11 +1,13 @@
 package org.wildstang.year2024.subsystems.targeting;
 
+import java.util.List;
 import java.util.OptionalDouble;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -32,6 +34,7 @@ public class WsPV {
     public double tx = 0;
     public double ty = 0;
     public double tz = 0;
+    public List<TargetCorner> targetCorners;
     public boolean tv = false;
     public Transform3d aprilTag = new Transform3d();
     public Pose3d estimatedPose = new Pose3d();
@@ -57,6 +60,7 @@ public class WsPV {
             tx = target.getYaw();
             ty = target.getPitch();
             tz = target.getSkew();
+            
 
             //only used if it is an AT cam
             if(isAT){
@@ -89,7 +93,7 @@ public class WsPV {
         isAT = !isAT;
         camera.setPipelineIndex(isAT ? VC.notePipelineIndex : VC.ATPipelineIndex);
     }
-
+ 
     /**
      * returns what to set rotLocked to
      */
@@ -155,4 +159,18 @@ public class WsPV {
         return OptionalDouble.of((Math.PI/2.0 - (angleToCamera + A))*180/Math.PI);
     }
 
+
+    public double analyzeSkew() {
+        double angleTarget = Math.abs(tz);
+        
+        if (angleTarget >= 160 && angleTarget <= 180) {
+            return 1.0;
+        } else if (angleTarget >= 110 && angleTarget < 160) {
+            return 0.7;
+        } else  {
+            return 0;
+        }
+        
+        
+    }
 }
