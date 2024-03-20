@@ -31,6 +31,7 @@ public class WsPV {
     public int tid = 0;
     public double tx = 0;
     public double ty = 0;
+    public double tz = 0;
     public boolean tv = false;
     public Transform3d aprilTag = new Transform3d();
     public Pose3d estimatedPose = new Pose3d();
@@ -55,6 +56,7 @@ public class WsPV {
             target = result.getBestTarget();
             tx = target.getYaw();
             ty = target.getPitch();
+            tz = target.getSkew();
 
             //only used if it is an AT cam
             if(isAT){
@@ -73,9 +75,11 @@ public class WsPV {
         SmartDashboard.putNumber(cameraID + " tid", tid);
         SmartDashboard.putNumber(cameraID + " Y", ty);
         SmartDashboard.putNumber(cameraID + " X", tx);
+        SmartDashboard.putNumber(cameraID + " Z", tz);
         SmartDashboard.putBoolean(cameraID + " isAT", isAT);
         SmartDashboard.putNumber(cameraID + "poseX", estimatedPose.getX()*VC.mToIn);
         SmartDashboard.putNumber(cameraID + "posey", estimatedPose.getY()*VC.mToIn);
+        SmartDashboard.putNumber(cameraID +  "posez", estimatedPose.getZ());
     }
 
     /**
