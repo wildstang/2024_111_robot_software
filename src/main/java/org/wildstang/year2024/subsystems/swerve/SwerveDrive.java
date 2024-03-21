@@ -420,7 +420,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     public void setGyro(double degrees) {
         resetState();
         setToAuto();
-        gyro.setYaw(degrees);
+        gyro.setYaw((359.99-degrees)%360);
     }
 
     public double getGyroAngle() {
