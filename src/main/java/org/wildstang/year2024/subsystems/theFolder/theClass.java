@@ -35,6 +35,7 @@ public class theClass implements Subsystem {
     private Timer feedTimer = new Timer();
 
     private LaserCan lc;
+    private LaserCan lc2;
 
     @Override
     public void inputUpdate(Input source) {
@@ -97,6 +98,15 @@ public class theClass implements Subsystem {
         }
     }
 
+    private double laserDistance_2() {
+        LaserCan.Measurement measurement = lc2.getMeasurement();
+        if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+            return (measurement.distance_mm);
+        } else {
+        // System.out.println("Oh no! The target is out of range, or we can't get a reliable measurement!");
+            return 400;
+        }
+    }
     public boolean hasNote() {
         // Has reached the centered normal note distance
         return laserDistance() < 400;
@@ -119,6 +129,7 @@ public class theClass implements Subsystem {
         //the intake senseor will be a LaserCAN
         // https://github.com/GrappleRobotics/LaserCAN/blob/master/docs/example-java.md
         lc = new LaserCan(0);
+        lc2 = new LaserCan(1);
 
         rightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
         rightTrigger.addInputListener(this);
@@ -178,37 +189,17 @@ public class theClass implements Subsystem {
                 }
             break;
             case INTAKING:
-            if (laserDistance() < 400 && !noteDetected) {
-                noteDetected = true;
-                notePassed = false;
+            if(laserDistance() < 400)
                 intakeSpeed = 1.0;
                 feedSpeed = 0.5;
                 kickSpeed = 0;
-            }
-            if (isReverse) {
-                intakeState = Intake.CHILL;
-                noteDetected = false;
-                notePassed = false;
-            } else if (noteDetected && !notePassed) {
-                feedTimer.reset();
-                intakeSpeed = 1.0;
-                feedSpeed = 0.5;
-                kickSpeed = 0;
-            }
-            if (laserDistance() > 60 && noteDetected && !notePassed) {
-                notePassed = true;
-            }
-            if (noteDetected && notePassed) {
+            if(laserDistance_2() < 400 && laserDistance()< 400)
                 intakeState = Intake.REVERSE;
-                noteDetected = false;
-                notePassed = false;
-                
-            }
             break;
             case REVERSE:
             
                 // if (laserDistance() >= 205) {
-                    if (feedTimer.hasElapsed(1.0)){
+                    if (laserDistance_2() == 400){
                         intakeState = Intake.CHILL;
                         intakeSpeed = 0;
                         feedSpeed = 0;
