@@ -66,7 +66,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private boolean autoTag = false;
     private boolean isVision = false;
     private boolean isCurrentLow = false;
-    private booelan isOverride = false;
+    private boolean isOverride = false;
     
     private final double mToIn = 39.37;
 
@@ -187,7 +187,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
         if (source == dpadRight && dpadRight.getValue()) isOverride = !isOverride;
 
-        if (intake.isIntake && !isOverride) driveState = driveType.OBJECT;
+        if (intake.isIntaking() && !isOverride) driveState = driveType.OBJECT;
 
     }
  
@@ -301,10 +301,14 @@ public class SwerveDrive extends SwerveDriveTemplate {
         } 
         if (driveState == driveType.OBJECT) {
             if (vision.back.TargetInView()) {
-                rotSpeed = swerveHelper.getRotControl(0, vision.back.getNoteAngle());
-                this.swerveSignal = swerveHelper.setDrive(0, Math.max(yPower, vision.back.getNoteDistance() * DriveConstants.TRANSLATION_P) , rotSpeed, -vision.back.getNoteAngle());
+                rotSpeed = swerveHelper.getRotControl( vision.back.getNoteAngle(), 0.0);
+                this.swerveSignal = swerveHelper.setDrive(0, Math.max(yPower, vision.back.getNoteDistance() * DriveConstants.TRANSLATION_P) , rotSpeed, 360.0-vision.back.getNoteAngle());
+                drive();
             }
-            else driveState = driveType.TELEOP;
+            else {
+                this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
+                drive();
+            }
         }
         SmartDashboard.putNumber("Gyro Reading", getGyroAngle());
         SmartDashboard.putNumber("X Power", xPower);
