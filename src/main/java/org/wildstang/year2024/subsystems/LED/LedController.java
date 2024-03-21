@@ -33,6 +33,7 @@ public class LedController implements Subsystem {
     private int[] red = {255,0,0};
     private int[] green = {0,255,0};
     private int[] orange = {255,165,0};
+    private int[] cyan = {0,255,255};
     
     private int[] normal = white;
     private boolean isAuto = false;
@@ -40,11 +41,10 @@ public class LedController implements Subsystem {
 
     @Override
     public void update(){
-        if (vision.getAlliance() && RandomThing.hasNote() && vision.front.getAprilTagID() == 7  ){ //make boolean in pv that canShootBlueSpeaker
-            setRGB(green); //array of apriltags in visionconstants / Speaker(7, 8) / Amp(6) / Source(9, 10)
-        }
-        else if (!(vision.getAlliance()) && RandomThing.hasNote() && vision.front.TargetInView()){
-            setRGB(green); //array of apriltags in visionconstants / Speaker(3, 4) / Amp(5) / Source(1, 2)
+        if (vision.front.canSeeSpeaker(vision.getAlliance()) && RandomThing.hasNote()){ 
+            if (flywheel.getShooterVelocity()>5000){
+                setRGB(green); 
+            } else setRGB(cyan);
         } else if (RandomThing.hasNote() && !isAuto){
             setRGB(orange);
         } else {
