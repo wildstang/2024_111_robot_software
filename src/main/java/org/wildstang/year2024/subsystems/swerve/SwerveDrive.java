@@ -312,8 +312,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         } 
         if (driveState == driveType.OBJECT) {
             if (vision.back.TargetInView() && !intake.hasNote()) {
-                rotSpeed = swerveHelper.getRotControl( vision.back.tx, 0.0);
-                this.swerveSignal = swerveHelper.setDrive(0, -Math.hypot(yPower, xPower) , rotSpeed, 360.0-vision.back.tx);
+                rotSpeed = swerveHelper.getRotControl( 0.75*vision.back.tx, 0.0);
+                this.swerveSignal = swerveHelper.setDrive(0, -Math.hypot(yPower, xPower) , rotSpeed, 360.0-0.75*vision.back.tx);
                 drive();
             }
             else {

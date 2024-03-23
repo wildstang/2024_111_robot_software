@@ -48,7 +48,7 @@ public class theClass implements Subsystem {
         } else if (Math.abs(leftTrigger.getValue())>0.15 || leftShoulder.getValue()){
             // Cancel intake because LaserCAN now can't see the note
             intakeState = Intake.CHILL;  
-        } else if (Math.abs(rightTrigger.getValue())>0.15){// && !hasNote()){
+        } else if (Math.abs(rightTrigger.getValue())>0.15 && !hasNote()){
             // Intaking
             intakeState = Intake.SPINNING;
         } else if (Math.abs(rightTrigger.getValue())<0.15 && intakeState == Intake.SPINNING){
@@ -96,18 +96,16 @@ public class theClass implements Subsystem {
         }
     }
     private boolean closeLaser(){
-        LaserCan.Measurement measure = lc2.getMeasurement();
-        return (measure != null && measure.distance_mm < 300);
+        return laserDistance(0) < 300;
     }
     private boolean farLaser(){
-        LaserCan.Measurement measure = lc.getMeasurement();
-        return (measure != null && measure.distance_mm < 260);
+        return laserDistance(1) < 260;
     }
 
     public boolean hasNote() {
         // Has reached the centered normal note distance
         // return laserDistance() < 400;
-        return closeLaser() || farLaser() || (intakeTimer.hasElapsed(0.5) && intake.getController().getOutputCurrent()>30);
+        return closeLaser() || farLaser() || (intakeTimer.hasElapsed(0.5) && intake.getController().getOutputCurrent()>20);
     }
     public boolean isIntaking(){
         return intakeState == Intake.SPINNING;
@@ -176,10 +174,8 @@ public class theClass implements Subsystem {
             // case SPINNING:
                 // Change condition
             if (intakeState == Intake.SPINNING){
-                if (closeLaser()) {
-                    if (feedTimer.hasElapsed(0.1)){
+                if (closeLaser() ||  (intakeTimer.hasElapsed(0.5) && intake.getController().getOutputCurrent()>20)) {
                         intakeState = Intake.INTAKING;
-                    }
                 // Normal state action
                 } else if (isReverse){
                     intakeState = Intake.CHILL;
@@ -193,25 +189,22 @@ public class theClass implements Subsystem {
             // case INTAKING:
             if (intakeState == Intake.INTAKING){
                 if (farLaser()) {
-                    if (feedTimer.hasElapsed(0.05)){
                         intakeState = Intake.REVERSE;
                         feedTimer.reset();
                         feedSpeed = -0.25;
                         intakeSpeed = 0;
                         kickSpeed = 0;
-                    }
                 } else if (isReverse){
                     intakeState = Intake.CHILL;
                 } else {
                     feedTimer.reset();
                     intakeSpeed = 1.0;
-                    feedSpeed = 0.5;
+                    feedSpeed = 0.4;
                     kickSpeed = 0;
                 }
             }
             // case REVERSE:
             if (intakeState == Intake.REVERSE){
-                // if (laserDistance() >= 205) {
                     if (!farLaser()){
                         if (feedTimer.hasElapsed(0.1)){
                             intakeState = Intake.CHILL;
@@ -219,7 +212,6 @@ public class theClass implements Subsystem {
                             feedSpeed = 0;
                             kickSpeed = 0;
                         }
-                    // }
                 } else if (isReverse){
                     intakeState = Intake.CHILL;
                 } else {
@@ -262,6 +254,7 @@ public class theClass implements Subsystem {
         SmartDashboard.putString("feed state", intakeState.toString());
         SmartDashboard.putBoolean("feed reverse", isReverse);
         SmartDashboard.putNumber("intake actual speed", intake.getOutput());
+        SmartDashboard.putNumber("intake current", intake.getController().getOutputCurrent());
     }
 
     @Override
