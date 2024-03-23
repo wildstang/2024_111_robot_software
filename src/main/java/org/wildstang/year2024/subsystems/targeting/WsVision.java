@@ -27,9 +27,11 @@ public class WsVision implements Subsystem {
     // public double[] distances = {43.3, 83, 129};
     public double[] distances = {41, 50, 70, 105, 146};//32 is +15, 82 is +6.5, 110 is +7.5
     public double[] speeds = {0.0, 0.0, 0.0};
+
     // public double[] angle_long = {180, 127, 101};
     public double[] angle_long = {174, 145+7.5, 127+75, 95+7.5, 75+9};
     public double[] angeles_short = {100,90.5,81,71.5};
+
 
     public int last = distances.length-1;
     public double HEIGHT_OF_SPEAKER_CENTER = 2.045; 
