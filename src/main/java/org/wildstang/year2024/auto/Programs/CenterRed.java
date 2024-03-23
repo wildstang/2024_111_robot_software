@@ -52,8 +52,8 @@ public class CenterRed extends AutoProgram {
         group1.addStep(group1a);
         addStep(group1);
         addStep(new AutoStepDelay(300));
-        addStep(new ShooterSetAngle(99));
-        addStep(new ShooterAutoAim(true));
+        addStep(new ShooterSetAngle(103));
+        //addStep(new ShooterAutoAim(true));
 
         //grab second prestaged and shoot first prestaged
         addStep(new SwervePathFollowerStep("CenterBred", swerve, isBlue));
@@ -62,14 +62,15 @@ public class CenterRed extends AutoProgram {
         //grab third prestaged and shoot second prestaged
         addStep(new SwervePathFollowerStep("CenterCred", swerve, isBlue));
         addStep(new AutoStepDelay(500));
-        addStep(new ShooterAutoAim(true));
+        //addStep(new ShooterAutoAim(true));
 
         //grab middle A note and shoot third prestaged
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
         group4.addStep(new SwervePathFollowerStep("CenterDred", swerve, isBlue));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
-        group4a.addStep(new ShooterSetAngle(75));
+        group4a.addStep(new ShooterSetAngle(82.5));
         group4a.addStep(new AutoStepDelay(500));
+        group4a.addStep(new ShooterAutoAim(true));
         group4a.addStep(new SetIntakeSequenceStep(true));
         group4.addStep(group4a);
         addStep(group4);

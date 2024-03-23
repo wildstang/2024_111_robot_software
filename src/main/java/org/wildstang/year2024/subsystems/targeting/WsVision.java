@@ -25,11 +25,16 @@ public class WsVision implements Subsystem {
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
     // public double[] distances = {43.3, 83, 129};
-    public double[] distances = {41, 50, 70, 105, 146};//dist 43 plus 10, 100 is +7.5
+    public double[] distances = {41, 50, 70, 105, 146};//32 is +15, 82 is +6.5, 110 is +7.5
     public double[] speeds = {0.0, 0.0, 0.0};
-    // public double[] angles = {180, 127, 101};
-    public double[] angles = {174, 145, 127, 95, 75};
+    // public double[] angle_long = {180, 127, 101};
+    public double[] angle_long = {174, 145+7.5, 127+75, 95+7.5, 75+9};
+    public double[] angeles_short = {100,90.5,81,71.5};
+
     public int last = distances.length-1;
+    public double HEIGHT_OF_SPEAKER_CENTER = 2.045; 
+    public double HEIGHT_OF_SHOOTER = 0.15; 
+    public double SUBWOOFER_DEPTH = 0.92 / 2;
 
     public boolean isBlue = true;
 
@@ -95,22 +100,36 @@ public class WsVision implements Subsystem {
         }
         return speeds[last] + (inputDistance-distances[last])*(speeds[last]-speeds[last-1])/(distances[last]-distances[last-1]);
     }
-    public double getAngle(){
-        double inputDistance = front.distanceToTarget(isBlue);
-        if (inputDistance < distances[0]) return angles[0];
-        for (int i = 1; i < distances.length; i++){
-            if (inputDistance < distances[i]){
-                return angles[i-1] + (angles[i]-angles[i-1])*(inputDistance-distances[i-1])/(distances[i]-distances[i-1]);
-            }
-        }
-        return angles[last] + (inputDistance-distances[last])*(angles[last]-angles[last-1])/(distances[last]-distances[last-1]);
-    }
+    public double getAngle()
+     { int skew_angle = front.analyzeSkew_angle();
+       double inputDistance = front.distanceToTarget(isBlue); 
+        if ((skew_angle >= 150 && skew_angle <= 180) || (skew_angle < 100 || skew_angle > 130)) 
+        {  return calculateAngle(inputDistance, angle_long); } 
+        else if (skew_angle >= 100 && skew_angle <= 130) 
+        {  return calculateAngle(inputDistance, angeles_short); } 
+        else {   return 0;  }
+     } 
+     
+    private double calculateAngle(double inputDistance, double[] angles)
+     { if (inputDistance < distances[0])
+         return angles[0]; 
+         for (int i = 1; i < distances.length; i++)
+          { 
+            if (inputDistance < distances[i])
+             { return angles[i - 1] + (angles[i] - angles[i - 1]) * (inputDistance - distances[i - 1]) / (distances[i] - distances[i - 1]);
+             }} 
+             return angles[angles.length - 1] + (inputDistance - distances[distances.length - 1]) * (angles[angles.length - 1] - angles[angles.length - 2]) / (distances[distances.length - 1] - distances[distances.length - 2]); }
     public boolean isStage(){
         return front.tid == 13 || front.tid == 14;
     }
     public void setAlliance(boolean alliance){
         this.isBlue = alliance;
     }
+
+    public double side_speed(){
+       return front.analyzeSkew_speed();
+    }
+}   
      /**
      * @return true if on blue alliance
      */
@@ -118,3 +137,4 @@ public class WsVision implements Subsystem {
         return isBlue;
     }
     }
+
