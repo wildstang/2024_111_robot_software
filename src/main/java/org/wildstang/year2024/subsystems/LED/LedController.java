@@ -44,7 +44,7 @@ public class LedController implements Subsystem {
 
     @Override
     public void update(){
-        if (vision.front.canSeeSpeaker(vision.getAlliance()) && RandomThing.hasNote()){ 
+        if (vision.front.canSeeSpeaker(vision.getAlliance()) && vision.front.TargetInView() && RandomThing.hasNote() && !isAuto){ 
             if (flywheel.getShooterVelocity()>5000){
                 setRGB(green); 
             } else setRGB(cyan);

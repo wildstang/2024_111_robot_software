@@ -72,7 +72,7 @@ public class SwervePathFollowerStep extends AutoStep {
             //update values the robot is tracking to
             // Set in alliance relative
             if (isBlue) {
-                m_drive.setAutoValues(sample.velocityY * mToIn, -sample.velocityX * mToIn, 0, 0);
+                m_drive.setAutoValues(-sample.velocityY * mToIn, sample.velocityX * mToIn, 0, 0);
             } else {
                 m_drive.setAutoValues(sample.velocityY * mToIn, sample.velocityX * mToIn, 0, 0);
             }
