@@ -175,7 +175,7 @@ public class shooter implements Subsystem {
         }
         if (leftTriggerPressed || autoAim) {
             speed = Speeds.MAX;
-            if (wsVision.front.TargetInView()){
+            if (wsVision.aprilTagsInView()){
                 if (!rightTriggerPressed) angle = wsVision.getAngle();
                 shootTimer.reset();
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
@@ -189,7 +189,7 @@ public class shooter implements Subsystem {
         } else if (!autoOverride) {
             if (idleTimer.hasElapsed(1.0)) {
                 speed = Speeds.IDLE;
-                if (wsVision.front.TargetInView()) angle = wsVision.getAngle();
+                if (wsVision.aprilTagsInView()) angle = wsVision.getAngle();
                 else angle = ShooterConsts.PREP_ANGLE;
             } else {
                 angle = ShooterConsts.MIN_ANGLE;

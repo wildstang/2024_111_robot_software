@@ -22,8 +22,8 @@ public class WsPV {
     public PhotonCamera camera;
     public String cameraID;
     AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-    PhotonTrackedTarget target;
-    PhotonPipelineResult result;
+    public PhotonTrackedTarget target;
+    public PhotonPipelineResult result;
     private Transform3d robotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
 
     private VisionConsts VC = new VisionConsts();
@@ -89,11 +89,11 @@ public class WsPV {
     /**
      * returns what to set rotLocked to
      */
-    public double turnToTarget(boolean isBlue, boolean isStage){
-        if (isBlue) return getDirection(estimatedPose.getX()*VC.mToIn - (isStage ? VC.blueTrussX: VC.blueSpeakerX),
-            estimatedPose.getY()*VC.mToIn - (isStage ? VC.blueTrussY : VC.blueSpeakerY), isBlue);
-        else return getDirection(estimatedPose.getX()*VC.mToIn - (isStage ? VC.redTrussX : VC.redSpeakerX),
-            estimatedPose.getY()*VC.mToIn - (isStage ? VC.redTrussY : VC.redSpeakerY), isBlue);
+    public double turnToTarget(boolean isBlue){
+        if (isBlue) return getDirection(estimatedPose.getX()*VC.mToIn - (VC.blueSpeakerX),
+            estimatedPose.getY()*VC.mToIn - (VC.blueSpeakerY), isBlue);
+        else return getDirection(estimatedPose.getX()*VC.mToIn - (VC.redSpeakerX),
+            estimatedPose.getY()*VC.mToIn - (VC.redSpeakerY), isBlue);
     }
 
     /**

@@ -156,7 +156,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (rotSpeed != 0) {
             rotLocked = false;
         }
-        if (leftTrigger.getValue() > 0.15 && vision.front.TargetInView()){
+        if (leftTrigger.getValue() > 0.15 && vision.aprilTagsInView()){
             rotLocked = true;
             //rotTarget = vision.front.turnToTarget(isBlue);
             isVision = true;
@@ -273,7 +273,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
                 //if rotation tracking, replace rotational joystick value with controller generated one
-                if (isVision) rotTarget = vision.front.turnToTarget(isBlue, vision.isStage());
+                if (isVision) rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 if (isSnake) {
                     if (Math.abs(rotSpeed) < 0.05) {
@@ -291,8 +291,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
             drive();
         }
         if (driveState == driveType.AUTO) {
-            if (isVision && vision.front.TargetInView()) {
-                rotTarget = vision.front.turnToTarget(isBlue, vision.isStage());
+            if (isVision && vision.aprilTagsInView()) {
+                rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
             } else if (isAutoObject){
