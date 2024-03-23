@@ -27,12 +27,16 @@ public class LedController implements Subsystem {
 
     private int port = 0;//port
     private int length = 45;//length
+    private int initialHue = 0;
+    private int initialRed = 0;
+    private int initialBlue = 0;
 
     private int[] white = {255,255,255};
     private int[] blue = {0,0,255};
     private int[] red = {255,0,0};
     private int[] green = {0,255,0};
     private int[] orange = {255,165,0};
+    private int[] cyan = {0,255,255};
     
     private int[] normal = white;
     private boolean isAuto = false;
@@ -40,12 +44,17 @@ public class LedController implements Subsystem {
 
     @Override
     public void update(){
-        if (flywheel.getShooterVelocity()>5000 && vision.front.TargetInView()){
-            setRGB(green);
+        if (vision.front.canSeeSpeaker(vision.getAlliance()) && RandomThing.hasNote()){ 
+            if (flywheel.getShooterVelocity()>5000){
+                setRGB(green); 
+            } else setRGB(cyan);
         } else if (RandomThing.hasNote() && !isAuto){
             setRGB(orange);
         } else {
-            setRGB(normal);
+            if (normal == white) rainbow();
+            else if (normal == blue) cycleBlue();
+            else if (normal == red) cycleRed();
+            else setRGB(white);
         }
         led.setData(ledBuffer);
         led.start();
@@ -101,5 +110,24 @@ public class LedController implements Subsystem {
     public void setAlliance(boolean isBlue){
         this.normal = isBlue ? blue : red;
         isAuto = true;
+    }
+    private void rainbow(){
+        for (int i = 0; i < ledBuffer.getLength(); i++){
+            ledBuffer.setHSV(i, (initialHue + (i*180/ledBuffer.getLength()))%180, 255, 128);
+        }
+        initialHue = (initialHue + 3) % 180;
+        led.setData(ledBuffer);
+    } 
+    private void cycleRed(){
+        for (int i = 0; i < ledBuffer.getLength(); i++){
+            ledBuffer.setRGB(i, (initialRed + 255-(i*255/ledBuffer.getLength()))%255, 0, 0);
+        }
+        initialRed = (initialRed + 5) % 255;
+    }
+    private void cycleBlue(){
+        for (int i = 0; i < ledBuffer.getLength(); i++){
+            ledBuffer.setRGB(i, 0, 0, 255-(initialBlue + (i*255/ledBuffer.getLength()))%255);
+        }
+        initialBlue = (initialBlue + 5) % 255;
     }
 }

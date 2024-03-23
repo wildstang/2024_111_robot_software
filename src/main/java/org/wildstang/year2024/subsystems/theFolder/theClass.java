@@ -32,7 +32,7 @@ public class theClass implements Subsystem {
     private Timer intakeTimer = new Timer();
     private Timer feedTimer = new Timer();
 
-    private LaserCan lc;
+    private LaserCan lc, lc2;
 
     @Override
     public void inputUpdate(Input source) {
@@ -85,8 +85,9 @@ public class theClass implements Subsystem {
         intakeSpeed = 0.0;
     }
 
-    private double laserDistance() {
+    private double laserDistance(int id) {
         LaserCan.Measurement measurement = lc.getMeasurement();
+        if (id == 1) measurement = lc2.getMeasurement();
         if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
             return (measurement.distance_mm);
         } else {
@@ -94,10 +95,22 @@ public class theClass implements Subsystem {
             return 400;
         }
     }
+    private boolean closeLaser(){
+        LaserCan.Measurement measure = lc2.getMeasurement();
+        return (measure != null && measure.distance_mm < 300);
+    }
+    private boolean farLaser(){
+        LaserCan.Measurement measure = lc.getMeasurement();
+        return (measure != null && measure.distance_mm < 260);
+    }
 
     public boolean hasNote() {
         // Has reached the centered normal note distance
-        return laserDistance() < 400;
+        // return laserDistance() < 400;
+        return closeLaser();
+    }
+    public boolean isIntaking(){
+        return intakeState == Intake.SPINNING;
     }
 
     @Override
@@ -117,6 +130,7 @@ public class theClass implements Subsystem {
         //the intake senseor will be a LaserCAN
         // https://github.com/GrappleRobotics/LaserCAN/blob/master/docs/example-java.md
         lc = new LaserCan(0);
+        lc2 = new LaserCan(1);
 
         rightTrigger = (AnalogInput) Core.getInputManager().getInput(WsInputs.DRIVER_RIGHT_TRIGGER);
         rightTrigger.addInputListener(this);
@@ -139,7 +153,8 @@ public class theClass implements Subsystem {
 
     @Override
     public void update() {
-        SmartDashboard.putNumber("Laser Can distance (mm)", laserDistance());
+        SmartDashboard.putNumber("Laser Can 1 distance (mm)", laserDistance(0));
+        SmartDashboard.putNumber("Laser Can 2 distance (mm)", laserDistance(1));
         
         intakeSpeed = 0;
         feedSpeed = 0;
@@ -161,7 +176,7 @@ public class theClass implements Subsystem {
             // case SPINNING:
                 // Change condition
             if (intakeState == Intake.SPINNING){
-                if (laserDistance() < 400) {
+                if (closeLaser()) {
                     if (feedTimer.hasElapsed(0.1)){
                         intakeState = Intake.INTAKING;
                     }
@@ -171,14 +186,14 @@ public class theClass implements Subsystem {
                 } else {
                     feedTimer.reset();
                     intakeSpeed = 1.0;
-                    feedSpeed = 0.7;
+                    feedSpeed = 1.0;
                     kickSpeed = 0;
                 }
             }
             // case INTAKING:
             if (intakeState == Intake.INTAKING){
-                if (laserDistance() <= 60) {
-                    if (feedTimer.hasElapsed(0.01)){
+                if (farLaser()) {
+                    if (feedTimer.hasElapsed(0.05)){
                         intakeState = Intake.REVERSE;
                         feedTimer.reset();
                         feedSpeed = -0.25;
@@ -197,18 +212,21 @@ public class theClass implements Subsystem {
             // case REVERSE:
             if (intakeState == Intake.REVERSE){
                 // if (laserDistance() >= 205) {
-                    if (feedTimer.hasElapsed(1.0)){
-                        intakeState = Intake.CHILL;
-                        intakeSpeed = 0;
-                        feedSpeed = 0;
-                        kickSpeed = 0;
+                    if (!farLaser()){
+                        if (feedTimer.hasElapsed(0.1)){
+                            intakeState = Intake.CHILL;
+                            intakeSpeed = 0;
+                            feedSpeed = 0;
+                            kickSpeed = 0;
+                        }
                     // }
                 } else if (isReverse){
                     intakeState = Intake.CHILL;
                 } else {
+                    feedTimer.reset();
                     feedSpeed = -0.5;
                     intakeSpeed = 0;
-                    kickSpeed = -0.75;
+                    kickSpeed = -0.25;
                 }
             }
             // case AMP:
@@ -243,6 +261,7 @@ public class theClass implements Subsystem {
         SmartDashboard.putNumber("feed kick speed", kickSpeed);
         SmartDashboard.putString("feed state", intakeState.toString());
         SmartDashboard.putBoolean("feed reverse", isReverse);
+        SmartDashboard.putNumber("intake actual speed", intake.getOutput());
     }
 
     @Override

@@ -18,14 +18,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class WsVision implements Subsystem {
 
     public WsPV front = new WsPV("photon-front", true);
-    //public WsPV back = new WsPV("photon-back", false);
+    public WsLL back = new WsLL("limelight-back");
 
     public VisionConsts VC;
 
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
     // public double[] distances = {43.3, 83, 129};
-    public double[] distances = {41, 50, 70, 105, 146};//32 is +15, 82 is +6.5, 110 is +7.5
+    public double[] distances = {41, 50, 70, 105, 146};//dist 43 plus 10, 100 is +7.5
     public double[] speeds = {0.0, 0.0, 0.0};
     // public double[] angles = {180, 127, 101};
     public double[] angles = {174, 145+7.5, 127+75, 95+7.5, 75+9};
@@ -57,20 +57,23 @@ public class WsVision implements Subsystem {
     @Override
     public void update() {
         front.update();
-        //back.update();
+        back.update();
         SmartDashboard.putNumber("Vision getAngle", getAngle());
         SmartDashboard.putNumber("Vision distToTarget", front.distanceToTarget(isBlue));
         SmartDashboard.putNumber("Vision angleToRot", front.turnToTarget(isBlue, isStage()));
         SmartDashboard.putBoolean("Vision targetinView", front.TargetInView());
-        // SmartDashboard.putNumber("GP X", back.tx);
-        // SmartDashboard.putNumber("GP Y", back.ty);
-        // SmartDashboard.putBoolean("GP tv", back.TargetInView());
+        SmartDashboard.putNumber("GP X", back.tx);
+        SmartDashboard.putNumber("GP Y", back.ty);
+        SmartDashboard.putBoolean("GP tv", back.TargetInView());
+        SmartDashboard.putNumber("Vision back tx", back.tx);
+        SmartDashboard.putNumber("Vision back ty", back.ty);
 
     }
 
     @Override
     public void resetState() {
         front.update();
+        back.update();
     }
 
     @Override
@@ -111,4 +114,10 @@ public class WsVision implements Subsystem {
     public void setAlliance(boolean alliance){
         this.isBlue = alliance;
     }
-}
+     /**
+     * @return true if on blue alliance
+     */
+    public boolean getAlliance() {
+        return isBlue;
+    }
+    }
