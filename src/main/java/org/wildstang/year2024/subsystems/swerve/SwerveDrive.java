@@ -169,7 +169,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
         // ySpeed *= thrustValue;
         // rotSpeed *= thrustValue;
         if (leftBumper.getValue()){
-
             xPower *= 0.25;
             yPower *= 0.25;
             rotSpeed *= 0.25;

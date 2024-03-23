@@ -1,13 +1,11 @@
 package org.wildstang.year2024.subsystems.targeting;
 
-import java.util.List;
 import java.util.OptionalDouble;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -33,8 +31,6 @@ public class WsPV {
     public int tid = 0;
     public double tx = 0;
     public double ty = 0;
-    public double tz = 0;
-    public List<TargetCorner> targetCorners;
     public boolean tv = false;
     public Transform3d aprilTag = new Transform3d();
     public Pose3d estimatedPose = new Pose3d();
@@ -59,8 +55,6 @@ public class WsPV {
             target = result.getBestTarget();
             tx = target.getYaw();
             ty = target.getPitch();
-            tz = target.getSkew();
-            
 
             //only used if it is an AT cam
             if(isAT){
@@ -79,11 +73,9 @@ public class WsPV {
         SmartDashboard.putNumber(cameraID + " tid", tid);
         SmartDashboard.putNumber(cameraID + " Y", ty);
         SmartDashboard.putNumber(cameraID + " X", tx);
-        SmartDashboard.putNumber(cameraID + " Z", tz);
         SmartDashboard.putBoolean(cameraID + " isAT", isAT);
         SmartDashboard.putNumber(cameraID + "poseX", estimatedPose.getX()*VC.mToIn);
         SmartDashboard.putNumber(cameraID + "posey", estimatedPose.getY()*VC.mToIn);
-        SmartDashboard.putNumber(cameraID +  "posez", estimatedPose.getZ());
     }
 
     /**
@@ -93,7 +85,7 @@ public class WsPV {
         isAT = !isAT;
         camera.setPipelineIndex(isAT ? VC.notePipelineIndex : VC.ATPipelineIndex);
     }
- 
+
     /**
      * returns what to set rotLocked to
      */
@@ -157,29 +149,4 @@ public class WsPV {
         }
     }
 
-
-    public double analyzeSkew_speed() {
-        double angleTarget = Math.abs(tz);
-        
-        if (angleTarget >= 160 && angleTarget <= 180) {
-            return 1.0;
-        } else if (angleTarget >= 110 && angleTarget < 160) {
-            return 0.7;
-        } else  {
-            return 0;
-        }
-        
-        
-    }
-    public int analyzeSkew_angle() {
-        int angleTarget = Math.abs((int)tz); 
-        
-        if (angleTarget > 180) {
-            angleTarget = 180; 
-        } else if (angleTarget < 100) {
-            angleTarget = 100; 
-        }
-        
-        return angleTarget; 
-    }
 }

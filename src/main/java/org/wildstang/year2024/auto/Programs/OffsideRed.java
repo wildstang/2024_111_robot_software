@@ -3,7 +3,6 @@ package org.wildstang.year2024.auto.Programs;
 import org.wildstang.framework.auto.AutoProgram;
 import org.wildstang.framework.auto.steps.AutoParallelStepGroup;
 import org.wildstang.framework.auto.steps.AutoSerialStepGroup;
-import org.wildstang.framework.auto.steps.PathHeadingStep;
 import org.wildstang.framework.auto.steps.SetGyroStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
@@ -35,17 +34,11 @@ public class OffsideRed extends AutoProgram {
         isBlue = false;
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
-        addStep(new SetGyroStep(180.0, swerve));
-        addStep(new StartOdometryStep(0.7, 4.0, 180.0, isBlue));
+        addStep(new SetGyroStep(isBlue ? 210.0 : 150.0, swerve));
+        addStep(new StartOdometryStep(0.7, 4.0, isBlue ? 210.0 : 150.0, isBlue));
         addStep(new ShooterSetAngle(175));
         addStep(new SetFlywheel(true));
-        //addStep(new VisionOnStep(true));
-        addStep(new AutoStepDelay(500));
-        addStep(new PathHeadingStep(isBlue ? 210.0 : 150.0, swerve));
-        //addStep(new ShooterAutoAim(true));
-        addStep(new AutoStepDelay(500));
         addStep(new VisionOnStep(true));
-        addStep(new ShooterAutoAim(true));
         addStep(new AutoStepDelay(500));
 
         // shoot preload
