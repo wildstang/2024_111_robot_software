@@ -113,7 +113,7 @@ public class LedController implements Subsystem {
     }
     private void rainbow(){
         for (int i = 0; i < ledBuffer.getLength(); i++){
-            ledBuffer.setHSV(i, (initialHue + (i*180/ledBuffer.getLength()))%180, 255, 128);
+            ledBuffer.setHSV(i, 180-(initialHue + (i*180/ledBuffer.getLength()))%180, 255, 128);
         }
         initialHue = (initialHue + 3) % 180;
         led.setData(ledBuffer);

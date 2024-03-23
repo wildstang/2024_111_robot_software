@@ -107,7 +107,7 @@ public class theClass implements Subsystem {
     public boolean hasNote() {
         // Has reached the centered normal note distance
         // return laserDistance() < 400;
-        return closeLaser();
+        return closeLaser() || farLaser() || (intakeTimer.hasElapsed(0.5) && intake.getController().getOutputCurrent()>30);
     }
     public boolean isIntaking(){
         return intakeState == Intake.SPINNING;

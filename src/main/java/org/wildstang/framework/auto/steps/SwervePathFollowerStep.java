@@ -24,8 +24,8 @@ public class SwervePathFollowerStep extends AutoStep {
     private boolean isBlue;
 
     // x and y field relative
-    private double  prevVelocityX, prevVelocityY, prevTime;
     private Pose2d localAutoPose, localRobotPose;
+    private double xOffset, yOffset;
 
     private Timer timer;
 
@@ -50,15 +50,12 @@ public class SwervePathFollowerStep extends AutoStep {
         //start path
         m_drive.setToAuto();
         timer.start();
-        prevTime = 0.0;
-        prevVelocityX = 0.0;
-        prevVelocityY = 0.0;
     }
 
     @Override
     public void update() {
         if (timer.get() >= pathtraj.getTotalTime()) {
-            //m_drive.setAutoValues(0.0, -pathtraj.getFinalPose().getRotation().getDegrees(),0.0,0.0,0.0);
+            m_drive.setAutoValues(0.0,0.0,0.0,0.0);
             SmartDashboard.putNumber("auto final time", timer.get());
             setFinished();
         } else {
@@ -69,20 +66,18 @@ public class SwervePathFollowerStep extends AutoStep {
             localAutoPose = sample.getPose();
 
             // Meters
-            double yOffset = localAutoPose.getY() - localRobotPose.getY();
-            double xOffset = localAutoPose.getX() - localRobotPose.getX();
+            yOffset = localAutoPose.getX() - localRobotPose.getX();
+            if (isBlue) xOffset = localRobotPose.getY() - localAutoPose.getY();
+            else xOffset = localRobotPose.getY() - (8.016 - localAutoPose.getY());
             //update values the robot is tracking to
             // Set in alliance relative
             if (isBlue) {
-                m_drive.setAutoValues(-sample.velocityY * mToIn, sample.velocityX * mToIn, -yOffset, xOffset);
+                m_drive.setAutoValues(sample.velocityY * mToIn, -sample.velocityX * mToIn, 0, 0);
             } else {
-                m_drive.setAutoValues(sample.velocityY * mToIn, -sample.velocityX * mToIn, yOffset, -xOffset);
+                m_drive.setAutoValues(sample.velocityY * mToIn, sample.velocityX * mToIn, 0, 0);
             }
 
-            m_drive.setAutoHeading(getRotation());
-            prevVelocityX = sample.velocityX * mToIn;
-            prevVelocityY = sample.velocityY * mToIn;
-            prevTime = timer.get();
+            m_drive.setAutoHeading(getHeading());
             SmartDashboard.putNumber("PF local X", localRobotPose.getX());
             SmartDashboard.putNumber("PF path X", localAutoPose.getX());
             }
@@ -93,21 +88,10 @@ public class SwervePathFollowerStep extends AutoStep {
         return "Swerve Path Follower";
     }
 
-    public double getVelocity(){
-        return mToIn * Math.hypot(pathtraj.sample(timer.get()).velocityX, pathtraj.sample(timer.get()).velocityY);
-    }
     public double getHeading(){
-        if (isBlue) return ((-Math.atan2(pathtraj.sample(timer.get()).velocityY, 
-            pathtraj.sample(timer.get()).velocityX)*180/Math.PI)+360)%360;
-        else return ((-Math.atan2(-pathtraj.sample(timer.get()).velocityY, 
-            pathtraj.sample(timer.get()).velocityX)*180/Math.PI)+360)%360;
-        // if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360; 
-        // else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
-    }
-    public double getRotation(){
         if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
         // I think this needs to be flipped 180 for Red alliance
-        else return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+180)%360;
+        else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
     }
     public ChoreoTrajectory getTraj(String fileName){
         Gson gson = new Gson();
@@ -116,12 +100,12 @@ public class SwervePathFollowerStep extends AutoStep {
 
         var traj_file = new File(traj_dir, fileName + ".traj");
         try {
-      var reader = new BufferedReader(new FileReader(traj_file));
-    //var reader = (new FileReader(traj_file));
-      return  gson.fromJson(reader, ChoreoTrajectory.class);
-    //   return traj;
-    } catch (Exception ex) {
-      DriverStation.reportError("Shit is fucked", ex.getStackTrace());
-    }return new ChoreoTrajectory();
+            var reader = new BufferedReader(new FileReader(traj_file));
+            //var reader = (new FileReader(traj_file));
+            return  gson.fromJson(reader, ChoreoTrajectory.class);
+             //   return traj;
+        } catch (Exception ex) {
+            DriverStation.reportError("Shit is fucked", ex.getStackTrace());
+        }return new ChoreoTrajectory();
     }
 }

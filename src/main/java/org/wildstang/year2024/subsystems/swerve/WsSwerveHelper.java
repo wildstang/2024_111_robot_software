@@ -81,8 +81,10 @@ public class WsSwerveHelper {
      * @param i_gyro the gyro value, field centric, in bearing degrees
      * @return SwerveSignal that is the command for the robot to move
      */
-    public SwerveSignal setAuto(double i_power, double i_heading, double i_rot, double i_gyro, double xOffset, double yOffset) {
-        return setDrive(i_power * -Math.sin(Math.toRadians(i_heading))+ xOffset*.5, i_power * -Math.cos(Math.toRadians(i_heading))+ yOffset*.5, i_rot, i_gyro); //TODO: change xxoffset multiplier
+    public SwerveSignal setAuto(double i_X, double i_Y, double i_rot, double i_gyro, double xOffset, double yOffset) {
+        //return setDrive(i_power * -Math.sin(Math.toRadians(i_heading))+ xOffset*.5, i_power * -Math.cos(Math.toRadians(i_heading))+ yOffset*.5, i_rot, i_gyro); //TODO: change xxoffset multiplier
+        return setDrive(i_X - xOffset*Math.cos(Math.toRadians(i_gyro)) - yOffset*Math.sin(Math.toRadians(i_gyro)), 
+            i_Y + xOffset*Math.sin(Math.toRadians(i_gyro)) - yOffset*Math.cos(Math.toRadians(i_gyro)), i_rot, i_gyro); 
     }
 
     /**automatically creates a rotational joystick value to rotate the robot towards a specific target
@@ -113,7 +115,7 @@ public class WsSwerveHelper {
     public double getAutoPower(double pathVel, double pathAccel) {
         if (pathVel == 0) return 0;
         // I don't know why this was negative
-        return pathVel * DriveConstants.DRIVE_F_V + DriveConstants.DRIVE_F_K + pathAccel * DriveConstants.DRIVE_F_I;
+        return -(pathVel * DriveConstants.DRIVE_F_V + DriveConstants.DRIVE_F_K + pathAccel * DriveConstants.DRIVE_F_I);
     }
 
     /**returns magnitude of vector components */

@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.choreo.lib.*;
 import com.google.gson.Gson;
 
-public class SwervePathFollowerStep extends AutoStep {
+public class ObjectPathFollowerStep extends AutoStep {
 
     private static final double mToIn = 39.3701;
     private WsVision vision;
@@ -44,7 +44,7 @@ public class SwervePathFollowerStep extends AutoStep {
      * @param isBlue whether the robot is on the blue alliance
      * @param intakeObject
      */
-    public SwervePathFollowerStep(String pathData, boolean isBlue, boolean intakeObject) {
+    public ObjectPathFollowerStep(String pathData, boolean isBlue, boolean intakeObject) {
         
         this.intakeObject = intakeObject;
         this.pathtraj = getTraj(pathData);
@@ -127,7 +127,7 @@ public class SwervePathFollowerStep extends AutoStep {
 
     @Override
     public String toString() {
-        return "Swerve Path Follower";
+        return "Object Path Follower";
     }
 
     public double getVelocity(){
