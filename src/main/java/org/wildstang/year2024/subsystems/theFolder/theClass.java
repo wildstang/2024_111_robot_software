@@ -261,6 +261,7 @@ public class theClass implements Subsystem {
         SmartDashboard.putNumber("feed kick speed", kickSpeed);
         SmartDashboard.putString("feed state", intakeState.toString());
         SmartDashboard.putBoolean("feed reverse", isReverse);
+        SmartDashboard.putNumber("intake actual speed", intake.getOutput());
     }
 
     @Override

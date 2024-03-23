@@ -52,6 +52,8 @@ public class WsLL {
     public void update(){
         result = LimelightHelpers.getLatestResults(CameraID).targetingResults;
         tv = limelight.getEntry("tv").getDouble(0);
+        tx = limelight.getEntry("tx").getDouble(0);
+        ty = limelight.getEntry("ty").getDouble(0);
         if (tv > 0){
             blue3D = limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[7]);
             red3D = limelight.getEntry("botpose_wpired").getDoubleArray(new double[7]);
