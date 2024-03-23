@@ -114,6 +114,8 @@ public class WsVision implements Subsystem {
         return isBlue;
     }
     private boolean isLeftBetter(){
+        if (left.TargetInView() && !right.TargetInView()) return true;
+        if (!left.TargetInView() && right.TargetInView()) return false;
         if (left.result.getTargets().size() > right.result.getTargets().size()) return true;
         if (left.result.getTargets().size() < right.result.getTargets().size()) return false;
         if (left.target.getPoseAmbiguity() < right.target.getPoseAmbiguity()) return true;
