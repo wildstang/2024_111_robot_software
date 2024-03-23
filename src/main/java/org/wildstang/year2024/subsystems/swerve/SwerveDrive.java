@@ -13,6 +13,7 @@ import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
+import org.wildstang.year2024.subsystems.theFolder.theClass;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -48,26 +49,24 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private DigitalInput dpadLeft;//defense mode
     private DigitalInput dpadRight;
 
-    private double xSpeed;
-    private double ySpeed;
+    private double xPower;
+    private double yPower;
     private double rotSpeed;
     private double thrustValue;
     private boolean rotLocked;
     private boolean isSnake;
     private boolean isFieldCentric;
+
+    /**Direction to face */
     private double rotTarget;
-    private double pathVel;
-    private double pathHeading;
-    private double pathAccel;
-    private double pathTarget;
-    private double pathXOffset = 0;
-    private double pathYOffset = 0;
+
     private double shootOffset;
     private boolean autoOverride;
     private boolean isBlue = true;
     private boolean autoTag = false;
     private boolean isVision = false;
     private boolean isCurrentLow = false;
+    private boolean isOverride = false;
     
     private final double mToIn = 39.37;
 
@@ -80,8 +79,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private Timer autoTimer = new Timer();
 
     private WsVision vision;
+    private theClass intake;
 
-    public enum driveType {TELEOP, AUTO, CROSS};
+    public enum driveType {TELEOP, AUTO, CROSS, OBJECT};
     public driveType driveState;
 
     @Override
@@ -101,8 +101,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.AUTO) driveState = driveType.TELEOP;
 
         //get x and y speeds
-        xSpeed = swerveHelper.scaleDeadband(leftStickX.getValue(), DriveConstants.DEADBAND);
-        ySpeed = swerveHelper.scaleDeadband(leftStickY.getValue(), DriveConstants.DEADBAND);
+        xPower = swerveHelper.scaleDeadband(leftStickX.getValue(), DriveConstants.DEADBAND);
+        yPower = swerveHelper.scaleDeadband(leftStickY.getValue(), DriveConstants.DEADBAND);
         
         //reset gyro
         if (source == select && select.getValue()) {
@@ -158,8 +158,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
             rotLocked = true;
             //rotTarget = vision.front.turnToTarget(isBlue);
             isVision = true;
-            xSpeed *= 0.7;
-            ySpeed *= 0.7;
+            xPower *= 0.7;
+            yPower *= 0.7;
             rotSpeed *= 0.7;
         } else isVision = false;
         
@@ -169,8 +169,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         // ySpeed *= thrustValue;
         // rotSpeed *= thrustValue;
         if (leftBumper.getValue()){
-            xSpeed *= 0.25;
-            ySpeed *= 0.25;
+            xPower *= 0.25;
+            yPower *= 0.25;
+            rotSpeed *= 0.25;
         }
         if (leftTrigger.getValue() > 0.15 && !isCurrentLow){
             for (int i = 0; i < 4; i++){
@@ -183,8 +184,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
             }
             isCurrentLow = false;
         }
-        if (source == dpadLeft && dpadLeft.getValue()) shootOffset -= 2.5;
-        if (source == dpadRight && dpadRight.getValue()) shootOffset += 2.5;
+
+        if (source == dpadRight && dpadRight.getValue()) isOverride = !isOverride;
+
+        if (intake.isIntaking() && !isOverride) driveState = driveType.OBJECT;
 
     }
  
@@ -278,7 +281,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                     
                 } 
             }
-            this.swerveSignal = swerveHelper.setDrive(xSpeed, ySpeed, rotSpeed, getGyroAngle());
+            this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
             SmartDashboard.putNumber("FR signal", swerveSignal.getSpeed(0));
             drive();
         }
@@ -288,39 +291,32 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
             } else {
                 //get controller generated rotation value
-                rotSpeed = Math.max(-0.2, Math.min(0.2, swerveHelper.getRotControl(pathTarget, getGyroAngle())));
-            }
-            //ensure rotation is never more than 0.2 to prevent normalization of translation from occuring
-            if (autoTag){
-                // xSpeed = limelight.getScoreX(aimOffset);
-                // ySpeed = limelight.getScoreY(vertOffset);
-                if (Math.abs(xSpeed) > 0.3) xSpeed = Math.signum(xSpeed) * 0.3;
-                if (Math.abs(ySpeed) > 0.3) ySpeed = Math.signum(ySpeed) * 0.3; 
-                if (Math.abs(pathVel * DriveConstants.DRIVE_F_V) > Math.abs(ySpeed*0.5)){
-                    ySpeed = 0.0;//no adjustment when coming towards tag
-                } else {
-                    pathVel = 0.0;//adjustment when close enough to tag
-                }
-                pathXOffset = 0;//disables odometry tracking
-                pathYOffset = 0;
-            } else {
-                xSpeed = 0;//no LL adjustments if tag is off
-                ySpeed = 0;
+                // Capped at .2
+                rotSpeed = Math.max(-0.2, Math.min(0.2, swerveHelper.getRotControl(rotTarget, getGyroAngle())));
             }
             
-            //update where the robot is, to determine error in path
-            this.swerveSignal = swerveHelper.setAuto(swerveHelper.getAutoPower(pathVel, pathAccel), pathHeading, rotSpeed,getGyroAngle(),pathXOffset+xSpeed, pathYOffset+ySpeed);
+            // Pre generated power values in set auto
+            this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
             drive();        
         } 
+        if (driveState == driveType.OBJECT) {
+            if (vision.back.TargetInView()) {
+                rotSpeed = swerveHelper.getRotControl( vision.back.getNoteAngle(), 0.0);
+                this.swerveSignal = swerveHelper.setDrive(0, Math.max(yPower, vision.back.getNoteDistance() * DriveConstants.TRANSLATION_P) , rotSpeed, 360.0-vision.back.getNoteAngle());
+                drive();
+            }
+            else {
+                this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
+                drive();
+            }
+        }
         SmartDashboard.putNumber("Gyro Reading", getGyroAngle());
-        SmartDashboard.putNumber("X speed", xSpeed);
-        SmartDashboard.putNumber("Y speed", ySpeed);
+        SmartDashboard.putNumber("X Power", xPower);
+        SmartDashboard.putNumber("Y Power", yPower);
         SmartDashboard.putNumber("rotSpeed", rotSpeed);
         SmartDashboard.putString("Drive mode", driveState.toString());
         SmartDashboard.putBoolean("rotLocked", rotLocked);
-        SmartDashboard.putNumber("Auto velocity", pathVel);
-        SmartDashboard.putNumber("Auto translate direction", pathHeading);
-        SmartDashboard.putNumber("Auto rotation target", pathTarget);
+        SmartDashboard.putNumber("Rotation target", rotTarget);
         SmartDashboard.putNumber("Odo X", odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Odo Y", odometry.getPoseMeters().getY());
         SmartDashboard.putNumber("arm rotation offset", shootOffset);
@@ -329,18 +325,15 @@ public class SwerveDrive extends SwerveDriveTemplate {
     
     @Override
     public void resetState() {
-        xSpeed = 0;
-        ySpeed = 0;
+        xPower = 0;
+        yPower = 0;
         rotSpeed = 0;
         setToTeleop();
         rotLocked = false;
         rotTarget = 0.0;
-        pathVel = 0.0;
-        pathHeading = 0.0;
-        pathAccel = 0.0;
-        pathTarget = 0.0;
         autoOverride = false;
         autoTag = false;
+        isOverride = false;
 
         isFieldCentric = true;
         isSnake = false;
@@ -366,11 +359,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
             modules[i].setDriveBrake(true);
         }
         rotSpeed = 0;
-        xSpeed = 0;
-        ySpeed = 0;
-        pathHeading = 0;
-        pathVel = 0;
-        pathAccel = 0;
+        xPower = 0;
+        yPower = 0;
         rotLocked = false;
     }
 
@@ -380,6 +370,13 @@ public class SwerveDrive extends SwerveDriveTemplate {
         for (int i = 0; i < modules.length; i++) {
             modules[i].setDriveBrake(true);
         }
+    }
+
+    /** Sets the drive state = OBJECT */
+    public void setToObject() {
+        driveState = driveType.AUTO;
+        xPower = 0;
+        yPower = 0;
     }
 
     /**drives the robot at the current swerveSignal, and displays information for each swerve module */
@@ -398,18 +395,18 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
     }
 
-    /**sets autonomous values from the path data file */
-    public void setAutoValues(double velocity, double heading, double accel, double xOffset, double yOffset) {
-        pathVel = velocity;
-        pathHeading = heading;
-        pathAccel = accel;
-        pathXOffset = xOffset;
-        pathYOffset = yOffset;
+    /**sets autonomous values from the path data file in alliance relative */
+    public void setAutoValues(double xVelocity, double yVelocity, double xOffset, double yOffset) {
+        SmartDashboard.putNumber("Auto Velocity X", xVelocity);
+        SmartDashboard.putNumber("Auto Velocity Y", yVelocity);
+        // accel of 0 because currently not using acceleration for power since 
+        xPower = swerveHelper.getAutoPower(xVelocity, 0) + xOffset * DriveConstants.TRANSLATION_P;
+        yPower = swerveHelper.getAutoPower(yVelocity, 0) + yOffset * DriveConstants.TRANSLATION_P;
     }
 
     /**sets the autonomous heading controller to a new target */
     public void setAutoHeading(double headingTarget) {
-        pathTarget = headingTarget;
+        rotTarget = headingTarget;
     }
 
     /**
@@ -420,7 +417,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
     public void setGyro(double degrees) {
         resetState();
         setToAuto();
-        gyro.setYaw(degrees);
+
+        // Make degrees clockwise
+        gyro.setYaw((360-degrees)%360);
     }
 
     public double getGyroAngle() {

@@ -112,8 +112,8 @@ public class WsSwerveHelper {
      */
     public double getAutoPower(double pathVel, double pathAccel) {
         if (pathVel == 0) return 0;
-        double guess = pathVel * DriveConstants.DRIVE_F_V + DriveConstants.DRIVE_F_K + pathAccel * DriveConstants.DRIVE_F_I;
-        return -(guess);
+        // I don't know why this was negative
+        return pathVel * DriveConstants.DRIVE_F_V + DriveConstants.DRIVE_F_K + pathAccel * DriveConstants.DRIVE_F_I;
     }
 
     /**returns magnitude of vector components */
