@@ -16,9 +16,9 @@ public enum WsSubsystems implements Subsystems {
 
     // enumerate subsystems
     WS_VISION("Ws Vision", WsVision.class),
-    SWERVE_DRIVE("Swerve Drive", SwerveDrive.class),
     LIFT("Test_lift", Test_lift.class),
     THECLASS("TheClass", theClass.class),
+    SWERVE_DRIVE("Swerve Drive", SwerveDrive.class),
     SHOOTER("Shooter", shooter.class),
     LED("Led Controller", LedController.class),
     ;

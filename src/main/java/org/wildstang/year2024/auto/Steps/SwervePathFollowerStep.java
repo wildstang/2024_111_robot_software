@@ -78,7 +78,7 @@ public class SwervePathFollowerStep extends AutoStep {
 
         switch (state) {
             case PATH:
-            if (intakeObject && vision.back.TargetInView() && (vision.back.getNoteDistance() < 40)) {
+            if (intakeObject && vision.back.TargetInView() && (vision.back.ty < 40)) {
                 drive.setToObject();
                 state = State.OBJECT_ALIGN;
             } else if (timer.get() >= pathtraj.getTotalTime()) {

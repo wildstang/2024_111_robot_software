@@ -250,6 +250,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.33), new Translation2d(0.2794, -0.33),
             new Translation2d(-0.2794, 0.33), new Translation2d(-0.2794, -0.33)), odoAngle(), odoPosition(), new Pose2d());
+        intake = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
     }
     
     @Override
@@ -301,8 +302,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         } 
         if (driveState == driveType.OBJECT) {
             if (vision.back.TargetInView()) {
-                rotSpeed = swerveHelper.getRotControl( vision.back.getNoteAngle(), 0.0);
-                this.swerveSignal = swerveHelper.setDrive(0, Math.max(yPower, vision.back.getNoteDistance() * DriveConstants.TRANSLATION_P) , rotSpeed, 360.0-vision.back.getNoteAngle());
+                rotSpeed = swerveHelper.getRotControl( vision.back.tx, 0.0);
+                this.swerveSignal = swerveHelper.setDrive(0, Math.hypot(yPower, xPower) , rotSpeed, 360.0-vision.back.tx);
                 drive();
             }
             else {
