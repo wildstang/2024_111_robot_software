@@ -1,5 +1,7 @@
 package org.wildstang.year2024.subsystems.shooter;
 
+import java.util.Random;
+
 import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.inputs.AnalogInput;
 import org.wildstang.framework.io.inputs.DigitalInput;
@@ -12,7 +14,6 @@ import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 import org.wildstang.year2024.subsystems.theFolder.theClass;
 
-import com.google.gson.InstanceCreator;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
@@ -169,6 +170,7 @@ public class shooter implements Subsystem {
     @Override
     public void update() {
         // Aim if trigger pressed and Speaker in sight
+
         if (!RandomThing.hasNote() || rightTriggerPressed){
             idleTimer.reset();
         }
@@ -184,13 +186,16 @@ public class shooter implements Subsystem {
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
                 angle =autoassume;
             }
-        } else if (isCycle){
+        
+        }
+        else if (isCycle){
             speed = Speeds.CYCLE;
             angle = ShooterConsts.FEED_ANGLE;
         } else if (!autoOverride) {
             if (idleTimer.hasElapsed(1.0) && !subwooferAimOverride) {
                 speed = Speeds.IDLE;
-                angle = ShooterConsts.MIN_ANGLE;
+                if (wsVision.front.TargetInView()) angle = wsVision.getAngle();
+                else angle = ShooterConsts.PREP_ANGLE;
             } else {
                 angle = ShooterConsts.MIN_ANGLE;
                 speed = Speeds.OFF;

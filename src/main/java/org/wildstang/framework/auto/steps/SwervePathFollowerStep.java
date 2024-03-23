@@ -23,7 +23,8 @@ public class SwervePathFollowerStep extends AutoStep {
     private ChoreoTrajectory pathtraj;
     private boolean isBlue;
 
-    private double xOffset, yOffset, prevVelocity, prevTime, prevHeading;
+    // x and y field relative
+    private double  prevVelocityX, prevVelocityY, prevTime;
     private Pose2d localAutoPose, localRobotPose;
 
     private Timer timer;
@@ -50,32 +51,39 @@ public class SwervePathFollowerStep extends AutoStep {
         m_drive.setToAuto();
         timer.start();
         prevTime = 0.0;
-        prevVelocity = 0.0;
-        prevHeading = 0.0;
+        prevVelocityX = 0.0;
+        prevVelocityY = 0.0;
     }
 
     @Override
     public void update() {
         if (timer.get() >= pathtraj.getTotalTime()) {
-            m_drive.setAutoValues(0.0, -pathtraj.getFinalPose().getRotation().getDegrees(),0.0,0.0,0.0);
+            //m_drive.setAutoValues(0.0, -pathtraj.getFinalPose().getRotation().getDegrees(),0.0,0.0,0.0);
             SmartDashboard.putNumber("auto final time", timer.get());
             setFinished();
         } else {
+
+            // Choreo and odometry works in field relative
+            ChoreoTrajectoryState sample = pathtraj.sample(timer.get());
             localRobotPose = m_drive.returnPose();
-            localAutoPose = pathtraj.sample(timer.get()).getPose();//.poseMeters;
-            yOffset = -(localRobotPose.getX() - localAutoPose.getX());
-            if (isBlue){
-                xOffset = localRobotPose.getY() - localAutoPose.getY();
-            } else {
-                xOffset = localRobotPose.getY() - (8.016 - localAutoPose.getY());
-            }
+            localAutoPose = sample.getPose();
+
+            // Meters
+            double yOffset = localAutoPose.getY() - localRobotPose.getY();
+            double xOffset = localAutoPose.getX() - localRobotPose.getX();
             //update values the robot is tracking to
-            m_drive.setAutoValues( getVelocity(),getHeading(), getAccel(), 0.0*xOffset,0.0*yOffset );
+            // Set in alliance relative
+            if (isBlue) {
+                m_drive.setAutoValues(-sample.velocityY * mToIn, sample.velocityX * mToIn, -yOffset, xOffset);
+            } else {
+                m_drive.setAutoValues(sample.velocityY * mToIn, -sample.velocityX * mToIn, yOffset, -xOffset);
+            }
+
             m_drive.setAutoHeading(getRotation());
-            prevVelocity = getVelocity();
-            prevHeading = getHeading();
+            prevVelocityX = sample.velocityX * mToIn;
+            prevVelocityY = sample.velocityY * mToIn;
             prevTime = timer.get();
-            SmartDashboard.putNumber("PF localX", localRobotPose.getX());
+            SmartDashboard.putNumber("PF local X", localRobotPose.getX());
             SmartDashboard.putNumber("PF path X", localAutoPose.getX());
             }
     }
@@ -96,12 +104,10 @@ public class SwervePathFollowerStep extends AutoStep {
         // if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360; 
         // else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
     }
-    public double getAccel(){
-        return (getVelocity() - prevVelocity) / (timer.get() - prevTime);
-    }
     public double getRotation(){
         if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
-        else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
+        // I think this needs to be flipped 180 for Red alliance
+        else return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+180)%360;
     }
     public ChoreoTrajectory getTraj(String fileName){
         Gson gson = new Gson();

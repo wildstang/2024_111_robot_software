@@ -32,6 +32,7 @@ public class theClass implements Subsystem {
     private Timer intakeTimer = new Timer();
     private Timer feedTimer = new Timer();
 
+
     private LaserCan lc;
 
     @Override
@@ -98,6 +99,9 @@ public class theClass implements Subsystem {
     public boolean hasNote() {
         // Has reached the centered normal note distance
         return laserDistance() < 400;
+    }
+    public boolean isIntaking(){
+        return intakeState == Intake.SPINNING;
     }
 
     @Override
