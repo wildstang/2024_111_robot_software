@@ -298,6 +298,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
             } else if (isAutoObject){
                 xObject = vision.back.tx * 0.02;
                 yObject = vision.back.ty * 0.02;
+                if (Math.hypot(xPower, yPower) > vision.back.ty*0.02) yObject = 0;
                 this.swerveSignal = swerveHelper.setAuto(xPower, yPower, rotSpeed, getGyroAngle(), xObject, yObject);
             } else {
                 //get controller generated rotation value
