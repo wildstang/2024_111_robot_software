@@ -47,6 +47,7 @@ public class shooter implements Subsystem {
         OFF(0.0), 
         IDLE(ShooterConsts.IDLE_SPEED), 
         CYCLE(ShooterConsts.CYCLE_SPEED),
+        side(0.7),
         MAX(1.0);
         private double percent;
 
@@ -174,7 +175,11 @@ public class shooter implements Subsystem {
             idleTimer.reset();
         }
         if (leftTriggerPressed || autoAim) {
+            if (wsVision.side_speed()==1.0){
             speed = Speeds.MAX;
+        }  else if(wsVision.side_speed()==0.7){
+            speed = Speeds.side;
+        }  else {speed = Speeds.OFF;}
             if (wsVision.front.TargetInView()){
                 if (!rightTriggerPressed) angle = wsVision.getAngle();
                 shootTimer.reset();

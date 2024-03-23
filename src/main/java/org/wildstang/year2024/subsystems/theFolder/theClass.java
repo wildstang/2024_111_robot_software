@@ -191,6 +191,9 @@ public class theClass implements Subsystem {
                     feedSpeed = 0.7;
                     kickSpeed = 0;
                 }
+            }
+
+                   
             break;
             case INTAKING:
             if(laserDistance() < 400)
@@ -204,6 +207,7 @@ public class theClass implements Subsystem {
             
                 // if (laserDistance() >= 205) {
                     if (laserDistance_2() == 400){
+                   
                         intakeState = Intake.CHILL;
                         intakeSpeed = 0;
                         feedSpeed = 0;
