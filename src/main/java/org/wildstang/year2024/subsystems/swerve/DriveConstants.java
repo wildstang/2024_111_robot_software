@@ -59,7 +59,7 @@ public final class DriveConstants {
     /**PID values for angle D */
     public static final double ANGLE_D = 0.0;
     /**Drive motor current limit */
-    public static final int DRIVE_CURRENT_LIMIT = 55;
+    public static final int DRIVE_CURRENT_LIMIT = 60;
     /**Angle motor current limit */
     public static final int ANGLE_CURRENT_LIMIT = 10;
     /**Swerve Module Names */
