@@ -10,7 +10,7 @@ public class WsLL {
     
     public NetworkTable limelight;
 
-    public LimelightHelpers.Results result;
+    //public LimelightHelpers.Results result;
 
     private VisionConsts VC = new VisionConsts();
 
@@ -31,8 +31,8 @@ public class WsLL {
      */
     public WsLL(String CameraID){
         limelight = NetworkTableInstance.getDefault().getTable(CameraID);
-        red3D = limelight.getEntry("botpose_wpired").getDoubleArray(new double[7]);
-        blue3D = limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[7]);
+        red3D = limelight.getEntry("botpose_wpired").getDoubleArray(new double[11]);
+        blue3D = limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[11]);
         setToIn();
         tid = limelight.getEntry("tid").getDouble(0);
         tv = limelight.getEntry("tv").getDouble(0);
@@ -43,23 +43,23 @@ public class WsLL {
         ta = limelight.getEntry("ta").getDouble(0);
 
         this.CameraID = CameraID;
-        result = LimelightHelpers.getLatestResults(CameraID).targetingResults;
+        //result = LimelightHelpers.getLatestResults(CameraID).targetingResults;
     }
 
     /*
      * updates all values to the latest value
      */
     public void update(){
-        result = LimelightHelpers.getLatestResults(CameraID).targetingResults;
+        //result = LimelightHelpers.getLatestResults(CameraID).targetingResults;
         tv = limelight.getEntry("tv").getDouble(0);
         tx = limelight.getEntry("tx").getDouble(0);
         ty = limelight.getEntry("ty").getDouble(0);
         if (tv > 0){
-            blue3D = limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[7]);
-            red3D = limelight.getEntry("botpose_wpired").getDoubleArray(new double[7]);
+            blue3D = limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[11]);
+            red3D = limelight.getEntry("botpose_wpired").getDoubleArray(new double[11]);
             setToIn();
             tid = limelight.getEntry("tid").getDouble(0);
-            numTargets = result.targets_Fiducials.length;
+            //numTargets = result.targets_Fiducials.length;
         }
         updateDashboard();
     }
@@ -140,12 +140,23 @@ public class WsLL {
      * returns what to set rotLocked to
      */
     public double turnToTarget(boolean isBlue){
-        if (!TargetInView()){
-            return isBlue ? 225 : 135 ;
-        }
         if (isBlue) return getDirection(blue3D[0] - VC.blueSpeakerX,
             blue3D[1] - VC.blueSpeakerY, isBlue);
         else return getDirection(blue3D[0] - VC.redSpeakerX,
             blue3D[1] - VC.redSpeakerY, isBlue);
+    }
+    public boolean canSeeSpeaker(boolean isBlue){
+        if (!TargetInView()) return false;
+        if (isBlue) {
+            return tid == 6 || tid == 7 || tid == 8;
+        } else {
+            return tid == 3 || tid == 4 || tid == 5;
+        }
+    }
+    public double getNumTags(){
+        return blue3D[7];
+    }
+    public double getTagDist(){
+        return blue3D[9];
     }
 }

@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
 
-    public WsPV left = new WsPV("photon-left", true);
-    public WsPV right = new WsPV("photon-right", true);
+    public WsLL left = new WsLL("limelight-left");
+    public WsLL right = new WsLL("limelight-right");
     public WsLL back = new WsLL("limelight-back");
 
     public VisionConsts VC;
@@ -116,10 +116,10 @@ public class WsVision implements Subsystem {
     private boolean isLeftBetter(){
         if (left.TargetInView() && !right.TargetInView()) return true;
         if (!left.TargetInView() && right.TargetInView()) return false;
-        if (left.result.getTargets().size() > right.result.getTargets().size()) return true;
-        if (left.result.getTargets().size() < right.result.getTargets().size()) return false;
-        if (left.target.getPoseAmbiguity() < right.target.getPoseAmbiguity()) return true;
-        if (left.target.getPoseAmbiguity() > right.target.getPoseAmbiguity()) return false;
+        if (left.getNumTags() > right.getNumTags()) return true;
+        if (left.getNumTags() < right.getNumTags()) return false;
+        if (left.getTagDist() < right.getTagDist()) return true;
+        if (left.getTagDist() > right.getTagDist()) return false;
         return !this.isBlue;
     }
     public double turnToTarget(boolean isBlue){
