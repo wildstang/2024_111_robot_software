@@ -44,7 +44,6 @@ public class shooter implements Subsystem {
     private boolean subwooferAimOverride = false;
     private boolean autoAim = false;
     private boolean autoOverride = false;
-    private boolean isCycle = false;
     private enum Speeds { 
         OFF(0.0), 
         IDLE(ShooterConsts.IDLE_SPEED), 
@@ -96,7 +95,6 @@ public class shooter implements Subsystem {
         if (source == dPadDown && dPadDown.getValue()) {
             aimOffset -= ShooterConsts.ANGLE_INCREMENT;
         }
-        isCycle = aButton.getValue();
     }
 
     public void setAngle(double angle) {
@@ -188,11 +186,6 @@ public class shooter implements Subsystem {
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
                 angle =autoassume;
             }
-        
-        }
-        else if (isCycle){
-            speed = Speeds.CYCLE;
-            angle = ShooterConsts.FEED_ANGLE;
         } else if (!autoOverride) {
             if (idleTimer.hasElapsed(1.0)) {
                 speed = Speeds.IDLE;
@@ -206,13 +199,13 @@ public class shooter implements Subsystem {
                 speed = Speeds.OFF;
             }
         }
-        
-        vortexFlywheel.setSpeed(speed.getPercent());
-        neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);
         if (subwooferAimOverride) {
             angle = ShooterConsts.SUBWOOFER_ANGLE;
             angleSlot = 0;
-        }
+            speed = Speeds.CYCLE;
+        } 
+        vortexFlywheel.setSpeed(speed.getPercent());
+        neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);
         angleNeo.setPosition(angle+aimOffset, angleSlot);
         SmartDashboard.putBoolean("isAutoAim", autoAim);
         SmartDashboard.putNumber("automatic angle offset", aimOffset);
