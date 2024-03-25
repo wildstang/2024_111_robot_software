@@ -35,7 +35,7 @@ public class LedController implements Subsystem {
     private int[] blue = {0,0,255};
     private int[] red = {255,0,0};
     private int[] green = {0,255,0};
-    private int[] orange = {255,165,0};
+    private int[] orange = {255,100,0};
     private int[] cyan = {0,255,255};
     
     private int[] normal = white;
@@ -44,7 +44,7 @@ public class LedController implements Subsystem {
 
     @Override
     public void update(){
-        if (vision.canSeeSpeaker(vision.getAlliance()) && RandomThing.hasNote()){ 
+        if (vision.canSeeSpeaker(vision.getAlliance()) && RandomThing.hasNote() && !isAuto){ 
             if (flywheel.getShooterVelocity()>5000){
                 setRGB(green); 
             } else setRGB(cyan);
@@ -91,7 +91,7 @@ public class LedController implements Subsystem {
 
     @Override
     public void resetState() {
-        normal = white;
+        // normal = white;
     }
 
     @Override

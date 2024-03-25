@@ -7,6 +7,7 @@ import org.wildstang.framework.auto.steps.SetGyroStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
+import org.wildstang.year2024.auto.Steps.ObjectOnStep;
 import org.wildstang.year2024.auto.Steps.SetFlywheel;
 import org.wildstang.year2024.auto.Steps.SetIntakeSequenceStep;
 import org.wildstang.year2024.auto.Steps.ShootSpeakerStep;
@@ -60,7 +61,14 @@ public class CenterRed extends AutoProgram {
         addStep(new AutoStepDelay(500));
 
         //grab third prestaged and shoot second prestaged
-        addStep(new SwervePathFollowerStep("CenterCred", swerve, isBlue));
+        AutoParallelStepGroup group3 = new AutoParallelStepGroup();
+        group3.addStep(new SwervePathFollowerStep("CenterCred", swerve, isBlue));
+        AutoSerialStepGroup group3a = new AutoSerialStepGroup();
+        group3a.addStep(new AutoStepDelay(1500));
+        group3a.addStep(new ObjectOnStep(true));
+        group3.addStep(group3a);
+        addStep(group3);
+        addStep(new ObjectOnStep(false));
         addStep(new AutoStepDelay(500));
         //addStep(new ShooterAutoAim(true));
 
@@ -72,10 +80,13 @@ public class CenterRed extends AutoProgram {
         group4a.addStep(new AutoStepDelay(500));
         group4a.addStep(new ShooterAutoAim(true));
         group4a.addStep(new SetIntakeSequenceStep(true));
+        group4a.addStep(new AutoStepDelay(100));
+        group4a.addStep(new ObjectOnStep(true));
         group4.addStep(group4a);
         addStep(group4);
 
         //return from middle
+        addStep(new ObjectOnStep(false));
         addStep(new SwervePathFollowerStep("CenterEred", swerve, isBlue));
         addStep(new ShootSpeakerStep());
         addStep(new AutoStepDelay(300));
@@ -86,10 +97,13 @@ public class CenterRed extends AutoProgram {
         AutoSerialStepGroup group5a = new AutoSerialStepGroup();
         group5a.addStep(new AutoStepDelay(500));
         group5a.addStep(new SetIntakeSequenceStep(true));
+        group5a.addStep(new AutoStepDelay(400));
+        group5a.addStep(new ObjectOnStep(true));
         group5.addStep(group5a);
         addStep(group5);
 
         //return from middle and shoot middle B note
+        addStep(new ObjectOnStep(false));
         addStep(new SwervePathFollowerStep("CenterGred", swerve, isBlue));
         addStep(new ShootSpeakerStep());
     }

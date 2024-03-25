@@ -8,6 +8,7 @@ import org.wildstang.framework.auto.steps.SetGyroStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
+import org.wildstang.year2024.auto.Steps.ObjectOnStep;
 import org.wildstang.year2024.auto.Steps.SetFlywheel;
 import org.wildstang.year2024.auto.Steps.SetIntakeSequenceStep;
 import org.wildstang.year2024.auto.Steps.ShootSpeakerStep;
@@ -37,10 +38,10 @@ public class OffsideRed extends AutoProgram {
         swerve.setAlliance(isBlue);
         addStep(new SetGyroStep(180.0, swerve));
         addStep(new StartOdometryStep(0.7, 4.0, 180.0, isBlue));
-        addStep(new ShooterSetAngle(175));
+        addStep(new ShooterSetAngle(140));
         addStep(new SetFlywheel(true));
         //addStep(new VisionOnStep(true));
-        addStep(new AutoStepDelay(500));
+        addStep(new AutoStepDelay(100));
         addStep(new PathHeadingStep(isBlue ? 210.0 : 150.0, swerve));
         //addStep(new ShooterAutoAim(true));
         addStep(new AutoStepDelay(500));
@@ -61,8 +62,11 @@ public class OffsideRed extends AutoProgram {
         group1a.addStep(new ShooterSetAngle(70));
         group1a.addStep(new ShooterAutoAim(false));
         group1a.addStep(new VisionOnStep(false));
+        group1a.addStep(new AutoStepDelay(1000));
+        group1a.addStep(new ObjectOnStep(true));
         group1.addStep(group1a);
         addStep(group1);
+        addStep(new ObjectOnStep(false));
 
         // score middle piece E
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
@@ -70,15 +74,24 @@ public class OffsideRed extends AutoProgram {
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();
         group2a.addStep(new AutoStepDelay(1000));
         group2a.addStep(new VisionOnStep(true));
+        group2a.addStep(new ShooterAutoAim(true));
         group2.addStep(group2a);
         addStep(group2);
         addStep(new ShootSpeakerStep());
         addStep(new AutoStepDelay(500));
         addStep(new SetIntakeSequenceStep(true));
         addStep(new VisionOnStep(false));
+        addStep(new ShooterAutoAim(false));
 
         // grab middle piece D
-        addStep(new SwervePathFollowerStep("GrabDOffsidered", swerve, isBlue));
+        AutoParallelStepGroup group3 = new AutoParallelStepGroup();
+        group3.addStep(new SwervePathFollowerStep("GrabDOffsidered", swerve, isBlue));
+        AutoSerialStepGroup group3a = new AutoSerialStepGroup();
+        group3a.addStep(new AutoStepDelay(1500));
+        group3a.addStep(new ObjectOnStep(true));
+        group3.addStep(group3a);
+        addStep(group3);
+        addStep(new ObjectOnStep(false));
 
         //score middle piece D
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
@@ -86,6 +99,7 @@ public class OffsideRed extends AutoProgram {
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
         group4a.addStep(new AutoStepDelay(1000));
         group4a.addStep(new VisionOnStep(true));
+        group4a.addStep(new ShooterAutoAim(true));
         group4.addStep(group4a);
         addStep(group4);
         addStep(new ShootSpeakerStep());

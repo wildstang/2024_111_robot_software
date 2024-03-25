@@ -1,5 +1,6 @@
 package org.wildstang.year2024.subsystems.targeting;
 
+import java.lang.annotation.Target;
 import java.util.OptionalDouble;
 
 import org.photonvision.PhotonCamera;
@@ -24,7 +25,7 @@ public class WsPV {
     AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     public PhotonTrackedTarget target;
     public PhotonPipelineResult result;
-    private Transform3d robotToCamera = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0));
+    private Transform3d robotToCamera = new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0,0,0));
 
     private VisionConsts VC = new VisionConsts();
 
@@ -142,6 +143,7 @@ public class WsPV {
         return tid;
     }
     public boolean canSeeSpeaker(boolean isBlue){
+        if (!TargetInView()) return false;
         if (isBlue) {
             return tid == 6 || tid == 7 || tid == 8;
         } else {

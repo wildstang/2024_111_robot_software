@@ -36,9 +36,11 @@ public class shooter implements Subsystem {
 
     private Timer idleTimer = new Timer();
     private Timer shootTimer = new Timer();
+    private Timer angleTimer = new Timer();
 
     // State variables
     private double aimOffset = 0;
+    private int angleSlot = 0;
     private boolean subwooferAimOverride = false;
     private boolean autoAim = false;
     private boolean autoOverride = false;
@@ -124,6 +126,8 @@ public class shooter implements Subsystem {
 
         // PID
         angleNeo.initClosedLoop(ShooterConsts.P, ShooterConsts.I, ShooterConsts.D, 0, this.angleEncoder);
+        angleNeo.addClosedLoop(0, ShooterConsts.P, ShooterConsts.I, ShooterConsts.D, 0);
+        angleNeo.addClosedLoop(1, 0.02, 0, 0, 0);
         angleNeo.setBrake();
         // Returns position in degrees instead of rotations
         angleEncoder.setPositionConversionFactor(360.0);
@@ -156,6 +160,7 @@ public class shooter implements Subsystem {
 
         idleTimer.start();
         shootTimer.start();
+        angleTimer.start();
     }
 
     @Override
@@ -170,10 +175,12 @@ public class shooter implements Subsystem {
     public void update() {
         // Aim if trigger pressed and Speaker in sight
 
+        if (wsVision.aprilTagsInView()) angleTimer.reset();
         if (!RandomThing.hasNote() || rightTriggerPressed){
             idleTimer.reset();
         }
         if (leftTriggerPressed || autoAim) {
+            angleSlot = 0;
             speed = Speeds.MAX;
             if (wsVision.aprilTagsInView()){
                 if (!rightTriggerPressed) angle = wsVision.getAngle();
@@ -189,8 +196,11 @@ public class shooter implements Subsystem {
         } else if (!autoOverride) {
             if (idleTimer.hasElapsed(1.0)) {
                 speed = Speeds.IDLE;
+                angleSlot = 1;
                 if (wsVision.aprilTagsInView()) angle = wsVision.getAngle();
-                else angle = ShooterConsts.PREP_ANGLE;
+                if (angleTimer.hasElapsed(0.5)) angle = ShooterConsts.PREP_ANGLE;
+                // else angle = ShooterConsts.PREP_ANGLE;
+                // angle = ShooterConsts.PREP_ANGLE;
             } else {
                 angle = ShooterConsts.MIN_ANGLE;
                 speed = Speeds.OFF;
@@ -201,8 +211,9 @@ public class shooter implements Subsystem {
         neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);
         if (subwooferAimOverride) {
             angle = ShooterConsts.SUBWOOFER_ANGLE;
+            angleSlot = 0;
         }
-        angleNeo.setPosition(angle+aimOffset);
+        angleNeo.setPosition(angle+aimOffset, angleSlot);
         SmartDashboard.putBoolean("isAutoAim", autoAim);
         SmartDashboard.putNumber("automatic angle offset", aimOffset);
         SmartDashboard.putNumber("shooter angle", angle);
