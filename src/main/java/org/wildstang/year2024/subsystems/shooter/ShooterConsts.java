@@ -9,7 +9,7 @@ public class ShooterConsts {
     public static final double CYCLE_SPEED = 0.5;
     // Array containing arrays where the elements are a distance the corresponding and angle
     public static final double[][] SHOOTER_POSIIONS = {{}};
-    public static final double P = 0.05;
+    public static final double P = 0.1;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final double SPIN_RATIO = 65.0 / 100.0;
