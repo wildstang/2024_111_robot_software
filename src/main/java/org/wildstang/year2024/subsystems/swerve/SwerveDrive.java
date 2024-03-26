@@ -275,7 +275,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 //if rotation tracking, replace rotational joystick value with controller generated one
                 if (isVision) rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
-                if (Math.abs(rotTarget - getGyroAngle()) < 2.0) rotSpeed = 0;
+                if (Math.abs(rotTarget - getGyroAngle()) < 1.0) rotSpeed = 0;
                 if (isSnake) {
                     if (Math.abs(rotSpeed) < 0.05) {
                         rotSpeed = 0;
