@@ -74,8 +74,8 @@ public class WsLL {
         SmartDashboard.putBoolean(CameraID + " tv", TargetInView());
         SmartDashboard.putNumber(CameraID + " tid", tid);
         SmartDashboard.putNumber(CameraID + " numTargets", numTargets);
-        SmartDashboard.putNumber("Vision blue x", blue3D[0]);
-        SmartDashboard.putNumber("Vision blue y", blue3D[1]);
+        SmartDashboard.putNumber(CameraID + "Vision blue x", blue3D[0]);
+        SmartDashboard.putNumber(CameraID + "Vision blue y", blue3D[1]);
     }
     /*
      * returns total latency, capture latency + pipeline latency
@@ -158,5 +158,8 @@ public class WsLL {
     }
     public double getTagDist(){
         return blue3D[9];
+    }
+    public boolean seesAmp(){
+        return tid == 5 || tid == 6;
     }
 }
