@@ -42,7 +42,7 @@ public class OffsideRed extends AutoProgram {
         addStep(new SetFlywheel(true));
         //addStep(new VisionOnStep(true));
         addStep(new AutoStepDelay(100));
-        addStep(new PathHeadingStep(isBlue ? 210.0 : 150.0, swerve));
+        addStep(new PathHeadingStep(isBlue ? 235.0 : 125.0, swerve));
         //addStep(new ShooterAutoAim(true));
         addStep(new AutoStepDelay(500));
         addStep(new VisionOnStep(true));
@@ -72,7 +72,7 @@ public class OffsideRed extends AutoProgram {
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
         group2.addStep(new SwervePathFollowerStep("ScoreEOffsidered", swerve, isBlue));
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();
-        group2a.addStep(new AutoStepDelay(1000));
+        group2a.addStep(new AutoStepDelay(2000));
         group2a.addStep(new VisionOnStep(true));
         group2a.addStep(new ShooterAutoAim(true));
         group2.addStep(group2a);
@@ -97,11 +97,12 @@ public class OffsideRed extends AutoProgram {
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
         group4.addStep(new SwervePathFollowerStep("ScoreDOffsidered", swerve, isBlue));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
-        group4a.addStep(new AutoStepDelay(1000));
+        group4a.addStep(new AutoStepDelay(2000));
         group4a.addStep(new VisionOnStep(true));
         group4a.addStep(new ShooterAutoAim(true));
         group4.addStep(group4a);
         addStep(group4);
+        addStep(new AutoStepDelay(200));
         addStep(new ShootSpeakerStep());
         // addStep(new AutoStepDelay(300));
         // addStep(new SetIntakeSequenceStep(true));

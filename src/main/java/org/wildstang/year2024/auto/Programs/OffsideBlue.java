@@ -42,7 +42,7 @@ public class OffsideBlue extends AutoProgram {
         addStep(new SetFlywheel(true));
         //addStep(new VisionOnStep(true));
         addStep(new AutoStepDelay(500));
-        addStep(new PathHeadingStep(isBlue ? 210.0 : 150.0, swerve));
+        addStep(new PathHeadingStep(isBlue ? 235.0 : 125.0, swerve));
         //addStep(new ShooterAutoAim(true));
         addStep(new AutoStepDelay(500));
         addStep(new VisionOnStep(true));
@@ -102,6 +102,7 @@ public class OffsideBlue extends AutoProgram {
         group4a.addStep(new ShooterAutoAim(true));
         group4.addStep(group4a);
         addStep(group4);
+        addStep(new AutoStepDelay(200));
         addStep(new ShootSpeakerStep());
         // addStep(new AutoStepDelay(300));
         // addStep(new SetIntakeSequenceStep(true));
