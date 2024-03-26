@@ -118,12 +118,12 @@ public class WsVision implements Subsystem {
     private boolean isLeftBetter(){
         if (left.TargetInView() && !right.TargetInView()) return true;
         if (!left.TargetInView() && right.TargetInView()) return false;
+        if (left.getTagDist() < right.getTagDist()) return true;
+        if (left.getTagDist() > right.getTagDist()) return false;
         if (left.seesAmp() && !right.seesAmp()) return true;
         if (!left.seesAmp() && right.seesAmp()) return false;
         if (left.getNumTags() > right.getNumTags()) return true;
         if (left.getNumTags() < right.getNumTags()) return false;
-        if (left.getTagDist() < right.getTagDist()) return true;
-        if (left.getTagDist() > right.getTagDist()) return false;
         return !this.isBlue;
     }
     public double turnToTarget(boolean isBlue){
@@ -137,5 +137,8 @@ public class WsVision implements Subsystem {
     }
     public boolean canSeeSpeaker(boolean isBlue){
         return left.canSeeSpeaker(isBlue) || right.canSeeSpeaker(isBlue);
+    }
+    public boolean canSeeAmp(){
+        return left.seesAmp() || right.seesAmp();
     }
     }
