@@ -16,7 +16,7 @@ public class WsLL {
 
     public double[] blue3D;
     public double[] red3D;
-    public double tid;
+    public int tid;
     public double tv;
     public double tx;
     public double ty;
@@ -34,7 +34,7 @@ public class WsLL {
         red3D = limelight.getEntry("botpose_wpired").getDoubleArray(new double[11]);
         blue3D = limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[11]);
         setToIn();
-        tid = limelight.getEntry("tid").getDouble(0);
+        tid = (int) limelight.getEntry("tid").getInteger(0);
         tv = limelight.getEntry("tv").getDouble(0);
         tx = limelight.getEntry("tx").getDouble(0);
         ty = limelight.getEntry("ty").getDouble(0);
@@ -58,7 +58,7 @@ public class WsLL {
             blue3D = limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[11]);
             red3D = limelight.getEntry("botpose_wpired").getDoubleArray(new double[11]);
             setToIn();
-            tid = limelight.getEntry("tid").getDouble(0);
+            tid = (int) limelight.getEntry("tid").getInteger(0);
             //numTargets = result.targets_Fiducials.length;
         }
         updateDashboard();

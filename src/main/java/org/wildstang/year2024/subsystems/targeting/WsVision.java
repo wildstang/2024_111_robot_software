@@ -138,6 +138,9 @@ public class WsVision implements Subsystem {
     public boolean canSeeSpeaker(boolean isBlue){
         return left.canSeeSpeaker(isBlue) || right.canSeeSpeaker(isBlue);
     }
+    public boolean canSeeSpeaker(){
+        return canSeeSpeaker(isBlue);
+    }
     public boolean canSeeAmp(){
         return left.seesAmp() || right.seesAmp();
     }

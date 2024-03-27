@@ -189,6 +189,7 @@ public class shooter implements Subsystem {
         } else if (!autoOverride) {
             if (idleTimer.hasElapsed(1.0)) {
                 speed = Speeds.IDLE;
+                if (wsVision.canSeeSpeaker()) speed = Speeds.CYCLE;
                 angleSlot = 1;
                 if (wsVision.aprilTagsInView()) angle = wsVision.getAngle();
                 if (angleTimer.hasElapsed(0.5)) angle = ShooterConsts.PREP_ANGLE;
