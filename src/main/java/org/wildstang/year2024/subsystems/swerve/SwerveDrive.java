@@ -148,10 +148,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
             else rotTarget = 90.0;
             rotLocked = true;
         }
-        // if (intake.isIntaking() && !isOverride) {
-        //     driveState = driveType.OBJECT;
-        //     rotLocked = true;
-        // } else driveState = driveType.TELEOP;
+        if (intake.isIntaking() && !isOverride) {
+            driveState = driveType.OBJECT;
+            rotLocked = true;
+        } else driveState = driveType.TELEOP;
 
         //get rotational joystick
         rotSpeed = rightStickX.getValue()*Math.abs(rightStickX.getValue());
@@ -296,14 +296,14 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
-            // } else if (isAutoObject && !intake.hasNote() && vision.back.TargetInView()){
-            //     xObject = vision.back.tx * 0.01;//(0.01 + 0.005*Math.min(0, 25-vision.back.ty));
-            //     yObject = vision.back.ty * 0.01;
-            //     if (Math.hypot(xPower, yPower) > vision.back.ty*0.005) yObject = 0;
-            //     rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
-            //     // this.swerveSignal = swerveHelper.setAuto(xPower, yPower, rotSpeed, getGyroAngle(), xObject, yObject);
-            //     //this.swerveSignal = swerveHelper.setDrive(0 - xObject, -Math.hypot(yPower, xPower) + yObject , rotSpeed, 360.0-0.75*vision.back.tx);
-            //     this.swerveSignal = swerveHelper.setDrive(0, Math.max(Math.hypot(xPower, yPower), yObject), rotSpeed, 360.0-0.75*vision.back.tx);
+            } else if (isAutoObject && !intake.hasNote() && vision.back.TargetInView()){
+                xObject = vision.back.tx * 0.01;//(0.01 + 0.005*Math.min(0, 25-vision.back.ty));
+                yObject = vision.back.ty * 0.01;
+                if (Math.hypot(xPower, yPower) > vision.back.ty*0.005) yObject = 0;
+                rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
+                // this.swerveSignal = swerveHelper.setAuto(xPower, yPower, rotSpeed, getGyroAngle(), xObject, yObject);
+                //this.swerveSignal = swerveHelper.setDrive(0 - xObject, -Math.hypot(yPower, xPower) + yObject , rotSpeed, 360.0-0.75*vision.back.tx);
+                this.swerveSignal = swerveHelper.setDrive(0, Math.max(Math.hypot(xPower, yPower), yObject), rotSpeed, 360.0-0.75*vision.back.tx);
             } else {
                 //get controller generated rotation value
                 // Capped at .2
@@ -315,17 +315,17 @@ public class SwerveDrive extends SwerveDriveTemplate {
             drive();        
         } 
         if (driveState == driveType.OBJECT) {
-            // if (vision.back.TargetInView() && !intake.hasNote()) {
-            //     if (rotLocked){
-            //         rotSpeed = swerveHelper.getRotControl( 0.75*vision.back.tx, 0.0);
-            //     }
-            //     this.swerveSignal = swerveHelper.setDrive(0, -Math.hypot(yPower, xPower) , rotSpeed, 360.0-0.75*vision.back.tx);
-            //     drive();
-            // }
-            // else {
+            if (vision.back.TargetInView() && !intake.hasNote()) {
+                if (rotLocked){
+                    rotSpeed = swerveHelper.getRotControl( 0.75*vision.back.tx, 0.0);
+                }
+                this.swerveSignal = swerveHelper.setDrive(0, -Math.hypot(yPower, xPower) , rotSpeed, 360.0-0.75*vision.back.tx);
+                drive();
+            }
+            else {
                 this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
                 drive();
-            // }
+            }
         }
         SmartDashboard.putNumber("Gyro Reading", getGyroAngle());
         SmartDashboard.putNumber("X Power", xPower);

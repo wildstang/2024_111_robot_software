@@ -19,7 +19,7 @@ public class WsVision implements Subsystem {
 
     public WsLL left = new WsLL("limelight-left");
     public WsLL right = new WsLL("limelight-right");
-    //public WsLL back = new WsLL("limelight-back");
+    public WsLL back = new WsLL("limelight-back");
 
     public VisionConsts VC;
 
@@ -59,16 +59,16 @@ public class WsVision implements Subsystem {
     public void update() {
         left.update();
         right.update();
-        // back.update();
+        back.update();
         SmartDashboard.putNumber("Vision getAngle", getAngle());
         SmartDashboard.putNumber("Vision distToTarget", distanceToTarget(isBlue));
         SmartDashboard.putNumber("Vision angleToRot", turnToTarget(isBlue));
         SmartDashboard.putBoolean("Vision targetinView", aprilTagsInView());
-        // SmartDashboard.putNumber("GP X", back.tx);
-        // SmartDashboard.putNumber("GP Y", back.ty);
-        // SmartDashboard.putBoolean("GP tv", back.TargetInView());
-        // SmartDashboard.putNumber("Vision back tx", back.tx);
-        // SmartDashboard.putNumber("Vision back ty", back.ty);
+        SmartDashboard.putNumber("GP X", back.tx);
+        SmartDashboard.putNumber("GP Y", back.ty);
+        SmartDashboard.putBoolean("GP tv", back.TargetInView());
+        SmartDashboard.putNumber("Vision back tx", back.tx);
+        SmartDashboard.putNumber("Vision back ty", back.ty);
 
     }
 
@@ -76,7 +76,7 @@ public class WsVision implements Subsystem {
     public void resetState() {
         left.update();
         right.update();
-        // back.update();
+        back.update();
     }
 
     @Override
