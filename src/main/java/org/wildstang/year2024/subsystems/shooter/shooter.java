@@ -44,7 +44,6 @@ public class shooter implements Subsystem {
     private boolean subwooferAimOverride = false;
     private boolean autoAim = false;
     private boolean autoOverride = false;
-    private boolean isCycle = false;
     private enum Speeds { 
         OFF(0.0), 
         IDLE(ShooterConsts.IDLE_SPEED), 
@@ -96,7 +95,6 @@ public class shooter implements Subsystem {
         if (source == dPadDown && dPadDown.getValue()) {
             aimOffset -= ShooterConsts.ANGLE_INCREMENT;
         }
-        isCycle = aButton.getValue();
     }
 
     public void setAngle(double angle) {
@@ -128,12 +126,12 @@ public class shooter implements Subsystem {
         angleNeo.initClosedLoop(ShooterConsts.P, ShooterConsts.I, ShooterConsts.D, 0, this.angleEncoder);
         angleNeo.addClosedLoop(0, ShooterConsts.P, ShooterConsts.I, ShooterConsts.D, 0);
         angleNeo.addClosedLoop(1, 0.02, 0, 0, 0);
-        angleNeo.setBrake();
         // Returns position in degrees instead of rotations
         angleEncoder.setPositionConversionFactor(360.0);
         //set current limit 
         angleNeo.setCurrentLimit(20, 20, 0);
         vortexFlywheel.setCurrentLimit(40, 40, 0);
+        vortexFlywheel.setCoast();
         neoFlywheel.setCurrentLimit(40, 40, 0);
 
 
@@ -175,29 +173,25 @@ public class shooter implements Subsystem {
     public void update() {
         // Aim if trigger pressed and Speaker in sight
 
-        if (wsVision.front.TargetInView()) angleTimer.reset();
+        if (wsVision.aprilTagsInView()) angleTimer.reset();
         if (!RandomThing.hasNote() || rightTriggerPressed){
             idleTimer.reset();
         }
         if (leftTriggerPressed || autoAim) {
             angleSlot = 0;
             speed = Speeds.MAX;
-            if (wsVision.front.TargetInView()){
+            if (wsVision.aprilTagsInView()){
                 if (!rightTriggerPressed) angle = wsVision.getAngle();
                 shootTimer.reset();
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
                 angle =autoassume;
             }
-        
-        }
-        else if (isCycle){
-            speed = Speeds.CYCLE;
-            angle = ShooterConsts.FEED_ANGLE;
         } else if (!autoOverride) {
             if (idleTimer.hasElapsed(1.0)) {
                 speed = Speeds.IDLE;
+                if (wsVision.canSeeSpeaker()) speed = Speeds.CYCLE;
                 angleSlot = 1;
-                if (wsVision.front.TargetInView()) angle = wsVision.getAngle();
+                if (wsVision.aprilTagsInView()) angle = wsVision.getAngle();
                 if (angleTimer.hasElapsed(0.5)) angle = ShooterConsts.PREP_ANGLE;
                 // else angle = ShooterConsts.PREP_ANGLE;
                 // angle = ShooterConsts.PREP_ANGLE;
@@ -206,13 +200,13 @@ public class shooter implements Subsystem {
                 speed = Speeds.OFF;
             }
         }
-        
-        vortexFlywheel.setSpeed(speed.getPercent());
-        neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);
         if (subwooferAimOverride) {
             angle = ShooterConsts.SUBWOOFER_ANGLE;
             angleSlot = 0;
-        }
+            speed = Speeds.CYCLE;
+        } 
+        vortexFlywheel.setSpeed(speed.getPercent());
+        neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);
         angleNeo.setPosition(angle+aimOffset, angleSlot);
         SmartDashboard.putBoolean("isAutoAim", autoAim);
         SmartDashboard.putNumber("automatic angle offset", aimOffset);

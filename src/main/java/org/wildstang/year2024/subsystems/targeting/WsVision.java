@@ -17,21 +17,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
 
-    public WsPV front = new WsPV("photon-front", true);
+    public WsLL left = new WsLL("limelight-left");
+    public WsLL right = new WsLL("limelight-right");
     public WsLL back = new WsLL("limelight-back");
 
     public VisionConsts VC;
 
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
-    // public double[] distances = {43.3, 83, 129};
-    public double[] distances = {41, 50, 70, 105, 146};//dist 43 plus 10, 100 is +7.5
-    public double[] speeds = {0.0, 0.0, 0.0};
-    // public double[] angles = {180, 127, 101};
-    public double[] angles = {174, 145+7.5, 127+75, 95+7.5, 75+9};
+    // public double[] distances = {41, 50, 70, 105, 146};
+    // public double[] angles = {174, 145+7.5, 127+75, 95+7.5, 75+9};
+    public double[] distances = { 38,  50,  95, 145,  192,  250, 251, 252};
+    public double[] angles =    {205, 160, 130,  87, 75.5, 75.5, 205, 205};
     public int last = distances.length-1;
 
     public boolean isBlue = true;
+    private double inputDistance = 0;
 
     private DigitalInput driverLeftShoulder;
 
@@ -56,12 +57,13 @@ public class WsVision implements Subsystem {
 
     @Override
     public void update() {
-        front.update();
+        left.update();
+        right.update();
         back.update();
         SmartDashboard.putNumber("Vision getAngle", getAngle());
-        SmartDashboard.putNumber("Vision distToTarget", front.distanceToTarget(isBlue));
-        SmartDashboard.putNumber("Vision angleToRot", front.turnToTarget(isBlue, isStage()));
-        SmartDashboard.putBoolean("Vision targetinView", front.TargetInView());
+        SmartDashboard.putNumber("Vision distToTarget", distanceToTarget(isBlue));
+        SmartDashboard.putNumber("Vision angleToRot", turnToTarget(isBlue));
+        SmartDashboard.putBoolean("Vision targetinView", aprilTagsInView());
         SmartDashboard.putNumber("GP X", back.tx);
         SmartDashboard.putNumber("GP Y", back.ty);
         SmartDashboard.putBoolean("GP tv", back.TargetInView());
@@ -72,7 +74,8 @@ public class WsVision implements Subsystem {
 
     @Override
     public void resetState() {
-        front.update();
+        left.update();
+        right.update();
         back.update();
     }
 
@@ -88,18 +91,12 @@ public class WsVision implements Subsystem {
      * - Amp: 5, 6
      */
 
-    public double getSpeed(){
-        double inputDistance = front.distanceToTarget(isBlue);
-        if (inputDistance < distances[0]) return speeds[0];
-        for (int i = 1; i < distances.length; i++){
-            if (inputDistance < distances[i]){
-                return speeds[i-1] + (speeds[i]-speeds[i-1])*(inputDistance-distances[i-1])/(distances[i]-distances[i-1]);
-            }
-        }
-        return speeds[last] + (inputDistance-distances[last])*(speeds[last]-speeds[last-1])/(distances[last]-distances[last-1]);
-    }
     public double getAngle(){
-        double inputDistance = front.distanceToTarget(isBlue);
+        if (isLeftBetter()) {
+            inputDistance = left.distanceToTarget(isBlue);
+        }  else {
+            inputDistance = right.distanceToTarget(isBlue);
+        }
         if (inputDistance < distances[0]) return angles[0];
         for (int i = 1; i < distances.length; i++){
             if (inputDistance < distances[i]){
@@ -108,9 +105,7 @@ public class WsVision implements Subsystem {
         }
         return angles[last] + (inputDistance-distances[last])*(angles[last]-angles[last-1])/(distances[last]-distances[last-1]);
     }
-    public boolean isStage(){
-        return front.tid == 13 || front.tid == 14;
-    }
+    
     public void setAlliance(boolean alliance){
         this.isBlue = alliance;
     }
@@ -119,5 +114,34 @@ public class WsVision implements Subsystem {
      */
     public boolean getAlliance() {
         return isBlue;
+    }
+    private boolean isLeftBetter(){
+        if (left.TargetInView() && !right.TargetInView()) return true;
+        if (!left.TargetInView() && right.TargetInView()) return false;
+        if (left.getTagDist() < right.getTagDist()) return true;
+        if (left.getTagDist() > right.getTagDist()) return false;
+        if (left.seesAmp() && !right.seesAmp()) return true;
+        if (!left.seesAmp() && right.seesAmp()) return false;
+        if (left.getNumTags() > right.getNumTags()) return true;
+        if (left.getNumTags() < right.getNumTags()) return false;
+        return !this.isBlue;
+    }
+    public double turnToTarget(boolean isBlue){
+        return isLeftBetter() ? left.turnToTarget(isBlue) : right.turnToTarget(isBlue);
+    }
+    public double distanceToTarget(boolean isBlue){
+        return isLeftBetter() ? left.distanceToTarget(isBlue) : right.distanceToTarget(isBlue);
+    }
+    public boolean aprilTagsInView(){
+        return left.TargetInView() || right.TargetInView();
+    }
+    public boolean canSeeSpeaker(boolean isBlue){
+        return left.canSeeSpeaker(isBlue) || right.canSeeSpeaker(isBlue);
+    }
+    public boolean canSeeSpeaker(){
+        return canSeeSpeaker(isBlue);
+    }
+    public boolean canSeeAmp(){
+        return left.seesAmp() || right.seesAmp();
     }
     }

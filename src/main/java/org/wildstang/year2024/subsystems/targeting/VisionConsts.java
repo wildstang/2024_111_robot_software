@@ -11,9 +11,9 @@ public class VisionConsts {
     public final double mToIn = 39.71;
 
     public final double blueSpeakerX = 9.5;//in
-    public final double blueSpeakerY = 218.42;//in
+    public final double blueSpeakerY = 208.42;//in
     public final double redSpeakerX = 641.7;//in
-    public final double redSpeakerY = 218.42;//in
+    public final double redSpeakerY = 208.42;//in
 
     public final double blueTrussX = 140.0;
     public final double blueTrussY = 218.42;

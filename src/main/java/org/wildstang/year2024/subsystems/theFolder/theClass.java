@@ -48,7 +48,7 @@ public class theClass implements Subsystem {
         } else if (Math.abs(leftTrigger.getValue())>0.15 || leftShoulder.getValue()){
             // Cancel intake because LaserCAN now can't see the note
             intakeState = Intake.CHILL;  
-        } else if (Math.abs(rightTrigger.getValue())>0.15 && !hasNote()){
+        } else if (Math.abs(rightTrigger.getValue())>0.15 && (!hasNote() || !isFiring)){
             // Intaking
             intakeState = Intake.SPINNING;
         } else if (Math.abs(rightTrigger.getValue())<0.15 && intakeState == Intake.SPINNING){

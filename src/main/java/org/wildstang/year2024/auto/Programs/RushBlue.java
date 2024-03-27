@@ -60,13 +60,14 @@ public class RushBlue extends AutoProgram {
         addStep(new ObjectOnStep(false));
 
         //return and shoot A
-        steps = new AutoStep[]{new AutoStepDelay(1000), new ShooterSetAngle(82.5), new ShooterAutoAim(true)};
+        steps = new AutoStep[]{new AutoStepDelay(1000), new ShooterSetAngle(82.5), new ShooterAutoAim(true), new VisionOnStep(true)};
         addStep(new SplitGroup(new SwervePathFollowerStep("RushC", swerve, isBlue), steps).get());
         addStep(new ShootSpeakerStep());
         addStep(new AutoStepDelay(400));
 
         //go to center and grab B
-        steps = new AutoStep[]{new AutoStepDelay(1000), new SetIntakeSequenceStep(true), new ObjectOnStep(true)};
+        steps = new AutoStep[]{new AutoStepDelay(1000), new ShooterAutoAim(false), new VisionOnStep(false), 
+                new SetIntakeSequenceStep(true), new ObjectOnStep(true)};
         addStep(new SplitGroup(new SwervePathFollowerStep("RushD", swerve, isBlue), steps).get());
         addStep(new ObjectOnStep(false));
 
