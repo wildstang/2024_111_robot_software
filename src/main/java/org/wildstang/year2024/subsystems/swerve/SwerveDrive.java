@@ -303,7 +303,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 // this.swerveSignal = swerveHelper.setAuto(xPower, yPower, rotSpeed, getGyroAngle(), xObject, yObject);
                 //this.swerveSignal = swerveHelper.setDrive(0 - xObject, -Math.hypot(yPower, xPower) + yObject , rotSpeed, 360.0-0.75*vision.back.tx);
-                this.swerveSignal = swerveHelper.setDrive(0, Math.max(Math.hypot(xPower, yPower), yObject), rotSpeed, 360.0-0.75*vision.back.tx);
+                this.swerveSignal = swerveHelper.setDrive(0, Math.min(-Math.hypot(xPower, yPower), -yObject), rotSpeed, 360.0-0.75*vision.back.tx);
             } else {
                 //get controller generated rotation value
                 // Capped at .2
@@ -337,6 +337,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         SmartDashboard.putNumber("Odo X", odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Odo Y", odometry.getPoseMeters().getY());
         SmartDashboard.putBoolean("Alliance Color", DriverStation.getAlliance().isPresent());
+        SmartDashboard.putBoolean("Object Override", isOverride);
     }
     
     @Override

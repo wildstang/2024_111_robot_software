@@ -48,6 +48,7 @@ public class shooter implements Subsystem {
         OFF(0.0), 
         IDLE(ShooterConsts.IDLE_SPEED), 
         CYCLE(ShooterConsts.CYCLE_SPEED),
+        FEED(ShooterConsts.FEED_SPEED),
         MAX(1.0);
         private double percent;
 
@@ -180,6 +181,7 @@ public class shooter implements Subsystem {
         if (leftTriggerPressed || autoAim) {
             angleSlot = 0;
             speed = Speeds.MAX;
+            if (wsVision.getAngle() > 200) speed = Speeds.FEED;
             if (wsVision.aprilTagsInView()){
                 if (!rightTriggerPressed) angle = wsVision.getAngle();
                 shootTimer.reset();

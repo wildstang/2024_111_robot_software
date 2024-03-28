@@ -5,7 +5,8 @@ public class ShooterConsts {
     public static final double MIN_ANGLE = 0.0;
     public static final double PREP_ANGLE = 65.0;
     public static final double IDLE_SPEED = 0.3;
-    public static final double CYCLE_SPEED = 0.75;
+    public static final double CYCLE_SPEED = 0.55;
+    public static final double FEED_SPEED = 0.6;
     // Array containing arrays where the elements are a distance the corresponding and angle
     public static final double[][] SHOOTER_POSIIONS = {{}};
     public static final double P = 0.075;
