@@ -303,7 +303,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 // this.swerveSignal = swerveHelper.setAuto(xPower, yPower, rotSpeed, getGyroAngle(), xObject, yObject);
                 //this.swerveSignal = swerveHelper.setDrive(0 - xObject, -Math.hypot(yPower, xPower) + yObject , rotSpeed, 360.0-0.75*vision.back.tx);
-                this.swerveSignal = swerveHelper.setDrive(0, Math.min(-Math.hypot(xPower, yPower), -yObject), rotSpeed, 360.0-1.25*vision.back.tx);
+                this.swerveSignal = swerveHelper.setDrive(0, Math.min(-Math.hypot(xPower, yPower), -yObject), rotSpeed, 360.0-1.0*vision.back.tx);
             } else {
                 //get controller generated rotation value
                 // Capped at .2

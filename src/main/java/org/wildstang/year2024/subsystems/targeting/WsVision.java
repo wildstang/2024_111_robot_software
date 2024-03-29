@@ -118,10 +118,10 @@ public class WsVision implements Subsystem {
     private boolean isLeftBetter(){
         if (left.TargetInView() && !right.TargetInView()) return true;
         if (!left.TargetInView() && right.TargetInView()) return false;
+        if (left.seesAmp() && !right.seesAmp()) return false;
+        if (!left.seesAmp() && right.seesAmp()) return true;
         if (left.getTagDist() < right.getTagDist()) return true;
         if (left.getTagDist() > right.getTagDist()) return false;
-        if (left.seesAmp() && !right.seesAmp()) return true;
-        if (!left.seesAmp() && right.seesAmp()) return false;
         if (left.getNumTags() > right.getNumTags()) return true;
         if (left.getNumTags() < right.getNumTags()) return false;
         return !this.isBlue;
