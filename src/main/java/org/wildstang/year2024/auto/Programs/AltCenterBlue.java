@@ -7,6 +7,7 @@ import org.wildstang.framework.auto.steps.SetGyroStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
+import org.wildstang.year2024.auto.Steps.ObjectOnStep;
 import org.wildstang.year2024.auto.Steps.SetFlywheel;
 import org.wildstang.year2024.auto.Steps.SetIntakeSequenceStep;
 import org.wildstang.year2024.auto.Steps.ShootSpeakerStep;
@@ -31,7 +32,7 @@ public class AltCenterBlue extends AutoProgram {
         
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         LedController led = (LedController) Core.getSubsystemManager().getSubsystem(WsSubsystems.LED);
-        isBlue = true;
+        isBlue = false;
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
@@ -52,37 +53,73 @@ public class AltCenterBlue extends AutoProgram {
         group1.addStep(group1a);
         addStep(group1);
         addStep(new AutoStepDelay(300));
-        addStep(new ShooterSetAngle(99));
-        addStep(new ShooterAutoAim(true));
+        addStep(new ShooterSetAngle(103));
+        //addStep(new ShooterAutoAim(true));
 
         //grab second prestaged and shoot first prestaged
-        addStep(new SwervePathFollowerStep("CenterB", swerve, isBlue));
+        AutoParallelStepGroup group2 = new AutoParallelStepGroup();
+        group2.addStep(new SwervePathFollowerStep("CenterB", swerve, isBlue));
+        AutoSerialStepGroup group2a = new AutoSerialStepGroup();
+        group2a.addStep(new AutoStepDelay(500));
+        group2a.addStep(new ShooterAutoAim(true));
+        group2a.addStep(new VisionOnStep(true));
+        group2a.addStep(new AutoStepDelay(400));
+        group2a.addStep(new ObjectOnStep(true));
         addStep(new AutoStepDelay(500));
+        addStep(new ObjectOnStep(false));
+        addStep(new VisionOnStep(false));
 
         //grab third prestaged and shoot second prestaged
-        addStep(new SwervePathFollowerStep("CenterC", swerve, isBlue));
+        AutoParallelStepGroup group3 = new AutoParallelStepGroup();
+        group3.addStep(new SwervePathFollowerStep("CenterC", swerve, isBlue));
+        AutoSerialStepGroup group3a = new AutoSerialStepGroup();
+        group3a.addStep(new AutoStepDelay(1500));
+        group3a.addStep(new ObjectOnStep(true));
+        group3a.addStep(new VisionOnStep(true));
+        group3.addStep(group3a);
+        addStep(group3);
+        addStep(new ObjectOnStep(false));
         addStep(new AutoStepDelay(500));
-        addStep(new ShooterAutoAim(true));
+        addStep(new VisionOnStep(false));
+        //addStep(new ShooterAutoAim(true));
 
-        //grab middle C note and shoot third prestaged
+        //grab middle A note and shoot third prestaged
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
         group4.addStep(new SwervePathFollowerStep("TeersA", swerve, isBlue));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
-        group4a.addStep(new ShooterSetAngle(75));
+        group4a.addStep(new ShooterSetAngle(82.5));
         group4a.addStep(new AutoStepDelay(500));
+        group4a.addStep(new ShooterAutoAim(true));
         group4a.addStep(new SetIntakeSequenceStep(true));
+        group4a.addStep(new AutoStepDelay(100));
+        group4a.addStep(new ObjectOnStep(true));
         group4.addStep(group4a);
         addStep(group4);
 
         //return from middle
+        addStep(new ObjectOnStep(false));
+        addStep(new VisionOnStep(true));
         addStep(new SwervePathFollowerStep("TeersB", swerve, isBlue));
         addStep(new ShootSpeakerStep());
-        addStep(new AutoStepDelay(500));
-        addStep(new SetIntakeSequenceStep(true));
+        addStep(new AutoStepDelay(300));
+        addStep(new VisionOnStep(false));
+
+        //grab middle B note and shoot middle A note
+        AutoParallelStepGroup group5 = new AutoParallelStepGroup();
+        group5.addStep(new SwervePathFollowerStep("TeersC", swerve, isBlue));
+        AutoSerialStepGroup group5a = new AutoSerialStepGroup();
+        group5a.addStep(new AutoStepDelay(500));
+        group5a.addStep(new SetIntakeSequenceStep(true));
+        group5a.addStep(new AutoStepDelay(800));
+        group5a.addStep(new ObjectOnStep(true));
+        group5.addStep(group5a);
+        addStep(group5);
 
         //return from middle and shoot middle B note
-        addStep(new SwervePathFollowerStep("TeersC", swerve, isBlue));
-        
+        addStep(new ObjectOnStep(false));
+        addStep(new VisionOnStep(true));
+        addStep(new SwervePathFollowerStep("TeersD", swerve, isBlue));
+        addStep(new ShootSpeakerStep());
     }
 
     @Override
