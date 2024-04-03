@@ -203,6 +203,15 @@ public class SwerveDrive extends SwerveDriveTemplate {
         gyro.setYaw(0.0);
     }
 
+    public void initSubsystems() {
+        vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
+        intake = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
+    }
+
+    public void setAlliance(boolean isBlue) {
+        this.isBlue = isBlue;
+    }
+
     public void initInputs() {
 
         leftStickX = (AnalogInput) WsInputs.DRIVER_LEFT_JOYSTICK_X.get();
@@ -251,10 +260,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         };
         //create default swerveSignal
         swerveSignal = new SwerveSignal(new double[]{0.0, 0.0, 0.0, 0.0}, new double[]{0.0, 0.0, 0.0, 0.0});
-        vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.33), new Translation2d(0.2794, -0.33),
             new Translation2d(-0.2794, 0.33), new Translation2d(-0.2794, -0.33)), odoAngle(), odoPosition(), new Pose2d());
-        intake = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
     }
     
     @Override
@@ -327,6 +334,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 drive();
             }
         }
+        SmartDashboard.putBoolean("Object Override", isOverride);
         SmartDashboard.putNumber("Gyro Reading", getGyroAngle());
         SmartDashboard.putNumber("X Power", xPower);
         SmartDashboard.putNumber("Y Power", yPower);
@@ -453,6 +461,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         autoTimer.start();
     }
     public Pose2d returnPose(){
+    
         return odometry.getPoseMeters();
     }
     public double getRotTarget(){
@@ -464,10 +473,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     }
     public void setVisionAuto(boolean isOn){
         this.isVision = isOn;
-    }
-    public void setAlliance(boolean isBlue){
-        this.isBlue = isBlue;
-        vision.setAlliance(isBlue);
     }
     public void setAutoObject(boolean isOn){
         this.isAutoObject = isOn;

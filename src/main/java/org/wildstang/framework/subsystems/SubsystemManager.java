@@ -7,6 +7,8 @@ import org.wildstang.framework.CoreUtils;
 import org.wildstang.framework.core.Subsystems;
 import org.wildstang.framework.logger.Log;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 /**
  * This class in the manager for all outputs.
  *
@@ -16,11 +18,18 @@ public class SubsystemManager {
 
     private ArrayList<Subsystem> m_subsystems = new ArrayList<>();
     private boolean s_initialised = false;
+    private SendableChooser<Boolean> allianceChooser;
+
 
     /**
      * Initialize all subsystems registered with the manager.
      */
     public void init() {
+
+        allianceChooser = new SendableChooser<>();
+        allianceChooser.setDefaultOption("Blue", true);
+        allianceChooser.addOption("Red", false);
+
         if (!s_initialised) {
             s_initialised = true;
         }
@@ -39,6 +48,7 @@ public class SubsystemManager {
         for (Subsystem sub : m_subsystems) {
             // Update the output - send value to output
             sub.update();
+            sub.setAlliance(allianceChooser.getSelected());
         }
     }
 

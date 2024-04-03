@@ -68,14 +68,17 @@ public class LedController implements Subsystem {
         isAuto = false;
 
     }
+    @Override
+    public void initSubsystems() {      
+        RandomThing = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
+        flywheel = (shooter) Core.getSubsystemManager().getSubsystem(WsSubsystems.SHOOTER);
+        vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);   
+    }
 
     @Override
     public void init() {
         rightTrigger = (AnalogInput) WsInputs.DRIVER_RIGHT_TRIGGER.get();
         rightTrigger.addInputListener(this);
-        RandomThing = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
-        flywheel = (shooter) Core.getSubsystemManager().getSubsystem(WsSubsystems.SHOOTER);
-        vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         
         //Outputs
         led = new AddressableLED(port);

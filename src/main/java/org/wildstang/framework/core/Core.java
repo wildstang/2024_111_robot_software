@@ -126,6 +126,14 @@ public class Core {
 
             s_subsystemManager.addSubsystem(sub);
         }
+        for (Subsystems subsystem : p_subsystems) {
+            Log.info("Creating subsystem: " + subsystem.getName());
+
+            // Instantiate the class
+            Subsystem sub = (Subsystem) s_subsystemManager.getSubsystem(subsystem);
+            // Call the init method
+            sub.initSubsystems();
+        }
     }
 
     /**

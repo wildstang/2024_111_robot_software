@@ -109,9 +109,18 @@ public class shooter implements Subsystem {
     }
 
     @Override
-    public void init() {
+    public void initSubsystems() {
         wsVision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         RandomThing = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
+    }
+
+    @Override
+    public void setAlliance(boolean isBlue) {
+        return;
+    }
+
+    @Override
+    public void init() {
 
         // Init Motors
         vortexFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER_VORTEX);
@@ -183,7 +192,7 @@ public class shooter implements Subsystem {
             speed = Speeds.MAX;
             if (wsVision.getAngle() > 200) speed = Speeds.FEED;
             if (wsVision.aprilTagsInView()){
-                if (!rightTriggerPressed) angle = wsVision.getAngle();
+                if (!rightTriggerPressed && getShooterVelocity() < 5000) angle = wsVision.getAngle();
                 shootTimer.reset();
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
                 angle =autoassume;

@@ -33,6 +33,10 @@ public interface Subsystem extends InputListener {
      */
     public void resetState();
 
+    public void initSubsystems();
+
+    public void setAlliance(boolean isBlue);
+
     /**
      * Returns the name of the subsystem.
      *
