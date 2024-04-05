@@ -112,6 +112,12 @@ public class theClass implements Subsystem {
     }
 
     @Override
+    public void initSubsystems() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
     public void init() {
 
         // Init Outputs

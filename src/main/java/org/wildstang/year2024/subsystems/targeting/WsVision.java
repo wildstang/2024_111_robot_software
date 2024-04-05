@@ -3,6 +3,8 @@ package org.wildstang.year2024.subsystems.targeting;
 // ton of imports
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.year2024.robot.WsInputs;
+import org.wildstang.year2024.robot.WsSubsystems;
+import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 import org.wildstang.framework.core.Core;
 
 import org.wildstang.framework.io.inputs.DigitalInput;
@@ -20,17 +22,8 @@ public class WsVision implements Subsystem {
     public WsLL left = new WsLL("limelight-left");
     public WsLL right = new WsLL("limelight-right");
     public WsLL back = new WsLL("limelight-back");
-
-    // Blue pose field relative
-    private double yaw = 0;
-    public void setYaw(double gyro) {
-        if (isBlue) {
-            this.yaw = (360 + gyro) % 360;
-        } else {
-            // Convert to blue coordinate
-            this.yaw = (180 + gyro) % 360;
-        }
-    }
+    
+    public SwerveDrive swerve;
 
     public VisionConsts VC;
 
@@ -54,6 +47,11 @@ public class WsVision implements Subsystem {
     }
 
     @Override
+    public void initSubsystems() {
+        swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
+    }
+
+    @Override
     public void init() {
         VC = new VisionConsts();
 
@@ -69,9 +67,9 @@ public class WsVision implements Subsystem {
 
     @Override
     public void update() {
-        left.update(yaw);
-        right.update(yaw);
-        back.update(yaw);
+        left.update(swerve.getFieldYaw());
+        right.update(swerve.getFieldYaw());
+        back.update(swerve.getFieldYaw());
         SmartDashboard.putNumber("Vision getAngle", getAngle());
         SmartDashboard.putNumber("Vision distToTarget", distanceToTarget(isBlue));
         SmartDashboard.putNumber("Vision angleToRot", turnToTarget(isBlue));
@@ -86,9 +84,9 @@ public class WsVision implements Subsystem {
 
     @Override
     public void resetState() {
-        left.update(yaw);
-        right.update(yaw);
-        back.update(yaw);
+        left.update(swerve.getFieldYaw());
+        right.update(swerve.getFieldYaw());
+        back.update(swerve.getFieldYaw());
     }
 
     @Override

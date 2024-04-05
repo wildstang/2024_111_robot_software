@@ -151,7 +151,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (intake.isIntaking() && !isOverride) {
             driveState = driveType.OBJECT;
             rotLocked = true;
-        } else driveState = driveType.TELEOP;
+        } else {
+            driveState = driveType.TELEOP;
+            rotLocked = false;
+        }
 
         //get rotational joystick
         rotSpeed = rightStickX.getValue()*Math.abs(rightStickX.getValue());
@@ -203,6 +206,11 @@ public class SwerveDrive extends SwerveDriveTemplate {
         gyro.setYaw(0.0);
     }
 
+    public void initSubsystems() {
+        vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
+        intake = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
+    }
+
     public void initInputs() {
 
         leftStickX = (AnalogInput) WsInputs.DRIVER_LEFT_JOYSTICK_X.get();
@@ -251,10 +259,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         };
         //create default swerveSignal
         swerveSignal = new SwerveSignal(new double[]{0.0, 0.0, 0.0, 0.0}, new double[]{0.0, 0.0, 0.0, 0.0});
-        vision = (WsVision) Core.getSubsystemManager().getSubsystem(WsSubsystems.WS_VISION);
         odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.33), new Translation2d(0.2794, -0.33),
             new Translation2d(-0.2794, 0.33), new Translation2d(-0.2794, -0.33)), odoAngle(), odoPosition(), new Pose2d());
-        intake = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
     }
     
     @Override
@@ -264,7 +270,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     @Override
     public void update() {
         odometry.update(odoAngle(), odoPosition());
-        vision.setYaw(gyro.getYaw());
 
         if (driveState == driveType.CROSS) {
             //set to cross - done in inputupdate
@@ -328,6 +333,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 drive();
             }
         }
+        SmartDashboard.putBoolean("Object Override", isOverride);
         SmartDashboard.putNumber("Gyro Reading", getGyroAngle());
         SmartDashboard.putNumber("X Power", xPower);
         SmartDashboard.putNumber("Y Power", yPower);
@@ -443,6 +449,15 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (!isFieldCentric) return 0;
         return (359.99 - gyro.getYaw()+360)%360;
     }  
+
+    // Gets blue field relative yaw for choreo, WPILIB, photonvision, limelight
+    public double getFieldYaw() {
+        if (isBlue) {
+            return (360 + gyro.getYaw()) % 360;
+        } else {
+            return (180 + gyro.getYaw()) % 360;
+        }
+    }
     public Rotation2d odoAngle(){
         return new Rotation2d(Math.toRadians(360-getGyroAngle()));
     }
@@ -454,6 +469,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         autoTimer.start();
     }
     public Pose2d returnPose(){
+    
         return odometry.getPoseMeters();
     }
     public double getRotTarget(){

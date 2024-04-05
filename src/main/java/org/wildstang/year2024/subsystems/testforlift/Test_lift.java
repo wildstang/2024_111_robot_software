@@ -29,7 +29,9 @@ public class Test_lift implements Subsystem {
        driverLeftBumper.addInputListener(this);
 
     }
-
+    @Override
+    public void initSubsystems() {}
+    
     private void motorSetUp(WsSpark setupMotor){
         setupMotor.initClosedLoop(0.2, 0.0, 0.0, 0.0);
         setupMotor.setBrake();

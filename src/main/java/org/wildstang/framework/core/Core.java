@@ -14,6 +14,8 @@ import org.wildstang.framework.logger.Log;
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.framework.subsystems.SubsystemManager;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 /**
  * Core of robot framework.
  */
@@ -29,6 +31,7 @@ public class Core {
 
     private Class<?> m_inputFactoryClass;
     private Class<?> m_outputFactoryClass;
+    private SendableChooser<Boolean> allianceChooser;
 
     /**
      * Constructor collects I/O factory and initialized framework components.
@@ -70,6 +73,10 @@ public class Core {
 
         s_outputFactory = (OutputFactory) createObject(m_outputFactoryClass);
         s_outputFactory.init();
+
+        allianceChooser = new SendableChooser<>();
+        allianceChooser.setDefaultOption("Blue", true);
+        allianceChooser.addOption("Red", false);
     }
 
     /**
@@ -126,6 +133,14 @@ public class Core {
 
             s_subsystemManager.addSubsystem(sub);
         }
+        for (Subsystems subsystem : p_subsystems) {
+            Log.info("Creating subsystem: " + subsystem.getName());
+
+            // Instantiate the class
+            Subsystem sub = (Subsystem) s_subsystemManager.getSubsystem(subsystem);
+            // Call the init method
+            sub.initSubsystems();
+        }
     }
 
     /**
@@ -142,6 +157,14 @@ public class Core {
 
             s_autoManager.addProgram(prog);
         }
+    }
+
+    /**
+     * Returns the selected alliance in shuffleboard
+     * @return Boolean whether on blue alliance
+     */
+    public Boolean getAlliance() {
+        return allianceChooser.getSelected();
     }
 
     /**
