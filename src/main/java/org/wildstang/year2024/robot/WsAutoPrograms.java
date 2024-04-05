@@ -28,12 +28,12 @@ public enum WsAutoPrograms implements AutoPrograms {
     OFFSIDE_BLUE("Offside Blue", OffsideBlue.class),
     OFFSIDE_RED("Offside Red", OffsideRed.class),
     TEST_PROGRAM("Test Program", TestProgram.class),
-    ALT_CENTER_BLUE("Alt Center Blue", AltCenterBlue.class),
-    ALT_CENTER_RED("Alt Center Red", AltCenterRed.class),
-    // RUSH_BLUE("Rush Blue", RushBlue.class),
-    // RUSH_RED("Rush Red", RushRed.class),
-    DUMB_BLUE("Dumb Blue", DumbBlue.class),
-    DUMB_RED("Dumb Red", DumbRed.class)
+    // ALT_CENTER_BLUE("Alt Center Blue", AltCenterBlue.class),
+    // ALT_CENTER_RED("Alt Center Red", AltCenterRed.class),
+    RUSH_BLUE("Rush Blue", RushBlue.class),
+    RUSH_RED("Rush Red", RushRed.class),
+    // DUMB_BLUE("Dumb Blue", DumbBlue.class),
+    // DUMB_RED("Dumb Red", DumbRed.class)
     ;
 
     /**

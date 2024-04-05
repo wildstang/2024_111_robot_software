@@ -104,7 +104,7 @@ public class LedController implements Subsystem {
 
     public void setRGB(int red, int green, int blue){
         for (int i = 0; i < length; i++){
-            ledBuffer.setRGB(i, red, green, blue);
+            ledBuffer.setRGB(i, (int)(0.75*red), (int)(0.75*green), (int)(0.75*blue));
         }
     }
     public void setRGB(int[] color){

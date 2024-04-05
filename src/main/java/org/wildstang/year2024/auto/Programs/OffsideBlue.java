@@ -47,7 +47,7 @@ public class OffsideBlue extends AutoProgram {
         addStep(new AutoStepDelay(200));
         addStep(new VisionOnStep(true));
         addStep(new ShooterAutoAim(true));
-        addStep(new AutoStepDelay(300));
+        addStep(new AutoStepDelay(500));
 
         // shoot preload
         addStep(new ShootSpeakerStep());

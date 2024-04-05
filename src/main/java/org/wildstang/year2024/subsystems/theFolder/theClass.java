@@ -199,7 +199,7 @@ public class theClass implements Subsystem {
                 } else {
                     feedTimer.reset();
                     intakeSpeed = 1.0;
-                    feedSpeed = 0.4;
+                    feedSpeed = 1.0;
                     kickSpeed = 0;
                 }
             }
