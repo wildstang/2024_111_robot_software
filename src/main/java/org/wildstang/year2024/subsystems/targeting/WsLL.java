@@ -49,7 +49,9 @@ public class WsLL {
     /*
      * updates all values to the latest value
      */
-    public void update(){
+    public void update(double yaw){
+        LimelightHelpers.SetRobotOrientation(CameraID, yaw, 0, 0, 0, 0, 0); 
+
         //result = LimelightHelpers.getLatestResults(CameraID).targetingResults;
         tv = limelight.getEntry("tv").getDouble(0);
         tx = limelight.getEntry("tx").getDouble(0);

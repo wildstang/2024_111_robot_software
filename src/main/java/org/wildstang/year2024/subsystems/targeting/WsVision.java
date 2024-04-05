@@ -21,6 +21,17 @@ public class WsVision implements Subsystem {
     public WsLL right = new WsLL("limelight-right");
     public WsLL back = new WsLL("limelight-back");
 
+    // Blue pose field relative
+    private double yaw = 0;
+    public void setYaw(double gyro) {
+        if (isBlue) {
+            this.yaw = (360 + gyro) % 360;
+        } else {
+            // Convert to blue coordinate
+            this.yaw = (180 + gyro) % 360;
+        }
+    }
+
     public VisionConsts VC;
 
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
@@ -57,9 +68,9 @@ public class WsVision implements Subsystem {
 
     @Override
     public void update() {
-        left.update();
-        right.update();
-        back.update();
+        left.update(yaw);
+        right.update(yaw);
+        back.update(yaw);
         SmartDashboard.putNumber("Vision getAngle", getAngle());
         SmartDashboard.putNumber("Vision distToTarget", distanceToTarget(isBlue));
         SmartDashboard.putNumber("Vision angleToRot", turnToTarget(isBlue));
@@ -74,9 +85,9 @@ public class WsVision implements Subsystem {
 
     @Override
     public void resetState() {
-        left.update();
-        right.update();
-        back.update();
+        left.update(yaw);
+        right.update(yaw);
+        back.update(yaw);
     }
 
     @Override

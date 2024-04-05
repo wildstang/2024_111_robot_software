@@ -264,6 +264,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     @Override
     public void update() {
         odometry.update(odoAngle(), odoPosition());
+        vision.setYaw(gyro.getYaw());
 
         if (driveState == driveType.CROSS) {
             //set to cross - done in inputupdate
