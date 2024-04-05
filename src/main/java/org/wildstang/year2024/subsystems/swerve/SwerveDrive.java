@@ -151,6 +151,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (intake.isIntaking() && !isOverride) {
             driveState = driveType.OBJECT;
             rotLocked = true;
+            rotTarget = getGyroAngle();
         } else driveState = driveType.TELEOP;
 
         //get rotational joystick
