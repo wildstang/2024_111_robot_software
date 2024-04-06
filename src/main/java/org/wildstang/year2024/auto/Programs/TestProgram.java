@@ -22,18 +22,18 @@ public class TestProgram extends AutoProgram{
     protected void defineSteps(){
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         addStep(new SetGyroStep(180.0, swerve));
-        //addStep(new PathHeadingStep(180.0, swerve));
+        addStep(new PathHeadingStep(180.0, swerve));
         addStep(new StartOdometryStep(2.0, 6.0, 180.0, true));
-        addStep(new SetIntakeSequenceStep(true));
-        AutoParallelStepGroup group = new AutoParallelStepGroup();
-        group.addStep(new SwervePathFollowerStep("TestSlow", swerve, true));
-        AutoSerialStepGroup groupa = new AutoSerialStepGroup();
-        groupa.addStep(new AutoStepDelay(800));
-        groupa.addStep(new ObjectOnStep(true));
-        group.addStep(groupa);
-        addStep(group);
+        //addStep(new SetIntakeSequenceStep(true));
+        // AutoParallelStepGroup group = new AutoParallelStepGroup();
+        // group.addStep(new SwervePathFollowerStep("TestSlow", swerve, true));
+        // AutoSerialStepGroup groupa = new AutoSerialStepGroup();
+        // groupa.addStep(new AutoStepDelay(800));
+        // groupa.addStep(new ObjectOnStep(true));
+        // group.addStep(groupa);
+        // addStep(group);
         // addStep(new StartOdometryStep(1.0, 5.0, 0.0, true));
-        // addStep(new SwervePathFollowerStep("TestSlowOther", swerve, true));
+        addStep(new SwervePathFollowerStep("TestSlow", swerve, true));
         
  
     }

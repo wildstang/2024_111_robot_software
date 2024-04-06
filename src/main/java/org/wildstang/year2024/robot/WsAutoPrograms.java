@@ -23,8 +23,8 @@ public enum WsAutoPrograms implements AutoPrograms {
     // enumerate programs
     //SAMPLE_PROGRAM("Sample", SampleAutoProgram.class),
     //AUTO_113("Auto 113 BAC", Auto113.class),
-    CENTER_BLUE("Center Blue", CenterBlue.class),
-    CENTER_RED("Center Red", CenterRed.class),
+    // CENTER_BLUE("Center Blue", CenterBlue.class),
+    // CENTER_RED("Center Red", CenterRed.class),
     OFFSIDE_BLUE("Offside Blue", OffsideBlue.class),
     OFFSIDE_RED("Offside Red", OffsideRed.class),
     TEST_PROGRAM("Test Program", TestProgram.class),

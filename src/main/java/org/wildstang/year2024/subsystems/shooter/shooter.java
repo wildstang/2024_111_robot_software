@@ -207,9 +207,9 @@ public class shooter implements Subsystem {
             }
         }
         if (subwooferAimOverride) {
-            angle = ShooterConsts.SUBWOOFER_ANGLE;
+            angle = RandomThing.feedHasNote() ? ShooterConsts.FEED_ANGLE : ShooterConsts.PREP_ANGLE;
             angleSlot = 0;
-            speed = Speeds.CYCLE;
+            speed = leftTriggerPressed ? Speeds.FEED : Speeds.OFF;
         } 
         vortexFlywheel.setSpeed(speed.getPercent());
         neoFlywheel.setSpeed(speed.getPercent() * ShooterConsts.SPIN_RATIO);

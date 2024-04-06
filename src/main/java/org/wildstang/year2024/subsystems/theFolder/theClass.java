@@ -109,10 +109,13 @@ public class theClass implements Subsystem {
     public boolean hasNote() {
         // Has reached the centered normal note distance
         // return laserDistance() < 400;
-        return closeLaser() || farLaser() || (intakeTimer.hasElapsed(0.5) && intake.getController().getOutputCurrent()>20);
+        return closeLaser() || farLaser() || (intakeTimer.hasElapsed(0.5) && intake.getController().getOutputCurrent()>30);
     }
     public boolean isIntaking(){
         return intakeState == Intake.SPINNING;
+    }
+    public boolean feedHasNote(){
+        return intakeState != Intake.SPINNING && intakeState != Intake.INTAKING;
     }
 
     @Override
@@ -195,7 +198,7 @@ public class theClass implements Subsystem {
             // case SPINNING:
                 // Change condition
             if (intakeState == Intake.SPINNING){
-                if (closeLaser() ||  (intakeTimer.hasElapsed(0.5) && intake.getController().getOutputCurrent()>20)) {
+                if (closeLaser() ||  (intakeTimer.hasElapsed(0.5) && intake.getController().getOutputCurrent()>30)) {
                         intakeState = Intake.INTAKING;
                 // Normal state action
                 } else if (isReverse){

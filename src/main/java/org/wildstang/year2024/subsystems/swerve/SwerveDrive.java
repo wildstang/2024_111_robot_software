@@ -64,6 +64,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private boolean isBlue = true;
     private boolean autoTag = false;
     private boolean isVision = false;
+    private boolean isFeedVision = false;
     private boolean isCurrentLow = false;
     private boolean isOverride = false;
     private boolean isAutoObject = false;
@@ -101,6 +102,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //     driveState = driveType.TELEOP;
         // }
         if (driveState == driveType.AUTO) driveState = driveType.TELEOP;
+
+        if (source == start && start.getValue()){
+            isFeedVision = !isFeedVision;
+        }
 
         //get x and y speeds
         xPower = swerveHelper.scaleDeadband(leftStickX.getValue(), DriveConstants.DEADBAND);
@@ -148,7 +153,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
             else rotTarget = 90.0;
             rotLocked = true;
         }
-        if (intake.isIntaking() && !isOverride) {
+        if (intake.isIntaking() && !isOverride && (faceDown.getValue() || faceLeft.getValue() || faceRight.getValue() || faceUp.getValue())) {
             driveState = driveType.OBJECT;
             rotLocked = true;
             rotTarget = getGyroAngle();
@@ -161,7 +166,11 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (rotSpeed != 0) {
             rotLocked = false;
         }
-        if (leftTrigger.getValue() > 0.15 && vision.aprilTagsInView()){
+        if (leftTrigger.getValue() > 0.15 && isFeedVision){
+            rotLocked = true;
+            rotTarget = isBlue ? 216.0 : 144.0;
+            isVision = false;
+        }else if (leftTrigger.getValue() > 0.15 && vision.aprilTagsInView()){
             rotLocked = true;
             //rotTarget = vision.front.turnToTarget(isBlue);
             isVision = true;
