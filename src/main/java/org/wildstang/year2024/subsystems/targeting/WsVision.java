@@ -56,7 +56,7 @@ public class WsVision implements Subsystem {
         VC = new VisionConsts();
 
         //same as update()
-        resetState();
+        //resetState();
         driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
         driverLeftShoulder.addInputListener(this);
     }

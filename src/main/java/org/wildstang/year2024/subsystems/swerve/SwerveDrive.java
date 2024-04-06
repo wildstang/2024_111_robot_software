@@ -178,7 +178,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (leftBumper.getValue()){
 
             xPower *= 0.25;
-            yPower *= 0.25;
+            yPower *= 0.35;
             //rotSpeed *= 0.25;
         }
         if (leftTrigger.getValue() > 0.15 && !isCurrentLow){
@@ -321,9 +321,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.OBJECT) {
             if (vision.back.TargetInView() && !intake.hasNote()) {
                 if (rotLocked){
-                    rotSpeed = swerveHelper.getRotControl( 0.75*vision.back.tx, 0.0);
+                    rotSpeed = swerveHelper.getRotControl( 1.0*vision.back.tx, 0.0);
                 }
-                this.swerveSignal = swerveHelper.setDrive(0, -Math.hypot(yPower, xPower) , rotSpeed, 360.0-0.75*vision.back.tx);
+                this.swerveSignal = swerveHelper.setDrive(0, -Math.hypot(yPower, xPower) , rotSpeed, 360.0-1.0*vision.back.tx);
                 drive();
             }
             else {
