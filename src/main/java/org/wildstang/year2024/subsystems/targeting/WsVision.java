@@ -154,4 +154,13 @@ public class WsVision implements Subsystem {
     public boolean canSeeAmp(){
         return left.seesAmp() || right.seesAmp();
     }
+    public double getXAdjust(){
+        if (isLeftBetter()){
+            return left.getAlignX(isBlue);
+        } else return right.getAlignX(isBlue);
+    }
+    public double getYAdjust(){
+        if (isLeftBetter()) return left.getAlignY(isBlue);
+        else return right.getAlignY(isBlue);
+    }
     }

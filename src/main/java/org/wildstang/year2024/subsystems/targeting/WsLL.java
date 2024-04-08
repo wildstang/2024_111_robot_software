@@ -122,6 +122,14 @@ public class WsLL {
         else return Math.hypot(blue3D[0] - VC.redSpeakerX,
             blue3D[1] - VC.redSpeakerY);
     }
+    public double getAlignX(boolean isBlue){
+        if (isBlue) return blue3D[0]-VC.blueShotX;
+        else return blue3D[0] - VC.redShotX;
+    }
+    public double getAlignY(boolean isBlue){
+        if (isBlue) return blue3D[1] - VC.blueShotY;
+        else return blue3D[1] - VC.redShotY;
+    }
 
     /**
      * input of X and Y in frc field coordinates, returns controller bearing degrees (aka what to plug into rotLocked) for turnToTarget

@@ -64,6 +64,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private boolean isBlue = true;
     private boolean autoTag = false;
     private boolean isVision = false;
+    private boolean autoAlign = false;
     private boolean isFeedVision = false;
     private boolean isCurrentLow = false;
     private boolean isOverride = false;
@@ -305,7 +306,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
             drive();
         }
         if (driveState == driveType.AUTO) {
-            if (isVision && vision.aprilTagsInView()) {
+            if (autoAlign){
+                this.swerveSignal = swerveHelper.setDrive(0.01*vision.getYAdjust(), 0.01*vision.getXAdjust(), 0, getGyroAngle());
+            } else if (isVision && vision.aprilTagsInView()) {
                 rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
@@ -495,5 +498,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
     }
     public void setAutoObject(boolean isOn){
         this.isAutoObject = isOn;
+    }
+    public void setAutoAlign(boolean isOn){
+        this.autoAlign = isOn;
     }
 }

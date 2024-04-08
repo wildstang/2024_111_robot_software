@@ -20,6 +20,11 @@ public class VisionConsts {
     public final double redTrussX = 510.0;
     public final double redTrussY = 218.42;
 
+    public final double blueShotX = 67.0;
+    public final double blueShotY = 208.42;
+    public final double redShotX = 584.2;
+    public final double redShotY = 208.42;
+
     //TODO: what are the actual pipeline indices?
     public final int notePipelineIndex = 0;
     public final int ATPipelineIndex = 0;
