@@ -43,8 +43,10 @@ public class FastCenterBlue extends AutoProgram{
         group1.addStep(new SwervePathFollowerStep("CenterCA", swerve, isBlue));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
         group1a.addStep(new AutoStepDelay(400));
-        group1a.addStep(new ShooterSetAngle(105));
-        group1a.addStep(new AutoStepDelay(1300));
+        group1a.addStep(new ShooterSetAngle(95));
+        group1a.addStep(new AutoStepDelay(800));
+        group1a.addStep(new ShooterSetAngle(0));
+        group1a.addStep(new SetFlywheel(false));
         group1a.addStep(new SetIntakeSequenceStep(true));
         group1a.addStep(new ObjectOnStep(true));
         group1.addStep(group1a);
@@ -53,9 +55,11 @@ public class FastCenterBlue extends AutoProgram{
         //return from center and home on target
         addStep(new ObjectOnStep(false));
         addStep(new SwervePathFollowerStep("CenterCB", swerve, isBlue));
+        addStep(new SetFlywheel(true));
+        addStep(new ShooterSetAngle(105));
         addStep(new AlignOnStep(true));
         addStep(new ShooterAutoAim(true));
-        addStep(new AutoStepDelay(2500));
+        addStep(new AutoStepDelay(2000));
         addStep(new AlignOnStep(false));
 
         //shoot third
@@ -65,7 +69,14 @@ public class FastCenterBlue extends AutoProgram{
         //grab fourth
         addStep(new ShooterAutoAim(false));
         addStep(new ShooterSetAngle(103));
-        addStep(new SwervePathFollowerStep("CenterFinish", swerve, isBlue));
+        AutoParallelStepGroup group2 = new AutoParallelStepGroup();
+        group2.addStep(new SwervePathFollowerStep("CenterFinish", swerve, isBlue));
+        AutoSerialStepGroup group2a = new AutoSerialStepGroup();
+        group2a.addStep(new AutoStepDelay(500));
+        group2a.addStep(new ObjectOnStep(true));
+        group2.addStep(group2a);
+        addStep(group2);
+        addStep(new ObjectOnStep(false));
         addStep(new AutoStepDelay(500));
         addStep(new SwervePathFollowerStep("CenterFinishB", swerve, isBlue));
     }

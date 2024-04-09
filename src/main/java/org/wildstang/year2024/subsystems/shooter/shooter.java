@@ -187,7 +187,7 @@ public class shooter implements Subsystem {
             speed = Speeds.MAX;
             if (wsVision.getAngle() > 200) speed = Speeds.FEED;
             if (wsVision.aprilTagsInView()){
-                if (!rightTriggerPressed && getShooterVelocity() < 5000) angle = wsVision.getAngle();
+                if ((!rightTriggerPressed && getShooterVelocity() < 5000) || autoAim) angle = wsVision.getAngle();
                 shootTimer.reset();
             } else if (autoAim && shootTimer.hasElapsed(0.5)){
                 angle =autoassume;
