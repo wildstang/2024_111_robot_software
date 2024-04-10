@@ -33,21 +33,15 @@ public class OffsideRed extends AutoProgram {
         
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         LedController led = (LedController) Core.getSubsystemManager().getSubsystem(WsSubsystems.LED);
-        isBlue = false;
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
         addStep(new SetGyroStep(180.0, swerve));
         addStep(new StartOdometryStep(0.7, 4.0, 180.0, isBlue));
         addStep(new ShooterSetAngle(140));
         addStep(new SetFlywheel(true));
-        //addStep(new VisionOnStep(true));
-        addStep(new AutoStepDelay(100));
-        addStep(new PathHeadingStep(isBlue ? 235.0 : 125.0, swerve));
-        //addStep(new ShooterAutoAim(true));
-        addStep(new AutoStepDelay(200));
         addStep(new VisionOnStep(true));
         addStep(new ShooterAutoAim(true));
-        addStep(new AutoStepDelay(500));
+        addStep(new AutoStepDelay(300));
 
         // shoot preload
         addStep(new ShootSpeakerStep());
@@ -55,14 +49,14 @@ public class OffsideRed extends AutoProgram {
 
         // grab center E 
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
-        group1.addStep(new SwervePathFollowerStep("GrabEOffsidered", swerve, isBlue));
+        group1.addStep(new SwervePathFollowerStep("GrabEOffside", swerve, isBlue));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
         group1a.addStep(new AutoStepDelay(300));
         group1a.addStep(new SetIntakeSequenceStep(true));
         group1a.addStep(new ShooterSetAngle(70));
         group1a.addStep(new ShooterAutoAim(false));
         group1a.addStep(new VisionOnStep(false));
-        group1a.addStep(new AutoStepDelay(1000));
+        group1a.addStep(new AutoStepDelay(1300));
         group1a.addStep(new ObjectOnStep(true));
         group1.addStep(group1a);
         addStep(group1);
@@ -70,7 +64,7 @@ public class OffsideRed extends AutoProgram {
 
         // score middle piece E
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
-        group2.addStep(new SwervePathFollowerStep("ScoreEOffsidered", swerve, isBlue));
+        group2.addStep(new SwervePathFollowerStep("ScoreEOffside", swerve, isBlue));
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();
         group2a.addStep(new AutoStepDelay(2000));
         group2a.addStep(new VisionOnStep(true));
@@ -85,7 +79,7 @@ public class OffsideRed extends AutoProgram {
 
         // grab middle piece D
         AutoParallelStepGroup group3 = new AutoParallelStepGroup();
-        group3.addStep(new SwervePathFollowerStep("GrabDOffsidered", swerve, isBlue));
+        group3.addStep(new SwervePathFollowerStep("GrabDOffside", swerve, isBlue));
         AutoSerialStepGroup group3a = new AutoSerialStepGroup();
         group3a.addStep(new AutoStepDelay(1500));
         group3a.addStep(new ObjectOnStep(true));
@@ -95,7 +89,7 @@ public class OffsideRed extends AutoProgram {
 
         //score middle piece D
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
-        group4.addStep(new SwervePathFollowerStep("ScoreDOffsidered", swerve, isBlue));
+        group4.addStep(new SwervePathFollowerStep("ScoreDOffside", swerve, isBlue));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
         group4a.addStep(new AutoStepDelay(2000));
         group4a.addStep(new VisionOnStep(true));
@@ -104,19 +98,9 @@ public class OffsideRed extends AutoProgram {
         addStep(group4);
         addStep(new AutoStepDelay(200));
         addStep(new ShootSpeakerStep());
-        // addStep(new AutoStepDelay(300));
-        // addStep(new SetIntakeSequenceStep(true));
-        // addStep(new VisionOnStep(false));
-
-        // addStep(new SwervePathFollowerStep("GrabCOffside", swerve, isBlue));
-        // AutoParallelStepGroup group5 = new AutoParallelStepGroup();
-        // group5.addStep(new SwervePathFollowerStep("ScoreCOffside", swerve, isBlue));
-        // AutoSerialStepGroup group5a = new AutoSerialStepGroup();
-        // group5a.addStep(new AutoStepDelay(1000));
-        // group5a.addStep(new VisionOnStep(true));
-        // group5.addStep(group5a);
-        // addStep(group5);
-        // addStep(new ShootSpeakerStep());
+        addStep(new AutoStepDelay(500));
+        addStep(new VisionOnStep(false));
+        addStep(new SwervePathFollowerStep("EndOffside", swerve, isBlue));
 
     }
 
