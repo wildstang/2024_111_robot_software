@@ -48,6 +48,7 @@ public class FastCenterRed extends AutoProgram{
         group1a.addStep(new ShooterSetAngle(0));
         group1a.addStep(new SetFlywheel(false));
         group1a.addStep(new SetIntakeSequenceStep(true));
+        group1a.addStep(new AutoStepDelay(800));
         group1a.addStep(new ObjectOnStep(true));
         group1.addStep(group1a);
         addStep(group1);

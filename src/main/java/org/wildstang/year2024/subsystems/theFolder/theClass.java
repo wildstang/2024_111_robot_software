@@ -223,7 +223,7 @@ public class theClass implements Subsystem {
                 } else {
                     feedTimer.reset();
                     intakeSpeed = 1.0;
-                    feedSpeed = 0.8;
+                    feedSpeed = closeLaser() ? 0.6 : 1.0;
                     kickSpeed = 0;
                 }
             }

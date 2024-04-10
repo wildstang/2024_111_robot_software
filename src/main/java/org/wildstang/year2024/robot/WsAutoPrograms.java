@@ -4,11 +4,17 @@ import org.wildstang.framework.core.AutoPrograms;
 import org.wildstang.year2024.auto.Programs.CenterBlue;
 import org.wildstang.year2024.auto.Programs.CenterRed;
 import org.wildstang.year2024.auto.Programs.FastCenterBlue;
+import org.wildstang.year2024.auto.Programs.FastCenterBlueB;
+import org.wildstang.year2024.auto.Programs.FastCenterBlueD;
 import org.wildstang.year2024.auto.Programs.FastCenterRed;
+import org.wildstang.year2024.auto.Programs.FastCenterRedB;
+import org.wildstang.year2024.auto.Programs.FastCenterRedD;
 import org.wildstang.year2024.auto.Programs.OffsideBlue;
 import org.wildstang.year2024.auto.Programs.OffsideRed;
 import org.wildstang.year2024.auto.Programs.RushBlue;
+import org.wildstang.year2024.auto.Programs.RushBlueB;
 import org.wildstang.year2024.auto.Programs.RushRed;
+import org.wildstang.year2024.auto.Programs.RushRedB;
 import org.wildstang.year2024.auto.Programs.TestProgram;
 
 /**
@@ -26,8 +32,14 @@ public enum WsAutoPrograms implements AutoPrograms {
     TEST_PROGRAM("Test Program", TestProgram.class),
     RUSH_BLUE("Rush Blue", RushBlue.class),
     RUSH_RED("Rush Red", RushRed.class),
+    RUSH_B_BLUE("Rush Blue B", RushBlueB.class),
+    RUSH_B_RED("Rush Red B", RushRedB.class),
     FAST_BLUE("Fast Center Blue", FastCenterBlue.class),
     FAST_RED("Fast Center Red", FastCenterRed.class),
+    FAST_B_BLUE("Fast Center Blue B", FastCenterBlueB.class),
+    FAST_D_BLUE("Fast Center Blue D", FastCenterBlueD.class),
+    FAST_B_RED("Fast Center Red B", FastCenterRedB.class),
+    FAST_D_RED("Fast Center Red D", FastCenterRedD.class),
     ;
 
     /**

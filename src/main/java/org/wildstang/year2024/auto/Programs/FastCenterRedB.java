@@ -19,9 +19,9 @@ import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.LED.LedController;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 
-public class FastCenterBlue extends AutoProgram{
+public class FastCenterRedB extends AutoProgram{
 
-    private boolean isBlue = true;
+    private boolean isBlue = false;
 
     @Override
     protected void defineSteps() {
@@ -40,7 +40,7 @@ public class FastCenterBlue extends AutoProgram{
         //shoot two, and grab from center
         addStep(new ShootSpeakerStep());
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
-        group1.addStep(new SwervePathFollowerStep("CenterCA", swerve, isBlue));
+        group1.addStep(new SwervePathFollowerStep("CenterBA", swerve, isBlue));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
         group1a.addStep(new AutoStepDelay(400));
         group1a.addStep(new ShooterSetAngle(95));
@@ -55,7 +55,7 @@ public class FastCenterBlue extends AutoProgram{
 
         //return from center and home on target
         addStep(new ObjectOnStep(false));
-        addStep(new SwervePathFollowerStep("CenterCB", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("CenterBB", swerve, isBlue));
         addStep(new SetFlywheel(true));
         addStep(new ShooterSetAngle(105));
         addStep(new AlignOnStep(true));
@@ -84,7 +84,7 @@ public class FastCenterBlue extends AutoProgram{
 
     @Override
     public String toString() {
-        return "Fast Center Blue";
+        return "Fast Center Red B";
     }
     
 }

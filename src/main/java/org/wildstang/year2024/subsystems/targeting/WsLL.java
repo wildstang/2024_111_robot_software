@@ -128,7 +128,7 @@ public class WsLL {
     }
     public double getAlignY(boolean isBlue){
         if (isBlue) return blue3D[1] - VC.blueShotY;
-        else return blue3D[1] - VC.redShotY;
+        else return -blue3D[1] + VC.redShotY;
     }
 
     /**
