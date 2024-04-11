@@ -5,7 +5,7 @@ import org.wildstang.year2024.auto.Programs.CenterBlue;
 import org.wildstang.year2024.auto.Programs.CenterRed;
 import org.wildstang.year2024.auto.Programs.FastCenterBlue;
 import org.wildstang.year2024.auto.Programs.FastCenterRed;
-import org.wildstang.year2024.auto.Programs.OffsideBlue;
+import org.wildstang.year2024.auto.Programs.SmartOffsideBlue;
 import org.wildstang.year2024.auto.Programs.OffsideRed;
 import org.wildstang.year2024.auto.Programs.RushBlue;
 import org.wildstang.year2024.auto.Programs.RushRed;
@@ -21,7 +21,7 @@ public enum WsAutoPrograms implements AutoPrograms {
     //SAMPLE_PROGRAM("Sample", SampleAutoProgram.class),
     // CENTER_BLUE("Center Blue", CenterBlue.class),
     // CENTER_RED("Center Red", CenterRed.class),
-    OFFSIDE_BLUE("Offside Blue", OffsideBlue.class),
+    OFFSIDE_BLUE("Offside Blue", SmartOffsideBlue.class),
     OFFSIDE_RED("Offside Red", OffsideRed.class),
     TEST_PROGRAM("Test Program", TestProgram.class),
     RUSH_BLUE("Rush Blue", RushBlue.class),
