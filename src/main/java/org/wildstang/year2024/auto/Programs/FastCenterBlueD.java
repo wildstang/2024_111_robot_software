@@ -30,9 +30,9 @@ public class FastCenterBlueD extends AutoProgram{
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
-        startGroup.addStep(new SetGyroStep(179.9, swerve));
+        startGroup.addStep(new SetGyroStep(CenterConsts.startingGyroBlue, swerve));
         startGroup.addStep(new StartOdometryStep(1.3, 5.5, 180.0, isBlue));
-        startGroup.addStep(new ShooterSetAngle(175));
+        startGroup.addStep(new ShooterSetAngle(CenterConsts.firstShot));
         startGroup.addStep(new SetFlywheel(true));
         startGroup.addStep(new AutoStepDelay(300));
         addStep(startGroup);
@@ -43,7 +43,7 @@ public class FastCenterBlueD extends AutoProgram{
         group1.addStep(new SwervePathFollowerStep("CenterDA", swerve, isBlue));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
         group1a.addStep(new AutoStepDelay(400));
-        group1a.addStep(new ShooterSetAngle(95));
+        group1a.addStep(new ShooterSetAngle(CenterConsts.secondShot));
         group1a.addStep(new AutoStepDelay(800));
         group1a.addStep(new ShooterSetAngle(0));
         group1a.addStep(new SetFlywheel(false));
@@ -57,7 +57,7 @@ public class FastCenterBlueD extends AutoProgram{
         addStep(new ObjectOnStep(false));
         addStep(new SwervePathFollowerStep("CenterDB", swerve, isBlue));
         addStep(new SetFlywheel(true));
-        addStep(new ShooterSetAngle(105));
+        addStep(new ShooterSetAngle(CenterConsts.thirdShot));
         addStep(new AlignOnStep(true));
         addStep(new ShooterAutoAim(true));
         addStep(new AutoStepDelay(2000));
@@ -69,7 +69,7 @@ public class FastCenterBlueD extends AutoProgram{
 
         //grab fourth
         addStep(new ShooterAutoAim(false));
-        addStep(new ShooterSetAngle(107));
+        addStep(new ShooterSetAngle(CenterConsts.fourthShot));
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
         group2.addStep(new SwervePathFollowerStep("CenterFinish", swerve, isBlue));
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();
@@ -78,8 +78,17 @@ public class FastCenterBlueD extends AutoProgram{
         group2.addStep(group2a);
         addStep(group2);
         addStep(new ObjectOnStep(false));
-        addStep(new AutoStepDelay(500));
+        addStep(new AutoStepDelay(900));
         addStep(new SwervePathFollowerStep("CenterFinishB", swerve, isBlue));
+
+        // AutoParallelStepGroup finishGroup = new AutoParallelStepGroup();
+        // finishGroup.addStep(new SwervePathFollowerStep("CenterFinishBalt", swerve, isBlue));
+        // AutoSerialStepGroup finishGroupa = new AutoSerialStepGroup();
+        // finishGroupa.addStep(new AutoStepDelay(1300));
+        // finishGroupa.addStep(new ObjectOnStep(true));
+        // finishGroup.addStep(finishGroupa);
+        // addStep(finishGroup);
+        // addStep(new ObjectOnStep(false));
     }
 
     @Override

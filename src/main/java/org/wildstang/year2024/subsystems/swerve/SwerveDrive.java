@@ -307,7 +307,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (driveState == driveType.AUTO) {
             if (autoAlign){
-                this.swerveSignal = swerveHelper.setDrive(0.0045*vision.getYAdjust(), 0.0045*vision.getXAdjust(), 0, getGyroAngle());
+                this.swerveSignal = swerveHelper.setDrive(0.0055*vision.getYAdjust(), 0.0055*vision.getXAdjust(), 0, getGyroAngle());
             } else if (isVision && vision.aprilTagsInView()) {
                 rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
