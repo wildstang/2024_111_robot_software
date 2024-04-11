@@ -123,7 +123,7 @@ public class WsLL {
             blue3D[1] - VC.redSpeakerY);
     }
     public double getAlignX(boolean isBlue){
-        if (isBlue) return blue3D[0]-VC.blueShotX;
+        if (isBlue) return -blue3D[0]+VC.blueShotX;
         else return blue3D[0] - VC.redShotX;
     }
     public double getAlignY(boolean isBlue){

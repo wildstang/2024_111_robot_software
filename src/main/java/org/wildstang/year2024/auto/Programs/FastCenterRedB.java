@@ -48,7 +48,7 @@ public class FastCenterRedB extends AutoProgram{
         group1a.addStep(new ShooterSetAngle(0));
         group1a.addStep(new SetFlywheel(false));
         group1a.addStep(new SetIntakeSequenceStep(true));
-        group1a.addStep(new AutoStepDelay(800));
+        group1a.addStep(new AutoStepDelay(1200));
         group1a.addStep(new ObjectOnStep(true));
         group1.addStep(group1a);
         addStep(group1);
@@ -69,7 +69,7 @@ public class FastCenterRedB extends AutoProgram{
 
         //grab fourth
         addStep(new ShooterAutoAim(false));
-        addStep(new ShooterSetAngle(103));
+        addStep(new ShooterSetAngle(107));
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
         group2.addStep(new SwervePathFollowerStep("CenterFinish", swerve, isBlue));
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();

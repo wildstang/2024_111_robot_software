@@ -30,7 +30,7 @@ public class FastCenterBlueB extends AutoProgram{
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
-        startGroup.addStep(new SetGyroStep(180.0, swerve));
+        startGroup.addStep(new SetGyroStep(179.9, swerve));
         startGroup.addStep(new StartOdometryStep(1.3, 5.5, 180.0, isBlue));
         startGroup.addStep(new ShooterSetAngle(175));
         startGroup.addStep(new SetFlywheel(true));
@@ -48,7 +48,7 @@ public class FastCenterBlueB extends AutoProgram{
         group1a.addStep(new ShooterSetAngle(0));
         group1a.addStep(new SetFlywheel(false));
         group1a.addStep(new SetIntakeSequenceStep(true));
-        group1a.addStep(new AutoStepDelay(800));
+        group1a.addStep(new AutoStepDelay(1200));
         group1a.addStep(new ObjectOnStep(true));
         group1.addStep(group1a);
         addStep(group1);
@@ -69,7 +69,7 @@ public class FastCenterBlueB extends AutoProgram{
 
         //grab fourth
         addStep(new ShooterAutoAim(false));
-        addStep(new ShooterSetAngle(103));
+        addStep(new ShooterSetAngle(107));
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
         group2.addStep(new SwervePathFollowerStep("CenterFinish", swerve, isBlue));
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();

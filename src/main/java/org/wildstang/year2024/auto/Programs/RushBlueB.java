@@ -38,7 +38,7 @@ public class RushBlueB extends AutoProgram {
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
-        startGroup.addStep(new SetGyroStep(180.0, swerve));
+        startGroup.addStep(new SetGyroStep(179.9, swerve));
         startGroup.addStep(new StartOdometryStep(1.46, 6.6, 180.0, isBlue));
         startGroup.addStep(new ShooterSetAngle(170));
         startGroup.addStep(new SetFlywheel(true));
