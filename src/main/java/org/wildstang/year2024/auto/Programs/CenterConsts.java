@@ -9,5 +9,15 @@ public class CenterConsts {
     public static final double secondShot = 95;
     public static final double thirdShot = 105;
     public static final double fourthShot = 107;
+
+    public static final int initialDelay = 300;
+    public static final int slideDelay1 = 400;
+    public static final int slideDelay2 = 800;
+    public static final int slideDelay3 = 800;
+    public static final int slideDelay3alt = 1200;
+    public static final int move3Delay = 2000;
+    public static final int shoot3Delay = 500;
+    public static final int move4Delay = 500;
+    public static final int shoot4Delay = 900;
     
 }
