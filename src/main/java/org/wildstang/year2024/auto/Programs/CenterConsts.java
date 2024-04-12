@@ -6,7 +6,7 @@ public class CenterConsts {
     public static final double startingGyroBlue = 179.9;
 
     public static final double firstShot = 175;
-    public static final double secondShot = 95;
+    public static final double secondShot = 92;
     public static final double thirdShot = 105;
     public static final double fourthShot = 107;
 

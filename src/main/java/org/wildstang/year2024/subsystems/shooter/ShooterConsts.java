@@ -10,7 +10,7 @@ public class ShooterConsts {
     public static final double FEED_ANGLE = 205.0;
     // Array containing arrays where the elements are a distance the corresponding and angle
     public static final double[][] SHOOTER_POSIIONS = {{}};
-    public static final double P = 0.075;
+    public static final double P = 0.12;
     public static final double I = 0.0;
     public static final double D = 0.005;
     public static final double SPIN_RATIO = 65.0 / 100.0;
