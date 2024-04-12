@@ -41,11 +41,11 @@ public class OffsideBlue extends AutoProgram {
         addStep(new SetFlywheel(true));
         addStep(new VisionOnStep(true));
         addStep(new ShooterAutoAim(true));
-        addStep(new AutoStepDelay(300));
+        addStep(new AutoStepDelay(500));
 
         // shoot preload
         addStep(new ShootSpeakerStep());
-        addStep(new AutoStepDelay(500));
+        addStep(new AutoStepDelay(300));
 
         // grab center E 
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
@@ -66,7 +66,7 @@ public class OffsideBlue extends AutoProgram {
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
         group2.addStep(new SwervePathFollowerStep("ScoreEOffside", swerve, isBlue));
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();
-        group2a.addStep(new AutoStepDelay(1000));
+        group2a.addStep(new AutoStepDelay(1700));
         group2a.addStep(new VisionOnStep(true));
         group2a.addStep(new ShooterAutoAim(true));
         group2.addStep(group2a);
@@ -91,7 +91,7 @@ public class OffsideBlue extends AutoProgram {
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
         group4.addStep(new SwervePathFollowerStep("ScoreDOffside", swerve, isBlue));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
-        group4a.addStep(new AutoStepDelay(1000));
+        group4a.addStep(new AutoStepDelay(1700));
         group4a.addStep(new VisionOnStep(true));
         group4a.addStep(new ShooterAutoAim(true));
         group4.addStep(group4a);

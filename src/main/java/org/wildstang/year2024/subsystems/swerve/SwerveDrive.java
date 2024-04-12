@@ -169,7 +169,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (leftTrigger.getValue() > 0.15 && isFeedVision){
             rotLocked = true;
-            rotTarget = isBlue ? 216.0 : 144.0;
+            rotTarget = isBlue ? 230.0 : 144.0;
             isVision = false;
         }else if (leftTrigger.getValue() > 0.15 && vision.aprilTagsInView()){
             rotLocked = true;

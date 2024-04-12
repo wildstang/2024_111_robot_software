@@ -40,19 +40,21 @@ public class RushBlueB extends AutoProgram {
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
         startGroup.addStep(new SetGyroStep(179.9, swerve));
         startGroup.addStep(new StartOdometryStep(1.46, 6.6, 180.0, isBlue));
-        startGroup.addStep(new ShooterSetAngle(170));
+        startGroup.addStep(new ShooterSetAngle(155));
         startGroup.addStep(new SetFlywheel(true));
         addStep(startGroup);
         addStep(new VisionOnStep(true));
-        addStep(new AutoStepDelay(300));
+        addStep(new AutoStepDelay(500));
         addStep(new ShootSpeakerStep());
+        addStep(new VisionOnStep(false));
+        addStep(new AutoStepDelay(200));
 
         // grab first prestaged and shoot preload
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
         group1.addStep(new SwervePathFollowerStep("RushAB", swerve, isBlue));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
-        group1a.addStep(new AutoStepDelay(1500));
-        group1a.addStep(new VisionOnStep(false));
+        group1a.addStep(new ShooterSetAngle(83));
+        group1a.addStep(new AutoStepDelay(1600));
         group1a.addStep(new ObjectOnStep(true));
         group1a.addStep(new SetIntakeSequenceStep(true));
         group1.addStep(group1a);
@@ -64,7 +66,7 @@ public class RushBlueB extends AutoProgram {
         group3.addStep(new SwervePathFollowerStep("RushBB", swerve, isBlue));
         AutoSerialStepGroup group3a = new AutoSerialStepGroup();
         group3a.addStep(new AutoStepDelay(1000));
-        group3a.addStep(new VisionOnStep(true));
+        group3a.addStep(new ShooterAutoAim(true));
         group3.addStep(group3a);
         addStep(group3);
         addStep(new ShootSpeakerStep());
@@ -75,7 +77,6 @@ public class RushBlueB extends AutoProgram {
         group4.addStep(new SwervePathFollowerStep("RushCB", swerve, isBlue));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
         group4a.addStep(new AutoStepDelay(1000));
-        group4a.addStep(new VisionOnStep(false));
         group4a.addStep(new SetIntakeSequenceStep(true));
         group4a.addStep(new ObjectOnStep(true));
         group4.addStep(group4a);
@@ -84,13 +85,13 @@ public class RushBlueB extends AutoProgram {
 
         //return from center and shoot B
         addStep(new SwervePathFollowerStep("RushDB", swerve, isBlue));
-        addStep(new VisionOnStep(true));
         addStep(new AutoStepDelay(500));
         addStep(new ShootSpeakerStep());
         addStep(new AutoStepDelay(400));
-        addStep(new VisionOnStep(false));
+        addStep(new SetIntakeSequenceStep(true));
+        addStep(new SetFlywheel(false));
 
-        addStep(new SwervePathFollowerStep("RushE", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("RushEB", swerve, isBlue));
 
     }
 
