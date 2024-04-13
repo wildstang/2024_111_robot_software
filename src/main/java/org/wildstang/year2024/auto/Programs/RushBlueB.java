@@ -91,7 +91,7 @@ public class RushBlueB extends AutoProgram {
         addStep(new SetIntakeSequenceStep(true));
         addStep(new SetFlywheel(false));
 
-        addStep(new SwervePathFollowerStep("RushEB", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("RushE", swerve, isBlue));
 
     }
 
