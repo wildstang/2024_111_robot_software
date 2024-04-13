@@ -79,16 +79,16 @@ public class FastCenterRed extends AutoProgram{
         addStep(group2);
         addStep(new ObjectOnStep(false));
         addStep(new AutoStepDelay(CenterConsts.shoot4Delay));
-        addStep(new SwervePathFollowerStep("CenterFinishB", swerve, isBlue));
+        // addStep(new SwervePathFollowerStep("CenterFinishB", swerve, isBlue));
 
-        // AutoParallelStepGroup finishGroup = new AutoParallelStepGroup();
-        // finishGroup.addStep(new SwervePathFollowerStep("CenterFinishBalt", swerve, isBlue));
-        // AutoSerialStepGroup finishGroupa = new AutoSerialStepGroup();
-        // finishGroupa.addStep(new AutoStepDelay(1300));
-        // finishGroupa.addStep(new ObjectOnStep(true));
-        // finishGroup.addStep(finishGroupa);
-        // addStep(finishGroup);
-        // addStep(new ObjectOnStep(false));
+        AutoParallelStepGroup finishGroup = new AutoParallelStepGroup();
+        finishGroup.addStep(new SwervePathFollowerStep("CenterFinishBalt", swerve, isBlue));
+        AutoSerialStepGroup finishGroupa = new AutoSerialStepGroup();
+        finishGroupa.addStep(new AutoStepDelay(1300));
+        finishGroupa.addStep(new ObjectOnStep(true));
+        finishGroup.addStep(finishGroupa);
+        addStep(finishGroup);
+        addStep(new ObjectOnStep(false));
     }
 
     @Override

@@ -69,6 +69,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private boolean isCurrentLow = false;
     private boolean isOverride = false;
     private boolean isAutoObject = false;
+    private boolean isFeedModeUpdate = false;
     private double xObject = 0;
     private double yObject = 0;
     
@@ -169,7 +170,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (leftTrigger.getValue() > 0.15 && isFeedVision){
             rotLocked = true;
-            rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 136.7 + 0.183*vision.getYValue();
+            rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 134 + 0.183*vision.getYValue();
+            isFeedModeUpdate = true;
             // if (vision.aprilTagsInView() || vision.getUpdateTime() < 1.0){
             //     rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 136.7 + 0.183*vision.getYValue();
             // } else {
@@ -180,10 +182,14 @@ public class SwerveDrive extends SwerveDriveTemplate {
             rotLocked = true;
             //rotTarget = vision.front.turnToTarget(isBlue);
             isVision = true;
+            isFeedModeUpdate = false;
             xPower *= 0.7;
             yPower *= 0.7;
             rotSpeed *= 0.7;
-        } else isVision = false;
+        } else {
+            isVision = false;
+            isFeedModeUpdate = false;
+        }
         
         //assign thrust
         // thrustValue = 1 - DriveConstants.DRIVE_THRUST + DriveConstants.DRIVE_THRUST * Math.abs(rightTrigger.getValue());
@@ -292,7 +298,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
                 //if rotation tracking, replace rotational joystick value with controller generated one
-                if (isVision) rotTarget = vision.turnToTarget(isBlue);
+                if (isFeedModeUpdate) rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 134 + 0.183*vision.getYValue();
+                else if (isVision) rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 if (Math.abs(rotTarget - getGyroAngle()) < 1.0) rotSpeed = 0;
                 if (isSnake) {

@@ -40,21 +40,21 @@ public class RushRed extends AutoProgram {
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
         startGroup.addStep(new SetGyroStep(180.1, swerve));
         startGroup.addStep(new StartOdometryStep(1.46, 6.6, 180.0, isBlue));
-        startGroup.addStep(new ShooterSetAngle(155));
+        startGroup.addStep(new ShooterSetAngle(150));
         startGroup.addStep(new SetFlywheel(true));
         addStep(startGroup);
         addStep(new VisionOnStep(true));
         addStep(new AutoStepDelay(500));
         addStep(new ShootSpeakerStep());
         addStep(new VisionOnStep(false));
-        addStep(new AutoStepDelay(200));
+        addStep(new AutoStepDelay(300));
 
         // grab first prestaged and shoot preload
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
-        group1.addStep(new SwervePathFollowerStep("RushA", swerve, isBlue));
+        group1.addStep(new SwervePathFollowerStep("RushAred", swerve, isBlue));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
-        group1a.addStep(new ShooterSetAngle(83));
-        group1a.addStep(new AutoStepDelay(1600));
+        group1a.addStep(new ShooterSetAngle(84));
+        group1a.addStep(new AutoStepDelay(1800));
         group1a.addStep(new ObjectOnStep(true));
         group1a.addStep(new SetIntakeSequenceStep(true));
         group1.addStep(group1a);
@@ -76,7 +76,7 @@ public class RushRed extends AutoProgram {
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
         group4.addStep(new SwervePathFollowerStep("RushC", swerve, isBlue));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
-        group4a.addStep(new AutoStepDelay(1000));
+        group4a.addStep(new AutoStepDelay(800));
         group4a.addStep(new SetIntakeSequenceStep(true));
         group4a.addStep(new ObjectOnStep(true));
         group4.addStep(group4a);

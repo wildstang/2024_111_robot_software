@@ -96,7 +96,7 @@ public class OffsideBlueD extends AutoProgram {
         group4a.addStep(new ShooterAutoAim(true));
         group4.addStep(group4a);
         addStep(group4);
-        addStep(new AutoStepDelay(200));
+        addStep(new AutoStepDelay(500));
         addStep(new ShootSpeakerStep());
         addStep(new AutoStepDelay(500));
         addStep(new VisionOnStep(false));

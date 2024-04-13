@@ -59,7 +59,7 @@ public class LedController implements Subsystem {
             if (normal == white) rainbow();
             else if (normal == blue) cycleBlue();
             else if (normal == red) cycleRed();
-            else setRGB(white);
+            else rainbow();
         }
         led.setData(ledBuffer);
         led.start();

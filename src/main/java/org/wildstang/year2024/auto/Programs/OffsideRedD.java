@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class OffsideRedD extends AutoProgram {
 
-    private boolean isBlue = true;
+    private boolean isBlue = false;
 
     @Override
     protected void defineSteps() {
@@ -56,7 +56,7 @@ public class OffsideRedD extends AutoProgram {
         group1a.addStep(new ShooterSetAngle(70));
         group1a.addStep(new ShooterAutoAim(false));
         group1a.addStep(new VisionOnStep(false));
-        group1a.addStep(new AutoStepDelay(1300));
+        group1a.addStep(new AutoStepDelay(1700));
         group1a.addStep(new ObjectOnStep(true));
         group1.addStep(group1a);
         addStep(group1);
@@ -96,7 +96,7 @@ public class OffsideRedD extends AutoProgram {
         group4a.addStep(new ShooterAutoAim(true));
         group4.addStep(group4a);
         addStep(group4);
-        addStep(new AutoStepDelay(200));
+        addStep(new AutoStepDelay(500));
         addStep(new ShootSpeakerStep());
         addStep(new AutoStepDelay(500));
         addStep(new VisionOnStep(false));
