@@ -1,8 +1,6 @@
 package org.wildstang.year2024.auto.Steps;
-
-import java.util.function.Function;
-
 import org.wildstang.framework.auto.AutoStep;
+import org.wildstang.year2024.subsystems.theFolder.theClass;
 
 
 public class ControlFlowStep extends AutoStep {
@@ -10,17 +8,17 @@ public class ControlFlowStep extends AutoStep {
     final AutoStep step1;
     final AutoStep step2;
     boolean runStep1;
-    Function<Void, Boolean> getProgram;
+    theClass intake;
     
-    public ControlFlowStep(Function<Void, Boolean> getStep, AutoStep program1, AutoStep program2) {
-        this.getProgram = getStep;
+    public ControlFlowStep(theClass intake, AutoStep program1, AutoStep program2) {
+        this.intake = intake;
         this.step1 = program1;
         this.step2 = program2;
     }
 
     @Override
     public void initialize() {
-        runStep1 = getProgram.apply(null);
+        runStep1 = intake.hasNote();
         if (runStep1) {
             step1.initialize();
         } else {
