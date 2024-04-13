@@ -169,7 +169,12 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (leftTrigger.getValue() > 0.15 && isFeedVision){
             rotLocked = true;
-            rotTarget = isBlue ? 230.0 : 144.0;
+            rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 136.7 + 0.183*vision.getYValue();
+            // if (vision.aprilTagsInView() || vision.getUpdateTime() < 1.0){
+            //     rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 136.7 + 0.183*vision.getYValue();
+            // } else {
+            //     rotTarget = isBlue ? 230.0 : 144.0;
+            // }
             isVision = false;
         }else if (leftTrigger.getValue() > 0.15 && vision.aprilTagsInView()){
             rotLocked = true;

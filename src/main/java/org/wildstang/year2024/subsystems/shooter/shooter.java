@@ -243,6 +243,9 @@ public class shooter implements Subsystem {
     public double getShooterVelocity(){
         return Math.abs(vortexFlywheel.getVelocity());
     }
+    public boolean isFeeding(){
+        return subwooferAimOverride;
+    }
     // public void setShooter(double speed){
     //     if (speed == 1){
     //         shootTimer.reset();

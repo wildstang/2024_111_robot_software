@@ -12,7 +12,7 @@ import org.wildstang.framework.io.inputs.Input;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,6 +41,8 @@ public class WsVision implements Subsystem {
 
     private DigitalInput driverLeftShoulder;
 
+    private Timer lastUpdate = new Timer();
+
     @Override
     public void inputUpdate(Input source) {
 
@@ -59,6 +61,7 @@ public class WsVision implements Subsystem {
         //resetState();
         driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
         driverLeftShoulder.addInputListener(this);
+        lastUpdate.start();
     }
 
     @Override
@@ -70,6 +73,7 @@ public class WsVision implements Subsystem {
         left.update(swerve.getFieldYaw());
         right.update(swerve.getFieldYaw());
         back.update(swerve.getFieldYaw());
+        if (aprilTagsInView()) lastUpdate.reset();
         SmartDashboard.putNumber("Vision getAngle", getAngle());
         SmartDashboard.putNumber("Vision distToTarget", distanceToTarget(isBlue));
         SmartDashboard.putNumber("Vision angleToRot", turnToTarget(isBlue));
@@ -162,5 +166,12 @@ public class WsVision implements Subsystem {
     public double getYAdjust(){
         if (isLeftBetter()) return left.getAlignY(isBlue);
         else return right.getAlignY(isBlue);
+    }
+    public double getYValue(){
+        if (isLeftBetter()) return left.blue3D[1];
+        else return right.blue3D[1];
+    }
+    public double getUpdateTime(){
+        return lastUpdate.get();
     }
     }
