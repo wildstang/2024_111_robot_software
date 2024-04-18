@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class OffsideRed extends AutoProgram {
 
-    private boolean isBlue = true;
+    private boolean isBlue = false;
 
     @Override
     protected void defineSteps() {

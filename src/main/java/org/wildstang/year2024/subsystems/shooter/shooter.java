@@ -119,10 +119,10 @@ public class shooter implements Subsystem {
 
         // Init Motors
         vortexFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER_VORTEX);
-        vortexFlywheel.setCoast();
+        vortexFlywheel.setBrake();
 
         neoFlywheel = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.SHOOTER_NEO);
-        neoFlywheel.setCoast();
+        neoFlywheel.setBrake();
 
         angleNeo = (WsSpark) Core.getOutputManager().getOutput(WsOutputs.ARM_PIVOT);
         angleEncoder = angleNeo.getController().getAbsoluteEncoder(Type.kDutyCycle);
@@ -136,7 +136,6 @@ public class shooter implements Subsystem {
         //set current limit 
         angleNeo.setCurrentLimit(20, 20, 0);
         vortexFlywheel.setCurrentLimit(40, 40, 0);
-        vortexFlywheel.setCoast();
         neoFlywheel.setCurrentLimit(40, 40, 0);
 
 
