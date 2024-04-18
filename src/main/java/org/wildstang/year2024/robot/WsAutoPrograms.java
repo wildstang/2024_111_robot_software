@@ -30,7 +30,7 @@ public enum WsAutoPrograms implements AutoPrograms {
     //SAMPLE_PROGRAM("Sample", SampleAutoProgram.class),
     // CENTER_BLUE("Center Blue", CenterBlue.class),
     // CENTER_RED("Center Red", CenterRed.class),
-    OFFSIDE_BLUE("Offside Blue", SmartOffsideBlue.class),
+    OFFSIDE_BLUE("Offside Blue", OffsideBlue.class),
     OFFSIDE_D_BLUE("Offside Blue D", OffsideBlueD.class),
     OFFSIDE_RED("Offside Red", OffsideRed.class),
     OFFSIDE_D_RED("Offside Red D", OffsideRedD.class),
