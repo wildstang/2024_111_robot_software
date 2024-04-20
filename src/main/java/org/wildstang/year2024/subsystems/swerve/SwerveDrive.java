@@ -171,7 +171,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (leftTrigger.getValue() > 0.15 && isFeedVision){
             rotLocked = true;
-            rotTarget = isBlue ? 237.3+feedOffset - 0.183*vision.getYValue() : 144+feedOffset + 0.193*vision.getYValue();//update below as well
+            rotTarget = isBlue ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();//update below as well
             isFeedModeUpdate = true;
             // if (vision.aprilTagsInView() || vision.getUpdateTime() < 1.0){
             //     rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 136.7 + 0.183*vision.getYValue();
@@ -301,7 +301,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
                 //if rotation tracking, replace rotational joystick value with controller generated one
-                if (isFeedModeUpdate) rotTarget = isBlue ? 237.3+feedOffset - 0.183*vision.getYValue() : 144+feedOffset + 0.193*vision.getYValue();
+                if (isFeedModeUpdate) rotTarget = isBlue ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();
                 else if (isVision) rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 if (Math.abs(rotTarget - getGyroAngle()) < 1.0) rotSpeed = 0;
