@@ -26,9 +26,9 @@ import org.wildstang.year2024.subsystems.theFolder.theClass;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
-public class SmartOffsideBlue extends AutoProgram {
+public class SmartOffsideRed extends AutoProgram {
 
-    private boolean isBlue = true;
+    private boolean isBlue = false;
 
     @Override
     protected void defineSteps() {
@@ -142,7 +142,7 @@ public class SmartOffsideBlue extends AutoProgram {
 
     @Override
     public String toString() {
-        return "Offside Blue";
+        return "Offside Red";
     }
     
 }
