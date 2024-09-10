@@ -6,6 +6,8 @@ import org.wildstang.framework.logger.Log.LogLevel;
 import org.wildstang.hardware.roborio.RoboRIOInputFactory;
 import org.wildstang.hardware.roborio.RoboRIOOutputFactory;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,6 +48,11 @@ public class Robot extends TimedRobot {
         logChooser.addOption(LogLevel.ERROR.toString(), LogLevel.ERROR);
         logChooser.addOption(LogLevel.NONE.toString(), LogLevel.NONE);
         SmartDashboard.putData("Log Level", logChooser);
+
+        DataLogManager.start();
+        // Record both DS control and joystick data
+        DriverStation.startDataLog(DataLogManager.getLog());
+
     }
 
     /**

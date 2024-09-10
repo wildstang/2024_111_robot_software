@@ -7,6 +7,7 @@ import org.wildstang.hardware.roborio.outputs.WsSpark;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -160,6 +161,9 @@ public class SwerveModule {
     }
     public SwerveModulePosition odoPosition(){
         return new SwerveModulePosition(getPosition()*0.0254, new Rotation2d(Math.toRadians(360-getAngle())));
+    }
+    public SwerveModuleState moduleState(){
+        return new SwerveModuleState(driveMotor.getVelocity(), new Rotation2d(getAngle()));
     }
     public void setDriveCurrent(int newCurrentLimit){
         driveMotor.setCurrentLimit(newCurrentLimit, newCurrentLimit, 0);
