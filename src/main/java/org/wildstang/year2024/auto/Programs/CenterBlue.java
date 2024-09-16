@@ -3,7 +3,6 @@ package org.wildstang.year2024.auto.Programs;
 import org.wildstang.framework.auto.AutoProgram;
 import org.wildstang.framework.auto.steps.AutoParallelStepGroup;
 import org.wildstang.framework.auto.steps.AutoSerialStepGroup;
-import org.wildstang.framework.auto.steps.SetGyroStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
@@ -36,7 +35,6 @@ public class CenterBlue extends AutoProgram {
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
-        startGroup.addStep(new SetGyroStep(180.0, swerve));
         startGroup.addStep(new StartOdometryStep(1.3, 5.5, 180.0, isBlue));
         startGroup.addStep(new ShooterSetAngle(175));
         startGroup.addStep(new SetFlywheel(true));

@@ -4,7 +4,6 @@ import org.wildstang.framework.auto.AutoProgram;
 import org.wildstang.framework.auto.steps.AutoParallelStepGroup;
 import org.wildstang.framework.auto.steps.AutoSerialStepGroup;
 import org.wildstang.framework.auto.steps.PathHeadingStep;
-import org.wildstang.framework.auto.steps.SetGyroStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
@@ -38,7 +37,6 @@ public class OffsideRed extends AutoProgram {
         theClass intake = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
-        addStep(new SetGyroStep(180.0, swerve));
         addStep(new StartOdometryStep(0.7, 4.0, 180.0, isBlue));
         addStep(new ShooterSetAngle(175));
         addStep(new SetFlywheel(true));

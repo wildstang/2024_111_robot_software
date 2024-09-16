@@ -26,6 +26,10 @@ public class StartOdometryStep extends AutoStep{
         color = allianceColor;
     }
     public void update(){
+        swerve.setToAuto();
+        swerve.setAutoValues(0, 0, 0, 0);
+        swerve.setGyro(heading);
+        swerve.setAutoHeading(heading);
         if (color){
            swerve.setOdo(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(360.0-heading))));
         } else {

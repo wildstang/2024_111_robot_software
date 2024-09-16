@@ -117,9 +117,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //reset gyro
         if (source == select && select.getValue()) {
             gyro.setYaw(0.0);
-            if (DriverStation.getAlliance().isPresent()){
-                isBlue = DriverStation.getAlliance().get()== Alliance.Blue;
-            }
+            odometry.resetPosition(new Rotation2d(), odoPosition(), 
+                new Pose2d(new Translation2d(odometry.getPoseMeters().getX(),odometry.getPoseMeters().getY()),new Rotation2d()));
             if (rotLocked) rotTarget = 0.0;
         }
 
@@ -165,6 +164,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //get rotational joystick
         rotSpeed = rightStickX.getValue()*Math.abs(rightStickX.getValue());
         rotSpeed = swerveHelper.scaleDeadband(rotSpeed, DriveConstants.DEADBAND);
+        if (rotSpeed == 0 && rotLocked == false){
+            rotTarget = getGyroAngle();
+            rotLocked = true;
+        }
         //if the rotational joystick is being used, the robot should not be auto tracking heading
         if (rotSpeed != 0) {
             rotLocked = false;
@@ -492,7 +495,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         return new SwerveModulePosition[]{modules[0].odoPosition(), modules[1].odoPosition(), modules[2].odoPosition(), modules[3].odoPosition()};
     }
     public void setOdo(Pose2d starting){
-        this.odometry.resetPosition(odoAngle(), odoPosition(), starting);
+        this.odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.33), new Translation2d(0.2794, -0.33),
+            new Translation2d(-0.2794, 0.33), new Translation2d(-0.2794, -0.33)), odoAngle(), odoPosition(), starting);
         autoTimer.start();
     }
     public Pose2d returnPose(){
