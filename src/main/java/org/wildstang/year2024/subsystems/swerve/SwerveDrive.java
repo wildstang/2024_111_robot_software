@@ -2,6 +2,8 @@ package org.wildstang.year2024.subsystems.swerve;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
+import java.util.Arrays;
+
 import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.inputs.Input;
 import org.wildstang.framework.io.inputs.AnalogInput;
@@ -21,6 +23,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -80,6 +84,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private SwerveSignal swerveSignal;
     private WsSwerveHelper swerveHelper = new WsSwerveHelper();
     private SwerveDriveOdometry odometry;
+    StructPublisher<Pose2d> publisher;
     private Timer autoTimer = new Timer();
 
     private WsVision vision;
@@ -112,12 +117,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
         xPower = swerveHelper.scaleDeadband(leftStickX.getValue(), DriveConstants.DEADBAND);
         yPower = swerveHelper.scaleDeadband(leftStickY.getValue(), DriveConstants.DEADBAND);
         
+        
         //reset gyro
         if (source == select && select.getValue()) {
             gyro.setYaw(0.0);
-            if (DriverStation.getAlliance().isPresent()){
-                isBlue = DriverStation.getAlliance().get()== Alliance.Blue;
-            }
             if (rotLocked) rotTarget = 0.0;
         }
 
@@ -213,6 +216,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
  
     @Override
     public void init() {
+        publisher = NetworkTableInstance.getDefault()
+        .getStructTopic("MyPose", Pose2d.struct).publish();
+
         initInputs();
         initOutputs();
         resetState();
@@ -282,7 +288,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     @Override
     public void update() {
-        odometry.update(odoAngle(), odoPosition());
+        odometry.update(new Rotation2d(gyro.getYaw() * Math.PI / 180), odoPosition());
+        publisher.set(odometry.getPoseMeters());
 
         if (driveState == driveType.CROSS) {
             //set to cross - done in inputupdate
@@ -357,10 +364,19 @@ public class SwerveDrive extends SwerveDriveTemplate {
         SmartDashboard.putString("Drive mode", driveState.toString());
         SmartDashboard.putBoolean("rotLocked", rotLocked);
         SmartDashboard.putNumber("Rotation target", rotTarget);
+        SmartDashboard.putBoolean("Object Override", isOverride);
         SmartDashboard.putNumber("Odo X", odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Odo Y", odometry.getPoseMeters().getY());
-        SmartDashboard.putBoolean("Alliance Color", DriverStation.getAlliance().isPresent());
-        SmartDashboard.putBoolean("Object Override", isOverride);
+        SmartDashboard.putNumber("Yaw", gyro.getYaw());
+        SmartDashboard.putNumber("Roll", gyro.getRoll());
+        SmartDashboard.putNumber("Pitch", gyro.getPitch());
+        short[] shortAcceleration = {0,0,0};
+        gyro.getBiasedAccelerometer(shortAcceleration);
+        double[] acceleration = new double[3];
+        for (int i=0;i<3;i++) {
+            acceleration[i] = shortAcceleration[i];
+        }
+        SmartDashboard.putNumberArray("Accelerometer", acceleration);
     }
     
     @Override
@@ -386,9 +402,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     /** resets the drive encoders on each module */
     public void resetDriveEncoders() {
-        for (int i = 0; i < modules.length; i++) {
-            modules[i].resetDriveEncoders();
-        }
+        // for (int i = 0; i < modules.length; i++) {
+        //     modules[i].resetDriveEncoders();
+        // }
     }
 
     /** sets the drive to teleop/cross, and sets drive motors to coast */
@@ -481,7 +497,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         return new SwerveModulePosition[]{modules[0].odoPosition(), modules[1].odoPosition(), modules[2].odoPosition(), modules[3].odoPosition()};
     }
     public void setOdo(Pose2d starting){
-        this.odometry.resetPosition(odoAngle(), odoPosition(), starting);
+        //this.odometry.resetPosition(odoAngle(), odoPosition(), starting);
+        this.odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.33), new Translation2d(0.2794, -0.33),
+            new Translation2d(-0.2794, 0.33), new Translation2d(-0.2794, -0.33)), odoAngle(), odoPosition(), starting);
         autoTimer.start();
     }
     public Pose2d returnPose(){

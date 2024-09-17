@@ -10,11 +10,11 @@ import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
@@ -26,8 +26,6 @@ public class WsVision implements Subsystem {
     public SwerveDrive swerve;
 
     public VisionConsts VC;
-
-    ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
     // public double[] distances = {41, 50, 70, 105, 146};
     // public double[] angles = {174, 145+7.5, 127+75, 95+7.5, 75+9};
@@ -57,6 +55,8 @@ public class WsVision implements Subsystem {
     public void init() {
         VC = new VisionConsts();
 
+        
+
         //same as update()
         //resetState();
         driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
@@ -70,6 +70,8 @@ public class WsVision implements Subsystem {
 
     @Override
     public void update() {
+
+
         left.update(swerve.getFieldYaw());
         right.update(swerve.getFieldYaw());
         back.update(swerve.getFieldYaw());
