@@ -5,7 +5,6 @@ import org.wildstang.framework.auto.AutoStep;
 import org.wildstang.framework.auto.steps.AutoParallelStepGroup;
 import org.wildstang.framework.auto.steps.AutoSerialStepGroup;
 import org.wildstang.framework.auto.steps.PathHeadingStep;
-import org.wildstang.framework.auto.steps.SetGyroStep;
 import org.wildstang.framework.auto.steps.SplitGroup;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
@@ -38,7 +37,6 @@ public class RushBlue extends AutoProgram {
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
-        startGroup.addStep(new SetGyroStep(179.9, swerve));
         startGroup.addStep(new StartOdometryStep(1.46, 6.6, 180.0, isBlue));
         startGroup.addStep(new ShooterSetAngle(155));
         startGroup.addStep(new SetFlywheel(true));

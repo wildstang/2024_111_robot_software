@@ -25,7 +25,7 @@ import org.wildstang.year2024.subsystems.theFolder.theClass;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
-public class OffsideRed extends AutoProgram {
+public class SmartOffsideRed extends AutoProgram {
 
     private boolean isBlue = false;
 
@@ -63,8 +63,7 @@ public class OffsideRed extends AutoProgram {
         addStep(group1);
         addStep(new ObjectOnStep(false));
 
-        // AutoSerialStepGroup got = new AutoSerialStepGroup();
-        // AutoSerialStepGroup missed = new AutoSerialStepGroup();
+        AutoSerialStepGroup gotE = new AutoSerialStepGroup();
 
         // score middle piece E
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
@@ -74,12 +73,12 @@ public class OffsideRed extends AutoProgram {
         group2a.addStep(new VisionOnStep(true));
         group2a.addStep(new ShooterAutoAim(true));
         group2.addStep(group2a);
-        addStep(group2);
-        addStep(new ShootSpeakerStep());
-        addStep(new AutoStepDelay(500));
-        addStep(new SetIntakeSequenceStep(true));
-        addStep(new VisionOnStep(false));
-        addStep(new ShooterAutoAim(false));
+        gotE.addStep(group2);
+        gotE.addStep(new ShootSpeakerStep());
+        gotE.addStep(new AutoStepDelay(500));
+        gotE.addStep(new SetIntakeSequenceStep(true));
+        gotE.addStep(new VisionOnStep(false));
+        gotE.addStep(new ShooterAutoAim(false));
 
         // grab middle piece D
         AutoParallelStepGroup group3 = new AutoParallelStepGroup();
@@ -88,12 +87,22 @@ public class OffsideRed extends AutoProgram {
         group3a.addStep(new AutoStepDelay(1500));
         group3a.addStep(new ObjectOnStep(true));
         group3.addStep(group3a);
-        addStep(group3);
-        addStep(new ObjectOnStep(false));
+        gotE.addStep(group3);
+        gotE.addStep(new ObjectOnStep(false));
+
+        AutoSerialStepGroup notGotE = new AutoSerialStepGroup();
+
+        AutoParallelStepGroup group6 = new AutoParallelStepGroup();
+        group6.addStep(new SwervePathFollowerStep("EtoD", swerve, isBlue));
+        AutoSerialStepGroup group6a = new AutoSerialStepGroup();
+        group6a.addStep(new AutoStepDelay(1500));
+        group6a.addStep(new ObjectOnStep(true));
+        group6a.addStep(group6a);
+        notGotE.addStep(group6);
+        notGotE.addStep(new ObjectOnStep(false));
 
 
-
-        // addStep(new ControlFlowStep(intake, got, missed));
+        AutoSerialStepGroup restOfPath = new AutoSerialStepGroup();
 
         //score middle piece D
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
@@ -103,12 +112,29 @@ public class OffsideRed extends AutoProgram {
         group4a.addStep(new VisionOnStep(true));
         group4a.addStep(new ShooterAutoAim(true));
         group4.addStep(group4a);
-        addStep(group4);
-        addStep(new AutoStepDelay(500));
-        addStep(new ShootSpeakerStep());
-        addStep(new AutoStepDelay(500));
-        addStep(new VisionOnStep(false));
-        addStep(new SwervePathFollowerStep("EndOffside", swerve, isBlue));
+        restOfPath.addStep(group4);
+        restOfPath.addStep(new AutoStepDelay(500));
+        restOfPath.addStep(new ShootSpeakerStep());
+        restOfPath.addStep(new AutoStepDelay(500));
+        restOfPath.addStep(new VisionOnStep(false));
+        restOfPath.addStep(new SwervePathFollowerStep("EndOffside", swerve, isBlue));
+
+        notGotE.addStep(restOfPath);
+        gotE.addStep(restOfPath);
+        addStep(new ControlFlowStep(intake, gotE, notGotE));
+        // addStep(new AutoStepDelay(300));
+        // addStep(new SetIntakeSequenceStep(true));
+        // addStep(new VisionOnStep(false));
+
+        // addStep(new SwervePathFollowerStep("GrabCOffside", swerve, isBlue));
+        // AutoParallelStepGroup group5 = new AutoParallelStepGroup();
+        // group5.addStep(new SwervePathFollowerStep("ScoreCOffside", swerve, isBlue));
+        // AutoSerialStepGroup group5a = new AutoSerialStepGroup();
+        // group5a.addStep(new AutoStepDelay(1000));
+        // group5a.addStep(new VisionOnStep(true));
+        // group5.addStep(group5a);
+        // addStep(group5);
+        // addStep(new ShootSpeakerStep());
 
     }
 

@@ -73,8 +73,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private boolean isCurrentLow = false;
     private boolean isOverride = false;
     private boolean isAutoObject = false;
+    private boolean isFeedModeUpdate = false;
     private double xObject = 0;
     private double yObject = 0;
+    private double feedOffset = 0;
     
     private final double mToIn = 39.37;
 
@@ -121,6 +123,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //reset gyro
         if (source == select && select.getValue()) {
             gyro.setYaw(0.0);
+            odometry.resetPosition(new Rotation2d(), odoPosition(), 
+                new Pose2d(new Translation2d(odometry.getPoseMeters().getX(),odometry.getPoseMeters().getY()),new Rotation2d()));
             if (rotLocked) rotTarget = 0.0;
         }
 
@@ -157,7 +161,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
             else rotTarget = 90.0;
             rotLocked = true;
         }
-        if (intake.isIntaking() && !isOverride && (faceDown.getValue() || faceLeft.getValue() || faceRight.getValue() || faceUp.getValue())) {
+        if (intake.isIntaking() && (faceDown.getValue() || faceLeft.getValue() || faceRight.getValue() || faceUp.getValue())) {
             driveState = driveType.OBJECT;
             rotLocked = true;
             rotTarget = getGyroAngle();
@@ -166,13 +170,18 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //get rotational joystick
         rotSpeed = rightStickX.getValue()*Math.abs(rightStickX.getValue());
         rotSpeed = swerveHelper.scaleDeadband(rotSpeed, DriveConstants.DEADBAND);
+        if (rotSpeed == 0 && rotLocked == false){
+            rotTarget = getGyroAngle();
+            rotLocked = true;
+        }
         //if the rotational joystick is being used, the robot should not be auto tracking heading
         if (rotSpeed != 0) {
             rotLocked = false;
         }
         if (leftTrigger.getValue() > 0.15 && isFeedVision){
             rotLocked = true;
-            rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 136.7 + 0.183*vision.getYValue();
+            rotTarget = isBlue ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();//update below as well
+            isFeedModeUpdate = true;
             // if (vision.aprilTagsInView() || vision.getUpdateTime() < 1.0){
             //     rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 136.7 + 0.183*vision.getYValue();
             // } else {
@@ -183,10 +192,14 @@ public class SwerveDrive extends SwerveDriveTemplate {
             rotLocked = true;
             //rotTarget = vision.front.turnToTarget(isBlue);
             isVision = true;
+            isFeedModeUpdate = false;
             xPower *= 0.7;
             yPower *= 0.7;
             rotSpeed *= 0.7;
-        } else isVision = false;
+        } else {
+            isVision = false;
+            isFeedModeUpdate = false;
+        }
         
         //assign thrust
         // thrustValue = 1 - DriveConstants.DRIVE_THRUST + DriveConstants.DRIVE_THRUST * Math.abs(rightTrigger.getValue());
@@ -211,7 +224,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
             isCurrentLow = false;
         }
 
-        if (source == dpadRight && dpadRight.getValue()) isOverride = !isOverride;
+        // if (source == dpadRight && dpadRight.getValue()) isOverride = !isOverride;
+        if (source == dpadLeft && dpadLeft.getValue()) feedOffset-=2;
+        if (source == dpadRight && dpadRight.getValue()) feedOffset+=2;
     }
  
     @Override
@@ -299,7 +314,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
                 //if rotation tracking, replace rotational joystick value with controller generated one
-                if (isVision) rotTarget = vision.turnToTarget(isBlue);
+                if (isFeedModeUpdate) rotTarget = isBlue ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();
+                else if (isVision) rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 if (Math.abs(rotTarget - getGyroAngle()) < 1.0) rotSpeed = 0;
                 if (isSnake) {
@@ -356,7 +372,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 drive();
             }
         }
-        SmartDashboard.putBoolean("Object Override", isOverride);
+        // SmartDashboard.putBoolean("Object Override", isOverride);
         SmartDashboard.putNumber("Gyro Reading", getGyroAngle());
         SmartDashboard.putNumber("X Power", xPower);
         SmartDashboard.putNumber("Y Power", yPower);
@@ -377,6 +393,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
             acceleration[i] = shortAcceleration[i];
         }
         SmartDashboard.putNumberArray("Accelerometer", acceleration);
+        SmartDashboard.putBoolean("Alliance Color", DriverStation.getAlliance().isPresent());
+        SmartDashboard.putNumber("Feed offset", feedOffset);
     }
     
     @Override
@@ -390,6 +408,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         autoOverride = false;
         autoTag = false;
         isOverride = false;
+        feedOffset = 0;
 
         isFieldCentric = true;
         isSnake = false;

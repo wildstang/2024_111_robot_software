@@ -3,7 +3,6 @@ package org.wildstang.year2024.auto.Programs;
 import org.wildstang.framework.auto.AutoProgram;
 import org.wildstang.framework.auto.steps.AutoParallelStepGroup;
 import org.wildstang.framework.auto.steps.AutoSerialStepGroup;
-import org.wildstang.framework.auto.steps.SetGyroStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
@@ -30,7 +29,6 @@ public class FastCenterRed extends AutoProgram{
         led.setAlliance(isBlue);
         swerve.setAlliance(isBlue);
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
-        startGroup.addStep(new SetGyroStep(CenterConsts.startingGyroRed, swerve));
         startGroup.addStep(new StartOdometryStep(1.3, 5.5, 180.0, isBlue));
         startGroup.addStep(new ShooterSetAngle(CenterConsts.firstShot));
         startGroup.addStep(new SetFlywheel(true));
@@ -79,16 +77,16 @@ public class FastCenterRed extends AutoProgram{
         addStep(group2);
         addStep(new ObjectOnStep(false));
         addStep(new AutoStepDelay(CenterConsts.shoot4Delay));
-        addStep(new SwervePathFollowerStep("CenterFinishB", swerve, isBlue));
+        // addStep(new SwervePathFollowerStep("CenterFinishB", swerve, isBlue));
 
-        // AutoParallelStepGroup finishGroup = new AutoParallelStepGroup();
-        // finishGroup.addStep(new SwervePathFollowerStep("CenterFinishBalt", swerve, isBlue));
-        // AutoSerialStepGroup finishGroupa = new AutoSerialStepGroup();
-        // finishGroupa.addStep(new AutoStepDelay(1300));
-        // finishGroupa.addStep(new ObjectOnStep(true));
-        // finishGroup.addStep(finishGroupa);
-        // addStep(finishGroup);
-        // addStep(new ObjectOnStep(false));
+        AutoParallelStepGroup finishGroup = new AutoParallelStepGroup();
+        finishGroup.addStep(new SwervePathFollowerStep("CenterFinishBalt", swerve, isBlue));
+        AutoSerialStepGroup finishGroupa = new AutoSerialStepGroup();
+        finishGroupa.addStep(new AutoStepDelay(1300));
+        finishGroupa.addStep(new ObjectOnStep(true));
+        finishGroup.addStep(finishGroupa);
+        addStep(finishGroup);
+        addStep(new ObjectOnStep(false));
     }
 
     @Override
