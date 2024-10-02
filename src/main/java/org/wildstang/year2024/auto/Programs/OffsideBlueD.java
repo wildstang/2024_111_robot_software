@@ -7,13 +7,13 @@ import org.wildstang.framework.auto.steps.PathHeadingStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
+import org.wildstang.year2024.auto.Steps.AutoSetupStep;
 import org.wildstang.year2024.auto.Steps.ObjectOnStep;
 import org.wildstang.year2024.auto.Steps.SetFlywheel;
 import org.wildstang.year2024.auto.Steps.SetIntakeSequenceStep;
 import org.wildstang.year2024.auto.Steps.ShootSpeakerStep;
 import org.wildstang.year2024.auto.Steps.ShooterAutoAim;
 import org.wildstang.year2024.auto.Steps.ShooterSetAngle;
-import org.wildstang.year2024.auto.Steps.StartOdometryStep;
 import org.wildstang.year2024.auto.Steps.VisionOnStep;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.LED.LedController;
@@ -32,9 +32,8 @@ public class OffsideBlueD extends AutoProgram {
         
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         LedController led = (LedController) Core.getSubsystemManager().getSubsystem(WsSubsystems.LED);
-        led.setAlliance(isBlue);
-        swerve.setAlliance(isBlue);
-        addStep(new StartOdometryStep(0.7, 4.0, 180.0, isBlue));
+        addStep(new AutoSetupStep(0.7, 4.0, 180.0, Alliance.Blue));
+
         addStep(new ShooterSetAngle(175));
         addStep(new SetFlywheel(true));
         addStep(new VisionOnStep(true));

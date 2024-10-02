@@ -59,14 +59,11 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private double thrustValue;
     private boolean rotLocked;
     private boolean isSnake;
-    private boolean isFieldCentric;
 
     /**Direction to face */
     private double rotTarget;
 
-    private boolean autoOverride;
     private boolean isBlue = true;
-    private boolean autoTag = false;
     private boolean isVision = false;
     private boolean autoAlign = false;
     private boolean isFeedVision = false;
@@ -303,6 +300,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     @Override
     public void update() {
+        isBlue = Core.isBlue();
         odometry.update(new Rotation2d(gyro.getYaw() * Math.PI / 180), odoPosition());
         publisher.set(odometry.getPoseMeters());
 
@@ -402,16 +400,13 @@ public class SwerveDrive extends SwerveDriveTemplate {
         xPower = 0;
         yPower = 0;
         rotSpeed = 0;
-        setToTeleop();
         rotLocked = false;
         rotTarget = 0.0;
-        autoOverride = false;
-        autoTag = false;
         isOverride = false;
         feedOffset = 0;
 
-        isFieldCentric = true;
         isSnake = false;
+        setToTeleop();
     }
 
     @Override
@@ -469,13 +464,13 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
     }
 
-    /**sets autonomous values from the path data file in alliance relative */
+    /**sets autonomous values from the path data file in field relative */
     public void setAutoValues(double xVelocity, double yVelocity, double xOffset, double yOffset) {
         SmartDashboard.putNumber("Auto Velocity X", xVelocity);
         SmartDashboard.putNumber("Auto Velocity Y", yVelocity);
-        // accel of 0 because currently not using acceleration for power since 
-        xPower = swerveHelper.getAutoPower(xVelocity, 0) + xOffset * DriveConstants.TRANSLATION_P;
-        yPower = swerveHelper.getAutoPower(yVelocity, 0) + yOffset * DriveConstants.TRANSLATION_P;
+        // accel of 0 because currently not using acceleration for power since
+        xPower = swerveHelper.getAutoPower(isBlue ? -yVelocity : yVelocity, 0) + (isBlue ? -yOffset : yOffset) * DriveConstants.TRANSLATION_P;
+        yPower = swerveHelper.getAutoPower(isBlue ? xVelocity : -xVelocity, 0) + (isBlue ? xOffset : -xOffset) * DriveConstants.TRANSLATION_P;
     }
 
     /**sets the autonomous heading controller to a new target */
@@ -497,7 +492,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     }
 
     public double getGyroAngle() {
-        if (!isFieldCentric) return 0;
         return (359.99 - gyro.getYaw()+360)%360;
     }  
 
@@ -522,22 +516,13 @@ public class SwerveDrive extends SwerveDriveTemplate {
         autoTimer.start();
     }
     public Pose2d returnPose(){
-    
         return odometry.getPoseMeters();
     }
     public double getRotTarget(){
         return rotTarget;
     }
-    public void setAutoTag(boolean isOn, boolean isBlue){
-        autoTag = isOn;
-        this.isBlue = isBlue;
-    }
     public void setVisionAuto(boolean isOn){
         this.isVision = isOn;
-    }
-    public void setAlliance(boolean isBlue){
-        this.isBlue = isBlue;
-        vision.setAlliance(isBlue);
     }
     public void setAutoObject(boolean isOn){
         this.isAutoObject = isOn;

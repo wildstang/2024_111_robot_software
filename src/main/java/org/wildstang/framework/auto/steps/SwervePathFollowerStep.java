@@ -60,24 +60,23 @@ public class SwervePathFollowerStep extends AutoStep {
             setFinished();
         } else {
 
+            // Meters
             // Choreo and odometry works in field relative
-            ChoreoTrajectoryState sample = pathtraj.sample(timer.get());
+            // Choreo pose flipped for red alliance
+            ChoreoTrajectoryState sample;
+            if (isBlue) {
+                sample = pathtraj.sample(timer.get());
+            } else {
+                sample = pathtraj.sample(timer.get()).flipped();
+            }
+            
             localRobotPose = m_drive.returnPose();
             localAutoPose = sample.getPose();
 
-            // Meters
-            yOffset = localAutoPose.getX() - localRobotPose.getX();
-            if (isBlue) xOffset = localRobotPose.getY() - localAutoPose.getY();
-            else xOffset = localRobotPose.getY() - (8.016 - localAutoPose.getY());
-            //update values the robot is tracking to
-            // Set in alliance relative
-            if (isBlue) {
-                m_drive.setAutoValues(-sample.velocityY * mToIn, sample.velocityX * mToIn, 0, 0);
-            } else {
-                m_drive.setAutoValues(sample.velocityY * mToIn, sample.velocityX * mToIn, 0, 0);
-            }
-
+            xOffset = localAutoPose.getX() - localRobotPose.getX();
+            yOffset = localAutoPose.getY() - localRobotPose.getY();
             m_drive.setAutoHeading(getHeading());
+            m_drive.setAutoValues(sample.velocityX * mToIn, sample.velocityY * mToIn, xOffset, yOffset);
             SmartDashboard.putNumber("PF local X", localRobotPose.getX());
             SmartDashboard.putNumber("PF path X", localAutoPose.getX());
             }
@@ -90,7 +89,6 @@ public class SwervePathFollowerStep extends AutoStep {
 
     public double getHeading(){
         if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
-        // I think this needs to be flipped 180 for Red alliance
         else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
     }
     public ChoreoTrajectory getTraj(String fileName){

@@ -70,7 +70,7 @@ public class WsVision implements Subsystem {
 
     @Override
     public void update() {
-
+        isBlue = Core.isBlue();
 
         left.update(swerve.getFieldYaw());
         right.update(swerve.getFieldYaw());
@@ -120,16 +120,6 @@ public class WsVision implements Subsystem {
             }
         }
         return angles[last] + (inputDistance-distances[last])*(angles[last]-angles[last-1])/(distances[last]-distances[last-1]);
-    }
-    
-    public void setAlliance(boolean alliance){
-        this.isBlue = alliance;
-    }
-     /**
-     * @return true if on blue alliance
-     */
-    public boolean getAlliance() {
-        return isBlue;
     }
     private boolean isLeftBetter(){
         if (left.TargetInView() && !right.TargetInView()) return true;

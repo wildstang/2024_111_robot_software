@@ -14,6 +14,8 @@ import org.wildstang.year2024.subsystems.theFolder.theClass;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LedController implements Subsystem {
 
@@ -47,7 +49,7 @@ public class LedController implements Subsystem {
     public void update(){
         if (flywheel.isFeeding() && RandomThing.hasNote()){
             setRGB(white);
-        } else if (vision.canSeeSpeaker(vision.getAlliance()) && RandomThing.hasNote() && !isAuto){ 
+        } else if (vision.canSeeSpeaker() && RandomThing.hasNote() && !isAuto){ 
             if (flywheel.getShooterVelocity()>5300){
                 setRGB(green); 
             } else if (vision.canSeeAmp()){
@@ -68,8 +70,8 @@ public class LedController implements Subsystem {
     @Override
     public void inputUpdate(Input source) {
         isAuto = false;
-
     }
+
     @Override
     public void initSubsystems() {      
         RandomThing = (theClass) Core.getSubsystemManager().getSubsystem(WsSubsystems.THECLASS);
@@ -115,8 +117,8 @@ public class LedController implements Subsystem {
     public void setRGB(int[] color){
         setRGB(color[0],color[1],color[2]);
     }
-    public void setAlliance(boolean isBlue){
-        this.normal = isBlue ? blue : red;
+    public void setAlliance(Alliance alliance){
+        this.normal = alliance == Alliance.Blue ? blue : red;
         isAuto = true;
     }
     private void rainbow(){

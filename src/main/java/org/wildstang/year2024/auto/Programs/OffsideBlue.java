@@ -3,24 +3,20 @@ package org.wildstang.year2024.auto.Programs;
 import org.wildstang.framework.auto.AutoProgram;
 import org.wildstang.framework.auto.steps.AutoParallelStepGroup;
 import org.wildstang.framework.auto.steps.AutoSerialStepGroup;
-import org.wildstang.framework.auto.steps.PathHeadingStep;
 import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
+import org.wildstang.year2024.auto.Steps.AutoSetupStep;
 import org.wildstang.year2024.auto.Steps.ObjectOnStep;
 import org.wildstang.year2024.auto.Steps.SetFlywheel;
 import org.wildstang.year2024.auto.Steps.SetIntakeSequenceStep;
 import org.wildstang.year2024.auto.Steps.ShootSpeakerStep;
 import org.wildstang.year2024.auto.Steps.ShooterAutoAim;
 import org.wildstang.year2024.auto.Steps.ShooterSetAngle;
-import org.wildstang.year2024.auto.Steps.StartOdometryStep;
 import org.wildstang.year2024.auto.Steps.VisionOnStep;
 import org.wildstang.year2024.robot.WsSubsystems;
-import org.wildstang.year2024.subsystems.LED.LedController;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
-import org.wildstang.year2024.subsystems.targeting.WsVision;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class OffsideBlue extends AutoProgram {
@@ -31,10 +27,7 @@ public class OffsideBlue extends AutoProgram {
     protected void defineSteps() {
         
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
-        LedController led = (LedController) Core.getSubsystemManager().getSubsystem(WsSubsystems.LED);
-        led.setAlliance(isBlue);
-        swerve.setAlliance(isBlue);
-        addStep(new StartOdometryStep(0.7, 4.0, 180.0, isBlue));
+        addStep(new AutoSetupStep(0.7, 4.0, 180.0, Alliance.Blue));
         addStep(new ShooterSetAngle(175));
         addStep(new SetFlywheel(true));
         addStep(new VisionOnStep(true));

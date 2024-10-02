@@ -7,17 +7,19 @@ import org.wildstang.framework.auto.steps.SwervePathFollowerStep;
 import org.wildstang.framework.auto.steps.control.AutoStepDelay;
 import org.wildstang.framework.core.Core;
 import org.wildstang.year2024.auto.Steps.AlignOnStep;
+import org.wildstang.year2024.auto.Steps.AutoSetupStep;
 import org.wildstang.year2024.auto.Steps.ObjectOnStep;
 import org.wildstang.year2024.auto.Steps.SetFlywheel;
 import org.wildstang.year2024.auto.Steps.SetIntakeSequenceStep;
 import org.wildstang.year2024.auto.Steps.ShootSpeakerStep;
 import org.wildstang.year2024.auto.Steps.ShooterAutoAim;
 import org.wildstang.year2024.auto.Steps.ShooterSetAngle;
-import org.wildstang.year2024.auto.Steps.StartOdometryStep;
 import org.wildstang.year2024.auto.Steps.VisionOnStep;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.LED.LedController;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
+
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class FastCenterBlueB extends AutoProgram{
 
@@ -27,10 +29,9 @@ public class FastCenterBlueB extends AutoProgram{
     protected void defineSteps() {
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         LedController led = (LedController) Core.getSubsystemManager().getSubsystem(WsSubsystems.LED);
-        led.setAlliance(isBlue);
-        swerve.setAlliance(isBlue);
+
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
-        startGroup.addStep(new StartOdometryStep(1.3, 5.5, 180.0, isBlue));
+        addStep(new AutoSetupStep(0.7, 4.0, 180.0, Alliance.Blue));
         startGroup.addStep(new ShooterSetAngle(CenterConsts.firstShot));
         startGroup.addStep(new SetFlywheel(true));
         startGroup.addStep(new AutoStepDelay(CenterConsts.initialDelay));
