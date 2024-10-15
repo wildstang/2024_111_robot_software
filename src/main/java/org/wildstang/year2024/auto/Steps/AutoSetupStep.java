@@ -5,6 +5,7 @@ import org.wildstang.framework.core.Core;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.LED.LedController;
 import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
+import org.wildstang.year2024.subsystems.swerve.SwerveDrive.driveType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,8 +28,9 @@ public class AutoSetupStep extends AutoStep{
     }
 
     public void update(){
+        double difference = Math.min(Math.abs(swerve.getGyroAngle() - heading), Math.abs(360 - (swerve.getGyroAngle() - heading)));
         // Gyro reset and reads within 1 degree of what we told it to
-        if (swerve.getGyroAngle() < heading + 1 && swerve.getGyroAngle() > heading -1) {
+        if (difference < 1) {
             // Sets odometry field relative, flipping for red
             if (Core.isBlue()){
                 swerve.setOdo(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(360.0-heading))));

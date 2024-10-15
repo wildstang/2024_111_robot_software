@@ -24,7 +24,7 @@ public class SwervePathFollowerStep extends AutoStep {
     private boolean isBlue;
 
     // x and y field relative
-    private Pose2d localAutoPose, localRobotPose;
+    private Pose2d fieldAutoPose, fieldRobotPose;
     private double xOffset, yOffset;
 
     private Timer timer;
@@ -70,15 +70,18 @@ public class SwervePathFollowerStep extends AutoStep {
                 sample = pathtraj.sample(timer.get()).flipped();
             }
             
-            localRobotPose = m_drive.returnPose();
-            localAutoPose = sample.getPose();
+            fieldRobotPose = m_drive.returnPose();
+            fieldAutoPose = sample.getPose();
 
-            xOffset = localAutoPose.getX() - localRobotPose.getX();
-            yOffset = localAutoPose.getY() - localRobotPose.getY();
+            xOffset = fieldAutoPose.getX() - fieldRobotPose.getX();
+            yOffset = fieldAutoPose.getY() - fieldRobotPose.getY();
+            SmartDashboard.putNumber("xOffset", xOffset);
+            SmartDashboard.putNumber("yOffset", yOffset);
+
             m_drive.setAutoHeading(getHeading());
             m_drive.setAutoValues(sample.velocityX * mToIn, sample.velocityY * mToIn, xOffset, yOffset);
-            SmartDashboard.putNumber("PF local X", localRobotPose.getX());
-            SmartDashboard.putNumber("PF path X", localAutoPose.getX());
+            SmartDashboard.putNumber("PF local X", fieldRobotPose.getX());
+            SmartDashboard.putNumber("PF path X", fieldAutoPose.getX());
             }
     }
 

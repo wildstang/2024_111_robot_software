@@ -10,20 +10,18 @@ import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 // Test swerve auto program, named per Arms
-public class Jubilee extends AutoProgram {
+public class Line extends AutoProgram {
 
     @Override
     protected void defineSteps() {
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
-        addStep(new AutoSetupStep(1.5, 5.5, 0, Alliance.Red));
-        addStep(new SwervePathFollowerStep("Circle", swerve, Core.isBlue()));
-        addStep(new SwervePathFollowerStep("Circle", swerve, Core.isBlue()));                
-        addStep(new SwervePathFollowerStep("Circle", swerve, Core.isBlue()));
+        addStep(new AutoSetupStep(1.5, 5.5, 0, Alliance.Blue));
+        addStep(new SwervePathFollowerStep("Line", swerve, Core.isBlue()));
     }
 
     @Override
     public String toString() {
-        return "Jubilee";
+        return "Line";
     }
     
 }

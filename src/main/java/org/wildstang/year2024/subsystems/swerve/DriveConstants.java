@@ -2,7 +2,7 @@ package org.wildstang.year2024.subsystems.swerve;
 
 public final class DriveConstants {
     /**P Loop for Translating to a point */
-    public static final double TRANSLATION_P = 0.0;
+    public static final double TRANSLATION_P = 0.5;
     /** robot length from swerve pod to swerve pod, in inches */
     public static final double ROBOT_LENGTH = 11.5;
     /** robot width from swerve pod to swerve pod, in inches */

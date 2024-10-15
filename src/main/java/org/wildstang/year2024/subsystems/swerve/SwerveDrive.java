@@ -466,8 +466,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     /**sets autonomous values from the path data file in field relative */
     public void setAutoValues(double xVelocity, double yVelocity, double xOffset, double yOffset) {
-        SmartDashboard.putNumber("Auto Velocity X", xVelocity);
-        SmartDashboard.putNumber("Auto Velocity Y", yVelocity);
+        SmartDashboard.putNumber("Offset X Power", (isBlue ? -yOffset : yOffset) * DriveConstants.TRANSLATION_P);
+        SmartDashboard.putNumber("Offset Y Power", (isBlue ? xOffset : -xOffset) * DriveConstants.TRANSLATION_P);
         // accel of 0 because currently not using acceleration for power since
         xPower = swerveHelper.getAutoPower(isBlue ? -yVelocity : yVelocity, 0) + (isBlue ? -yOffset : yOffset) * DriveConstants.TRANSLATION_P;
         yPower = swerveHelper.getAutoPower(isBlue ? xVelocity : -xVelocity, 0) + (isBlue ? xOffset : -xOffset) * DriveConstants.TRANSLATION_P;
