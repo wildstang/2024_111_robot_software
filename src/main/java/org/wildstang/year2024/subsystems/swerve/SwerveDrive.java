@@ -168,8 +168,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         rotSpeed = rightStickX.getValue()*Math.abs(rightStickX.getValue());
         rotSpeed = swerveHelper.scaleDeadband(rotSpeed, DriveConstants.DEADBAND);
         if (rotSpeed == 0 && rotLocked == false){
+            if (Math.abs(getGyroAngle() - rotTarget) < 1.0) rotLocked = true;
             rotTarget = getGyroAngle();
-            rotLocked = true;
         }
         //if the rotational joystick is being used, the robot should not be auto tracking heading
         if (rotSpeed != 0) {
