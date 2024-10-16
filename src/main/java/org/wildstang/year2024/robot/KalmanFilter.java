@@ -1,7 +1,10 @@
 package org.wildstang.year2024.robot;
 import org.ejml.simple.SimpleMatrix;
+import org.wildstang.year2024.subsystems.swerve.SwerveDrive;
 
-import edu.wpi.first.math.proto.System;
+import com.ctre.phoenix6.hardware.Pigeon2;
+
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 
 public class KalmanFilter {
     private final double deltaT = 0.02;
@@ -9,33 +12,14 @@ public class KalmanFilter {
     // State vector: [x, vx, ax, y, vy, ay, theta, omega]
     private SimpleMatrix x; // State vector
 
+    // Measurement vector 
+    private SimpleMatrix z;
+
     // Covariance matrix
     private SimpleMatrix P; // State covariance matrix
 
     // State transition matrix (F)
-    private final SimpleMatrix F;
-
-    // Measurement matrix (H)
-    private final SimpleMatrix H;
-
-    // Process noise covariance (Q)
-    private final SimpleMatrix Q;
-
-    // Measurement noise covariance (R)
-    private final SimpleMatrix R;
-
-    // Identity matrix for update step
-    private final SimpleMatrix I;
-
-    public KalmanFilter() {
-        // Initial state (assume starting at origin with zero velocity and acceleration)
-        x = new SimpleMatrix(8, 1); // 8x1 state vector initialized to zero
-
-        // Initial state covariance (P) - assuming some initial uncertainty
-        P = SimpleMatrix.identity(8).scale(1e-3); // Small initial uncertainty
-
-        // State transition matrix (F)
-        F = new SimpleMatrix(new double[][]{
+    private final SimpleMatrix F = new SimpleMatrix(new double[][]{
             {1, deltaT, 0.5 * deltaT * deltaT, 0, 0, 0, 0, 0},
             {0, 1, deltaT, 0, 0, 0, 0, 0},
             {0, 0, 1, 0, 0, 0, 0, 0},
@@ -46,7 +30,8 @@ public class KalmanFilter {
             {0, 0, 0, 0, 0, 0, 0, 1}
         });
 
-        // Measurement matrix (H) - mapping the state to measurements (x, y, ax, ay, theta)
+    // Measurement matrix (H) mapping the state to measurements (x, y, ax, ay, theta)
+    private final SimpleMatrix  
         H = new SimpleMatrix(new double[][]{
             {1, 0, 0, 0, 0, 0, 0, 0},  // x
             {0, 0, 0, 1, 0, 0, 0, 0},  // y
@@ -55,20 +40,84 @@ public class KalmanFilter {
             {0, 0, 0, 0, 0, 0, 1, 0}   // theta
         });
 
-        // Process noise covariance matrix (Q) - assume small process noise
-        Q = SimpleMatrix.diag(1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4);
 
-        // Measurement noise covariance matrix (R) - assume some measurement noise
-        R = SimpleMatrix.diag(1e-2, 1e-2, 1e-2, 1e-2, 1e-2);
+    // Process noise covariance (Q)
+    // values will be tuned after testing
+    private final SimpleMatrix Q = SimpleMatrix.diag(1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4);
 
-        // Identity matrix for the update step
-        I = SimpleMatrix.identity(8);
+    // Measurement noise covariance (R)
+    //values will be tuned after testing
+    private final SimpleMatrix R = SimpleMatrix.diag(1e-2, 1e-2, 1e-2, 1e-2, 1e-2);
+
+        
+
+    // Identity matrix for update step
+    private final SimpleMatrix I = SimpleMatrix.identity(8);
+
+    private SwerveDrive swerve = new SwerveDrive(); 
+    private SwerveDriveOdometry odometry = swerve.odometry;
+    private com.ctre.phoenix.sensors.Pigeon2 gyro = swerve.gyro;
+
+
+    public KalmanFilter() {
+        kfInit();
+
     }
+
+    public void kfInit(){
+        initStateMatrix();
+        initCovarianceMatrix();
+        z = new SimpleMatrix(5, 1);
+    }
+
+    private void initStateMatrix(){
+
+        //getting acceleration values from gyro
+        short[] shortAcceleration = {0,0,0};
+        gyro.getBiasedAccelerometer(shortAcceleration);
+        double[] acceleration = new double[2];
+        for (int i=0;i<2;i++) {
+            acceleration[i] = shortAcceleration[i];
+        }
+        
+        //initalizing state matrix
+        x.set(1,0,odometry.getPoseMeters().getX()); //position in x direction
+        x.set(2,0,0); //will update
+        x.set(3,0,acceleration[0]); //acceleration in x direction
+        x.set(4,0,odometry.getPoseMeters().getY()); //position in y direction
+        x.set(4,0,0); //will update 
+        x.set(5,0,acceleration[0]); //acceleration in y direction;
+
+    }
+
+    public void initCovarianceMatrix(){
+       // Initial state covariance (P) - assuming some initial uncertainty
+       P = SimpleMatrix.identity(8).scale(1e-3); // Small initial uncertainty
+    }
+
+
+    private void updateMeasurementMatrix(){
+    
+        short[] shortAcceleration = {0,0,0};
+        gyro.getBiasedAccelerometer(shortAcceleration);
+        double[] acceleration = new double[2];
+        for (int i=0;i<2;i++) {
+            acceleration[i] = shortAcceleration[i];
+        }
+    
+
+        z.set(0, 0, odometry.getPoseMeters().getX()); // x measurement
+        z.set(1, 0, odometry.getPoseMeters().getY()); // y measurement
+        z.set(2, 0, acceleration[0]); // ax measurement
+        z.set(3, 0, acceleration[1]); // ay measurement
+        z.set(4, 0, gyro.getYaw()); // theta measurement
+    }
+
 
     /**
      * Kalman filter prediction step
      */
-    public void predict() {
+    private void predict() {
         // Predict the next state: x(t+1) = F * x(t)
         x = F.mult(x);
 
@@ -80,7 +129,7 @@ public class KalmanFilter {
      * Kalman filter update step
      * @param z Measurement vector [x_meas, y_meas, ax_meas, ay_meas, theta_meas]
      */
-    public void update(SimpleMatrix z) {
+    private void update() {
         // Innovation (residual): y = z - H * x
         SimpleMatrix y = z.minus(H.mult(x));
 
@@ -105,30 +154,22 @@ public class KalmanFilter {
         return x;
     }
 
-    public static void main(String[] args) {
-        // Create a Kalman filter instance
-        KalmanFilter kf = new KalmanFilter();
+    private void kfPeriodic(KalmanFilter kf) {
 
-        // Simulate some sensor measurements (these would come from encoders and IMU in reality)
-        SimpleMatrix z = new SimpleMatrix(5, 1);
-        z.set(0, 0, 2.0); // x measurement
-        z.set(1, 0, 1.5); // y measurement
-        z.set(2, 0, 0.1); // ax measurement
-        z.set(3, 0, 0.05); // ay measurement
-        z.set(4, 0, 0.3); // theta measurement
+        //get Measurements
+        kf.updateMeasurementMatrix();
 
         // Run the prediction step
         kf.predict();
 
-        // Run the update step with the simulated measurements
-        kf.update(z);
+        // Run the update step 
+
+
+        kf.update();
 
         // Get the updated state
         SimpleMatrix updatedState = kf.getState();
 
-        // Print the updated state
-        System.out.println("Updated state: ");
-        updatedState.print();
     }
 }
 

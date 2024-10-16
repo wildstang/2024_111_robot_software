@@ -78,11 +78,11 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private final double mToIn = 39.37;
 
     //private final AHRS gyro = new AHRS(SerialPort.Port.kUSB);
-    private final Pigeon2 gyro = new Pigeon2(CANConstants.GYRO);
+    public final Pigeon2 gyro = new Pigeon2(CANConstants.GYRO);
     public SwerveModule[] modules;
     private SwerveSignal swerveSignal;
     private WsSwerveHelper swerveHelper = new WsSwerveHelper();
-    private SwerveDriveOdometry odometry;
+    public SwerveDriveOdometry odometry;
     StructPublisher<Pose2d> publisher;
     private Timer autoTimer = new Timer();
 
