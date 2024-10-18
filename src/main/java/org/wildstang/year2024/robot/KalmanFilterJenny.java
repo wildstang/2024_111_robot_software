@@ -6,7 +6,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 
-public class KalmanFilter {
+public class KalmanFilterJenny {
     private final double deltaT = 0.02;
  
     // State vector: [x, vx, ax, y, vy, ay, theta, omega]
@@ -58,8 +58,10 @@ public class KalmanFilter {
     private SwerveDriveOdometry odometry = swerve.odometry;
     private com.ctre.phoenix.sensors.Pigeon2 gyro = swerve.gyro;
 
+    private final int ACCL_X = 0;
+    private final int ACCL_Y = 1;
 
-    public KalmanFilter() {
+    public KalmanFilterJenny() {
         kfInit();
 
     }
@@ -72,7 +74,7 @@ public class KalmanFilter {
 
     private void initStateMatrix(){
 
-        //getting acceleration values from gyro
+        //getting x,y acceleration values from gyro
         short[] shortAcceleration = {0,0,0};
         gyro.getBiasedAccelerometer(shortAcceleration);
         double[] acceleration = new double[2];
@@ -82,11 +84,11 @@ public class KalmanFilter {
         
         //initalizing state matrix
         x.set(1,0,odometry.getPoseMeters().getX()); //position in x direction
-        x.set(2,0,0); //will update
-        x.set(3,0,acceleration[0]); //acceleration in x direction
+        x.set(2,0,0); //will update once figure out how to get velocity
+        x.set(3,0,acceleration[ACCL_X]); //acceleration in x direction
         x.set(4,0,odometry.getPoseMeters().getY()); //position in y direction
         x.set(4,0,0); //will update 
-        x.set(5,0,acceleration[0]); //acceleration in y direction;
+        x.set(5,0,acceleration[ACCL_Y]); //acceleration in y direction;
 
     }
 
@@ -108,8 +110,8 @@ public class KalmanFilter {
 
         z.set(0, 0, odometry.getPoseMeters().getX()); // x measurement
         z.set(1, 0, odometry.getPoseMeters().getY()); // y measurement
-        z.set(2, 0, acceleration[0]); // ax measurement
-        z.set(3, 0, acceleration[1]); // ay measurement
+        z.set(2, 0, acceleration[ACCL_X]); // ax measurement
+        z.set(3, 0, acceleration[ACCL_Y]); // ay measurement
         z.set(4, 0, gyro.getYaw()); // theta measurement
     }
 
@@ -154,21 +156,21 @@ public class KalmanFilter {
         return x;
     }
 
-    private void kfPeriodic(KalmanFilter kf) {
+    public void kfPeriodic() {
 
         //get Measurements
-        kf.updateMeasurementMatrix();
+        updateMeasurementMatrix();
 
         // Run the prediction step
-        kf.predict();
+        predict();
 
         // Run the update step 
 
 
-        kf.update();
+        update();
 
         // Get the updated state
-        SimpleMatrix updatedState = kf.getState();
+        SimpleMatrix updatedState = getState();
 
     }
 }

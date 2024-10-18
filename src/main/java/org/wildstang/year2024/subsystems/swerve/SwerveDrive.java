@@ -11,12 +11,14 @@ import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.subsystems.swerve.SwerveDriveTemplate;
 import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.CANConstants;
+import org.wildstang.year2024.robot.KalmanFilterJenny;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 import org.wildstang.year2024.subsystems.theFolder.theClass;
 
+import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -88,6 +90,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     private WsVision vision;
     private theClass intake;
+    private KalmanFilterJenny kf;
 
     public enum driveType {TELEOP, AUTO, CROSS, OBJECT};
     public driveType driveState;
@@ -235,6 +238,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         initOutputs();
         resetState();
         gyro.setYaw(0.0);
+
+        kf = new KalmanFilterJenny();
+        
     }
 
     public void initSubsystems() {
@@ -303,6 +309,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         isBlue = Core.isBlue();
         odometry.update(new Rotation2d(gyro.getYaw() * Math.PI / 180), odoPosition());
         publisher.set(odometry.getPoseMeters());
+        kf.kfPeriodic(); //calling periodic kalman filter method
 
         if (driveState == driveType.CROSS) {
             //set to cross - done in inputupdate

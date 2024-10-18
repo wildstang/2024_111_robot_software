@@ -72,7 +72,6 @@ public class Robot extends TimedRobot {
         Log.danger("Engaging autonomous mode.");
         Core.getSubsystemManager().resetState();
         Core.getAutoManager().startCurrentProgram();
-        KalmanFilter kfAuto = new KalmanFilter();
     }
 
     /**
@@ -86,7 +85,7 @@ public class Robot extends TimedRobot {
         // tell AutoManager not to preload or run any more programs
         Core.getAutoManager().endPeriod();
         Core.getSubsystemManager().resetState();
-        KalmanFilter kfTeleop = new KalmanFilter();
+    
     }
 
     /**
