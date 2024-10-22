@@ -54,7 +54,7 @@ public class KalmanFilterJenny {
     // Identity matrix for update step
     private final SimpleMatrix I = SimpleMatrix.identity(8);
 
-    private SwerveDrive swerve = new SwerveDrive(); 
+    private SwerveDrive swerve = WsSubsystems.getSubsystem("SwerveDrive");
     private SwerveDriveOdometry odometry = swerve.odometry;
     private com.ctre.phoenix.sensors.Pigeon2 gyro = swerve.gyro;
 
@@ -107,7 +107,6 @@ public class KalmanFilterJenny {
             acceleration[i] = shortAcceleration[i];
         }
     
-
         z.set(0, 0, odometry.getPoseMeters().getX()); // x measurement
         z.set(1, 0, odometry.getPoseMeters().getY()); // y measurement
         z.set(2, 0, acceleration[ACCL_X]); // ax measurement
