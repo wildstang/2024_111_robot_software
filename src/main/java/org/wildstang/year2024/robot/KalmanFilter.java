@@ -1,8 +1,6 @@
 package org.wildstang.year2024.robot;
 import org.ejml.simple.SimpleMatrix;
 
-import edu.wpi.first.math.proto.System;
-
 public class KalmanFilter {
     private final double deltaT = 0.02;
  

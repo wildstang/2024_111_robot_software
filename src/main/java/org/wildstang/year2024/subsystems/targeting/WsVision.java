@@ -121,7 +121,7 @@ public class WsVision implements Subsystem {
         }
         return angles[last] + (inputDistance-distances[last])*(angles[last]-angles[last-1])/(distances[last]-distances[last-1]);
     }
-    private boolean isLeftBetter(){
+    public boolean isLeftBetter(){
         if (left.TargetInView() && !right.TargetInView()) return true;
         if (!left.TargetInView() && right.TargetInView()) return false;
         if (left.getTagDist() < right.getTagDist()) return true;

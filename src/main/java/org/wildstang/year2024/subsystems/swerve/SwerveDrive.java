@@ -20,9 +20,11 @@ import org.wildstang.year2024.subsystems.theFolder.theClass;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -84,7 +86,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private WsSwerveHelper swerveHelper = new WsSwerveHelper();
     private SwerveDriveOdometry odometry;
     StructPublisher<Pose2d> publisher;
-    private Timer autoTimer = new Timer();
 
     private WsVision vision;
     private theClass intake;
@@ -302,6 +303,13 @@ public class SwerveDrive extends SwerveDriveTemplate {
     public void update() {
         isBlue = Core.isBlue();
         odometry.update(new Rotation2d(gyro.getYaw() * Math.PI / 180), odoPosition());
+        if (robotSpeed() < 0.5) {
+            if (vision.isLeftBetter()) {
+                setOdo(new Pose2d(new Translation2d(vision.left.blue3D[0], vision.left.blue3D[1]), new Rotation2d(getFieldYaw())));
+            } else {
+                setOdo(new Pose2d(new Translation2d(vision.right.blue3D[0], vision.right.blue3D[1]), new Rotation2d(getFieldYaw())));
+            }
+        }
         publisher.set(odometry.getPoseMeters());
 
         if (driveState == driveType.CROSS) {
@@ -503,6 +511,12 @@ public class SwerveDrive extends SwerveDriveTemplate {
             return (180 + gyro.getYaw()) % 360;
         }
     }
+
+    // Magnitude of robot speed for vision confidence
+    public double robotSpeed() {
+        ChassisSpeeds speeds = DriveConstants.kinematics.toChassisSpeeds(new SwerveModuleState[]{modules[0].moduleState(), modules[1].moduleState(), modules[2].moduleState(), modules[3].moduleState()});
+        return Math.sqrt(speeds.vxMetersPerSecond * speeds.vxMetersPerSecond + speeds.vyMetersPerSecond * speeds.vyMetersPerSecond + speeds.omegaRadiansPerSecond);
+    }
     public Rotation2d odoAngle(){
         return new Rotation2d(Math.toRadians(360-getGyroAngle()));
     }
@@ -510,10 +524,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         return new SwerveModulePosition[]{modules[0].odoPosition(), modules[1].odoPosition(), modules[2].odoPosition(), modules[3].odoPosition()};
     }
     public void setOdo(Pose2d starting){
-        //this.odometry.resetPosition(odoAngle(), odoPosition(), starting);
-        this.odometry = new SwerveDriveOdometry(new SwerveDriveKinematics(new Translation2d(0.2794, 0.33), new Translation2d(0.2794, -0.33),
-            new Translation2d(-0.2794, 0.33), new Translation2d(-0.2794, -0.33)), odoAngle(), odoPosition(), starting);
-        autoTimer.start();
+        this.odometry.resetPosition(odoAngle(), odoPosition(), starting);
+        //this.odometry = new SwerveDriveOdometry(DriveConstants.kinematics, odoAngle(), odoPosition(), starting);
     }
     public Pose2d returnPose(){
         return odometry.getPoseMeters();
