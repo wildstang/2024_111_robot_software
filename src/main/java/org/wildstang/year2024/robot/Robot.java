@@ -85,6 +85,7 @@ public class Robot extends TimedRobot {
         // tell AutoManager not to preload or run any more programs
         Core.getAutoManager().endPeriod();
         Core.getSubsystemManager().resetState();
+    
     }
 
     /**
@@ -129,6 +130,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         update();
+        
     }
 
     /**

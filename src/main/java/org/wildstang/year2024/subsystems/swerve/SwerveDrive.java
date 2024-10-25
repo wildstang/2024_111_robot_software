@@ -11,12 +11,14 @@ import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.subsystems.swerve.SwerveDriveTemplate;
 import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.CANConstants;
+import org.wildstang.year2024.robot.KalmanFilterJenny;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 import org.wildstang.year2024.subsystems.theFolder.theClass;
 
+import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -80,15 +82,16 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private final double mToIn = 39.37;
 
     //private final AHRS gyro = new AHRS(SerialPort.Port.kUSB);
-    private final Pigeon2 gyro = new Pigeon2(CANConstants.GYRO);
+    public final Pigeon2 gyro = new Pigeon2(CANConstants.GYRO);
     public SwerveModule[] modules;
     private SwerveSignal swerveSignal;
     private WsSwerveHelper swerveHelper = new WsSwerveHelper();
-    private SwerveDriveOdometry odometry;
+    public SwerveDriveOdometry odometry;
     StructPublisher<Pose2d> publisher;
 
     private WsVision vision;
     private theClass intake;
+    private KalmanFilterJenny kf;
 
     public enum driveType {TELEOP, AUTO, CROSS, OBJECT};
     public driveType driveState;
@@ -236,6 +239,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         initOutputs();
         resetState();
         gyro.setYaw(0.0);
+
+        kf = new KalmanFilterJenny();
+        
     }
 
     public void initSubsystems() {
@@ -311,6 +317,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
             }
         }
         publisher.set(odometry.getPoseMeters());
+        kf.kfPeriodic(); //calling periodic kalman filter method
 
         if (driveState == driveType.CROSS) {
             //set to cross - done in inputupdate
