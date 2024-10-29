@@ -32,7 +32,7 @@ public class OffsideRedD extends AutoProgram {
         
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         LedController led = (LedController) Core.getSubsystemManager().getSubsystem(WsSubsystems.LED);
-        addStep(new AutoSetupStep(0.7, 4.0, 180.0, Alliance.Red));
+        addStep(new AutoSetupStep(1.45, 3.9, 180.0, Alliance.Red));
         addStep(new ShooterSetAngle(175));
         addStep(new SetFlywheel(true));
         addStep(new VisionOnStep(true));

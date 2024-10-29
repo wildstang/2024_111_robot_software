@@ -31,7 +31,7 @@ public class FastCenterBlueD extends AutoProgram{
         LedController led = (LedController) Core.getSubsystemManager().getSubsystem(WsSubsystems.LED);
 
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
-        addStep(new AutoSetupStep(0.7, 4.0, 180.0, Alliance.Blue));
+        addStep(new AutoSetupStep(1.32, 5.55, 180.0, Alliance.Blue));
         startGroup.addStep(new ShooterSetAngle(CenterConsts.firstShot));
         startGroup.addStep(new SetFlywheel(true));
         startGroup.addStep(new AutoStepDelay(CenterConsts.initialDelay));

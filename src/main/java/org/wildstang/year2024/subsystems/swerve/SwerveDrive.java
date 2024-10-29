@@ -11,7 +11,7 @@ import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.subsystems.swerve.SwerveDriveTemplate;
 import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.CANConstants;
-import org.wildstang.year2024.robot.KalmanFilterJenny;
+//import org.wildstang.year2024.robot.KalmanFilterJenny;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
@@ -91,7 +91,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     private WsVision vision;
     private theClass intake;
-    private KalmanFilterJenny kf;
+    //private KalmanFilterJenny kf;
 
     public enum driveType {TELEOP, AUTO, CROSS, OBJECT};
     public driveType driveState;
@@ -171,10 +171,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //get rotational joystick
         rotSpeed = rightStickX.getValue()*Math.abs(rightStickX.getValue());
         rotSpeed = swerveHelper.scaleDeadband(rotSpeed, DriveConstants.DEADBAND);
-        if (rotSpeed == 0 && rotLocked == false){
-            if (Math.abs(getGyroAngle() - rotTarget) < 1.0) rotLocked = true;
-            rotTarget = getGyroAngle();
-        }
+        // if (rotSpeed == 0 && rotLocked == false){
+        //     if (Math.abs(getGyroAngle() - rotTarget) < 1.0) rotLocked = true;
+        //     rotTarget = getGyroAngle();
+        // }
         //if the rotational joystick is being used, the robot should not be auto tracking heading
         if (rotSpeed != 0) {
             rotLocked = false;
@@ -240,7 +240,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         resetState();
         gyro.setYaw(0.0);
 
-        kf = new KalmanFilterJenny();
+        //kf = new KalmanFilterJenny();
         
     }
 
@@ -309,6 +309,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     public void update() {
         isBlue = Core.isBlue();
         odometry.update(new Rotation2d(gyro.getYaw() * Math.PI / 180), odoPosition());
+        SmartDashboard.putNumber("Drive Speed", robotSpeed());
         if (robotSpeed() < 0.5) {
             if (vision.isLeftBetter()) {
                 setOdo(new Pose2d(new Translation2d(vision.left.blue3D[0], vision.left.blue3D[1]), new Rotation2d(getFieldYaw())));
@@ -317,7 +318,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
             }
         }
         publisher.set(odometry.getPoseMeters());
-        kf.kfPeriodic(); //calling periodic kalman filter method
+        //kf.kfPeriodic(); //calling periodic kalman filter method
 
         if (driveState == driveType.CROSS) {
             //set to cross - done in inputupdate
@@ -531,8 +532,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         return new SwerveModulePosition[]{modules[0].odoPosition(), modules[1].odoPosition(), modules[2].odoPosition(), modules[3].odoPosition()};
     }
     public void setOdo(Pose2d starting){
-        this.odometry.resetPosition(odoAngle(), odoPosition(), starting);
-        //this.odometry = new SwerveDriveOdometry(DriveConstants.kinematics, odoAngle(), odoPosition(), starting);
+        //this.odometry.resetPosition(odoAngle(), odoPosition(), starting);
+        this.odometry = new SwerveDriveOdometry(DriveConstants.kinematics, odoAngle(), odoPosition(), starting);
     }
     public Pose2d returnPose(){
         return odometry.getPoseMeters();

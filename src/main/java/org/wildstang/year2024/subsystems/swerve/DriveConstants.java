@@ -7,7 +7,7 @@ public final class DriveConstants {
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(0.2794, 0.33), new Translation2d(0.2794, -0.33),
             new Translation2d(-0.2794, 0.33), new Translation2d(-0.2794, -0.33));
     /**P Loop for Translating to a point */
-    public static final double TRANSLATION_P = 0.5;
+    public static final double TRANSLATION_P = 0.0;
     /** robot length from swerve pod to swerve pod, in inches */
     public static final double ROBOT_LENGTH = 11.5;
     /** robot width from swerve pod to swerve pod, in inches */

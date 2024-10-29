@@ -36,7 +36,7 @@ public class RushRed extends AutoProgram {
         LedController led = (LedController) Core.getSubsystemManager().getSubsystem(WsSubsystems.LED);
 
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
-        addStep(new AutoSetupStep(0.7, 4.0, 180.0, Alliance.Blue));
+        addStep(new AutoSetupStep(1.5, 7.0, 180.0, Alliance.Red));
         startGroup.addStep(new ShooterSetAngle(150));
         startGroup.addStep(new SetFlywheel(true));
         addStep(startGroup);
