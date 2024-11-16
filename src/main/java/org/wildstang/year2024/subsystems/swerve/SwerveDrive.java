@@ -88,6 +88,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private WsSwerveHelper swerveHelper = new WsSwerveHelper();
     public SwerveDriveOdometry odometry;
     StructPublisher<Pose2d> publisher;
+    public ChassisSpeeds speeds;
 
     private WsVision vision;
     private theClass intake;
@@ -522,8 +523,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     // Magnitude of robot speed for vision confidence
     public double robotSpeed() {
-        ChassisSpeeds speeds = DriveConstants.kinematics.toChassisSpeeds(new SwerveModuleState[]{modules[0].moduleState(), modules[1].moduleState(), modules[2].moduleState(), modules[3].moduleState()});
-        return Math.sqrt(speeds.vxMetersPerSecond * speeds.vxMetersPerSecond + speeds.vyMetersPerSecond * speeds.vyMetersPerSecond + speeds.omegaRadiansPerSecond);
+        speeds = DriveConstants.kinematics.toChassisSpeeds(new SwerveModuleState[]
+        {modules[0].moduleState(), modules[1].moduleState(), modules[2].moduleState(), modules[3].moduleState()});
+        return Math.sqrt(speeds.vxMetersPerSecond * speeds.vxMetersPerSecond + speeds.vyMetersPerSecond
+         * speeds.vyMetersPerSecond + speeds.omegaRadiansPerSecond);
     }
     public Rotation2d odoAngle(){
         return new Rotation2d(Math.toRadians(360-getGyroAngle()));
