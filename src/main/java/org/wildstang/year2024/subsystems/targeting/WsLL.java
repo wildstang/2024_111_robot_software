@@ -107,6 +107,9 @@ public class WsLL {
         limelight.getEntry("camMode").setNumber(cameraMode);
     }
 
+    /*
+     * sets measurements to in from m
+     */
     private void setToIn(){
         for (int i = 0; i < 7; i++){
             this.red3D[i] *= mToIn;
@@ -122,10 +125,16 @@ public class WsLL {
         else return Math.hypot(blue3D[0] - VC.redSpeakerX,
             blue3D[1] - VC.redSpeakerY);
     }
+    /*
+     * gets control value for aligning robot to certain x value on the field
+     */
     public double getAlignX(boolean isBlue){
         if (isBlue) return -blue3D[0]+VC.blueShotX;
         else return blue3D[0] - VC.redShotX;
     }
+    /*
+     * gets control value for aligning robot to certain y value on the field
+     */
     public double getAlignY(boolean isBlue){
         if (isBlue) return blue3D[1] - VC.blueShotY;
         else return -blue3D[1] + VC.redShotY;
@@ -155,6 +164,9 @@ public class WsLL {
         else return getDirection(blue3D[0] - VC.redSpeakerX,
             blue3D[1] - VC.redSpeakerY, isBlue);
     }
+    /*
+     * can the robot see the specified alliance's speaker april tags
+     */
     public boolean canSeeSpeaker(boolean isBlue){
         if (!TargetInView()) return false;
         if (isBlue) {
@@ -163,12 +175,21 @@ public class WsLL {
             return tid == 3 || tid == 4 || tid == 5;
         }
     }
+    /*
+     * determine how many april tags a camera can see
+     */
     public double getNumTags(){
         return blue3D[7];
     }
+    /*
+     * determine the distance to the first april tag that a camera can see
+     */
     public double getTagDist(){
         return blue3D[9];
     }
+    /*
+     * determines if the robot can see either amp april tag
+     */
     public boolean seesAmp(){
         return tid == 5 || tid == 6;
     }

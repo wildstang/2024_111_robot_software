@@ -106,6 +106,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         // }
         if (driveState == driveType.AUTO) driveState = driveType.TELEOP;
 
+        //toggles feeding vs scoring notes
         if (source == start && start.getValue()){
             isFeedVision = !isFeedVision;
         }
@@ -156,6 +157,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
             else rotTarget = 90.0;
             rotLocked = true;
         }
+        //auto gamepiece pickup when intaking and hitting a face button
+        //rotates the robot towards the piece and forces the joystick to point at the piece
         if (intake.isIntaking() && (faceDown.getValue() || faceLeft.getValue() || faceRight.getValue() || faceUp.getValue())) {
             driveState = driveType.OBJECT;
             rotLocked = true;
@@ -169,6 +172,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (rotSpeed != 0) {
             rotLocked = false;
         }
+        //if aiming in feed mode
         if (leftTrigger.getValue() > 0.15 && isFeedVision){
             rotLocked = true;
             rotTarget = isBlue ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();//update below as well
@@ -179,6 +183,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
             //     rotTarget = isBlue ? 230.0 : 144.0;
             // }
             isVision = false;
+        //else if aiming while in scoring mode
         }else if (leftTrigger.getValue() > 0.15 && vision.aprilTagsInView()){
             rotLocked = true;
             //rotTarget = vision.front.turnToTarget(isBlue);
@@ -192,17 +197,21 @@ public class SwerveDrive extends SwerveDriveTemplate {
             isFeedModeUpdate = false;
         }
         
-        //assign thrust
+        //assign thrust - no thrust this year, low cg robot means max speed all the time
         // thrustValue = 1 - DriveConstants.DRIVE_THRUST + DriveConstants.DRIVE_THRUST * Math.abs(rightTrigger.getValue());
         // xSpeed *= thrustValue;
         // ySpeed *= thrustValue;
         // rotSpeed *= thrustValue;
-        if (leftBumper.getValue()){
 
+        //slow down while amp scoring
+        //don't slow rotation in case a note gets stuck
+        if (leftBumper.getValue()){
             xPower *= 0.25;
             yPower *= 0.35;
             //rotSpeed *= 0.25;
         }
+
+        //lower drive current while aiming so we don't brown out before scoring
         if (leftTrigger.getValue() > 0.15 && !isCurrentLow){
             for (int i = 0; i < 4; i++){
                 modules[i].tempDriveCurrent(DriveConstants.DRIVE_CURRENT_LIMIT - 20);
@@ -300,41 +309,41 @@ public class SwerveDrive extends SwerveDriveTemplate {
         }
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
-                //if rotation tracking, replace rotational joystick value with controller generated one
+                //get rotation of the robot to aim while feeding
                 if (isFeedModeUpdate) rotTarget = isBlue ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();
+                //point at target to score in speaker
                 else if (isVision) rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 if (Math.abs(rotTarget - getGyroAngle()) < 1.0) rotSpeed = 0;
-                if (isSnake) {
-                    if (Math.abs(rotSpeed) < 0.05) {
-                        rotSpeed = 0;
-                    }
-                    else {
-                        rotSpeed *= 4;
-                        if (Math.abs(rotSpeed) > 1) rotSpeed = 1.0 * Math.signum(rotSpeed);
-                    }
-                    
-                } 
+                // if (isSnake) {
+                //     if (Math.abs(rotSpeed) < 0.05) {
+                //         rotSpeed = 0;
+                //     }
+                //     else {
+                //         rotSpeed *= 4;
+                //         if (Math.abs(rotSpeed) > 1) rotSpeed = 1.0 * Math.signum(rotSpeed);
+                //     }
+                // } 
             }
             this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
             SmartDashboard.putNumber("FR signal", swerveSignal.getSpeed(0));
             drive();
         }
         if (driveState == driveType.AUTO) {
+            //auto Align to reset robot to a specific X/Y location on the field, in case of any serious collisions
             if (autoAlign){
                 this.swerveSignal = swerveHelper.setDrive(0.006*vision.getYAdjust(), 0.006*vision.getXAdjust(), 0, getGyroAngle());
+            //shooting at speaker during auto
             } else if (isVision && vision.aprilTagsInView()) {
                 rotTarget = vision.turnToTarget(isBlue);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
+            //picking up a game piece with vision assistance in auto
             } else if (isAutoObject && !intake.hasNote() && vision.back.TargetInView()){
-                xObject = vision.back.tx * 0.01;//(0.01 + 0.005*Math.min(0, 25-vision.back.ty));
+                xObject = vision.back.tx * 0.01;
                 yObject = vision.back.ty * 0.03;
                 if (Math.hypot(xPower, yPower) > vision.back.ty*0.03) yObject = 0;
-                // rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 rotSpeed = swerveHelper.getRotControl( 1.0*vision.back.tx, 0.0);
-                // this.swerveSignal = swerveHelper.setAuto(xPower, yPower, rotSpeed, getGyroAngle(), xObject, yObject);
-                //this.swerveSignal = swerveHelper.setDrive(0 - xObject, -Math.hypot(yPower, xPower) + yObject , rotSpeed, 360.0-0.75*vision.back.tx);
                 this.swerveSignal = swerveHelper.setDrive(0, Math.min(-Math.hypot(xPower, yPower), -yObject), rotSpeed, 360.0-1.0*vision.back.tx);
             } else {
                 //get controller generated rotation value
@@ -347,10 +356,13 @@ public class SwerveDrive extends SwerveDriveTemplate {
             drive();        
         } 
         if (driveState == driveType.OBJECT) {
+            //for teleop game piece pickup
             if (vision.back.TargetInView() && !intake.hasNote()) {
                 if (rotLocked){
+                    //turn the robot to point at the game piece
                     rotSpeed = swerveHelper.getRotControl( 1.0*vision.back.tx, 0.0);
                 }
+                //force the controller input to point at the gamepiece, only thing driver controls is speed of the robot
                 this.swerveSignal = swerveHelper.setDrive(0, -Math.hypot(yPower, xPower) , rotSpeed, 360.0-1.0*vision.back.tx);
                 drive();
             }

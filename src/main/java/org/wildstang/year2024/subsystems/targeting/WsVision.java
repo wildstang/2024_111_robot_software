@@ -29,10 +29,8 @@ public class WsVision implements Subsystem {
 
     ShuffleboardTab tab = Shuffleboard.getTab("Tab");
 
-    // public double[] distances = {41, 50, 70, 105, 146};
-    // public double[] angles = {174, 145+7.5, 127+75, 95+7.5, 75+9};
+    //distances to speaker for shooter angles, and respective angles
     public double[] distances = { 48,  60,  95, 145,  192,  250, 251, 252};
-    // public double[] angles = {205, 160, 130,  87, 75.5, 75.5, 205, 205};
     public double[] angles =    {205, 155+5.0, 125+5.0,  87+5.0, 75.5+4.0, 75.5+4.0, 75.5+4.0, 75.5+4.0};
     public int last = distances.length-1;
 
@@ -105,6 +103,9 @@ public class WsVision implements Subsystem {
      * - Amp: 5, 6
      */
 
+     /**
+      * Get angle of shooter based on distance to speaker
+      */
     public double getAngle(){
         if (isLeftBetter()) {
             inputDistance = left.distanceToTarget(isBlue);
@@ -119,7 +120,9 @@ public class WsVision implements Subsystem {
         }
         return angles[last] + (inputDistance-distances[last])*(angles[last]-angles[last-1])/(distances[last]-distances[last-1]);
     }
-    
+    /**
+     *sets which alliance we are on
+     */
     public void setAlliance(boolean alliance){
         this.isBlue = alliance;
     }
@@ -129,6 +132,9 @@ public class WsVision implements Subsystem {
     public boolean getAlliance() {
         return isBlue;
     }
+    /**
+     *  determine whether to take data from left or right camera
+     */
     private boolean isLeftBetter(){
         if (left.TargetInView() && !right.TargetInView()) return true;
         if (!left.TargetInView() && right.TargetInView()) return false;
@@ -140,33 +146,61 @@ public class WsVision implements Subsystem {
         if (left.getNumTags() < right.getNumTags()) return false;
         return !this.isBlue;
     }
+    /**
+     *  gets bearing degrees for what the robot's heading should be to be pointing at the speaker
+     */
     public double turnToTarget(boolean isBlue){
         return isLeftBetter() ? left.turnToTarget(isBlue) : right.turnToTarget(isBlue);
     }
-    public double distanceToTarget(boolean isBlue){
+    /**
+     * distance to center of speaker for use in finding shooter angle
+     */
+    private double distanceToTarget(boolean isBlue){
         return isLeftBetter() ? left.distanceToTarget(isBlue) : right.distanceToTarget(isBlue);
     }
+    /**
+     * can either camera see an April Tag
+     */ 
     public boolean aprilTagsInView(){
         return left.TargetInView() || right.TargetInView();
     }
+    /*
+     * can either camera see the speaker, specifying which alliance
+     */
     public boolean canSeeSpeaker(boolean isBlue){
         return left.canSeeSpeaker(isBlue) || right.canSeeSpeaker(isBlue);
     }
+    /*
+     * can the robot see a speaker april tag
+     */
     public boolean canSeeSpeaker(){
         return canSeeSpeaker(isBlue);
     }
+    /*
+     * can the robot see an amp april tag
+     */
     public boolean canSeeAmp(){
         return left.seesAmp() || right.seesAmp();
     }
+    /*
+     * get the control value to use for driving the robot to a specific X on the field
+     */
     public double getXAdjust(){
         if (isLeftBetter()){
             return left.getAlignX(isBlue);
         } else return right.getAlignX(isBlue);
     }
+    /*
+     * get the control value to use for driving the robot to a specific y on the field
+     */
     public double getYAdjust(){
         if (isLeftBetter()) return left.getAlignY(isBlue);
         else return right.getAlignY(isBlue);
     }
+    /*
+     * get Y value from cameras to use for determining the direction of the robot
+     * to feed a note to the desired location
+     */
     public double getYValue(){
         if (isLeftBetter()) return left.blue3D[1];
         else return right.blue3D[1];
