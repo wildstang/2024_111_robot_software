@@ -105,7 +105,7 @@ public class SwervePathFollowerStep extends AutoStep {
             return  gson.fromJson(reader, ChoreoTrajectory.class);
              //   return traj;
         } catch (Exception ex) {
-            DriverStation.reportError("Shit is fucked", ex.getStackTrace());
+            DriverStation.reportError("Choreo Trajectory get Error", ex.getStackTrace());
         }return new ChoreoTrajectory();
     }
 }

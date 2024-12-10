@@ -6,24 +6,25 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
 public class VisionConsts {
+    //652.73, 323.00
 
     public static final double inToM = 1/39.71;
     public final double mToIn = 39.71;
 
     public final double blueSpeakerX = 9.5;//in
     public final double blueSpeakerY = 208.42;//in
-    public final double redSpeakerX = 641.7;//in
-    public final double redSpeakerY = 208.42;//in
+    public final double redSpeakerX = 11.03;//641.7;//in
+    public final double redSpeakerY = 114.58;//208.42;//in
 
     public final double blueTrussX = 140.0;
     public final double blueTrussY = 218.42;
-    public final double redTrussX = 510.0;
-    public final double redTrussY = 218.42;
+    public final double redTrussX = 142.73;//510.0;
+    public final double redTrussY = 104.58;//218.42;
 
     public final double blueShotX = 67.0;
     public final double blueShotY = 218.42;
-    public final double redShotX = 584.2;
-    public final double redShotY = 218.42;
+    public final double redShotX = 68.53;//584.2;
+    public final double redShotY = 104.58;//218.42;
 
     //TODO: what are the actual pipeline indices?
     public final int notePipelineIndex = 0;

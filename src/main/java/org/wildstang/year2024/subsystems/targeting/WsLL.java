@@ -32,7 +32,9 @@ public class WsLL {
     public WsLL(String CameraID){
         limelight = NetworkTableInstance.getDefault().getTable(CameraID);
         red3D = limelight.getEntry("botpose_wpired").getDoubleArray(new double[11]);
+        //red3D = limelight.getEntry("botpose_orb_wpired").getDoubleArray(new double[11]);
         blue3D = limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[11]);
+        //blue3D = limelight.getEntry("botpose_orb_wpiblue").getDoublearray(new double[11]);
         setToIn();
         tid = (int) limelight.getEntry("tid").getInteger(0);
         tv = limelight.getEntry("tv").getDouble(0);
@@ -122,22 +124,22 @@ public class WsLL {
     public double distanceToTarget(boolean isBlue){
         if (isBlue) return Math.hypot(blue3D[0] - VC.blueSpeakerX,
             blue3D[1] - VC.blueSpeakerY);
-        else return Math.hypot(blue3D[0] - VC.redSpeakerX,
-            blue3D[1] - VC.redSpeakerY);
+        else return Math.hypot(red3D[0] - VC.redSpeakerX,
+            red3D[1] - VC.redSpeakerY);
     }
     /*
      * gets control value for aligning robot to certain x value on the field
      */
     public double getAlignX(boolean isBlue){
         if (isBlue) return -blue3D[0]+VC.blueShotX;
-        else return blue3D[0] - VC.redShotX;
+        else return -red3D[0] + VC.redShotX;
     }
     /*
      * gets control value for aligning robot to certain y value on the field
      */
     public double getAlignY(boolean isBlue){
         if (isBlue) return blue3D[1] - VC.blueShotY;
-        else return -blue3D[1] + VC.redShotY;
+        else return red3D[1] - VC.redShotY;
     }
 
     /**
@@ -161,8 +163,8 @@ public class WsLL {
     public double turnToTarget(boolean isBlue){
         if (isBlue) return getDirection(blue3D[0] - VC.blueSpeakerX,
             blue3D[1] - VC.blueSpeakerY, isBlue);
-        else return getDirection(blue3D[0] - VC.redSpeakerX,
-            blue3D[1] - VC.redSpeakerY, isBlue);
+        else return getDirection(-red3D[0] + VC.redSpeakerX,
+            -red3D[1] + VC.redSpeakerY, isBlue);
     }
     /*
      * can the robot see the specified alliance's speaker april tags
