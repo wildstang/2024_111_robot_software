@@ -10,11 +10,11 @@ import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WsVision implements Subsystem {
@@ -27,9 +27,6 @@ public class WsVision implements Subsystem {
 
     public VisionConsts VC;
 
-    ShuffleboardTab tab = Shuffleboard.getTab("Tab");
-
-    //distances to speaker for shooter angles, and respective angles
     public double[] distances = { 48,  60,  95, 145,  192,  250, 251, 252};
     public double[] angles =    {205, 155+5.0, 125+5.0,  87+5.0, 75.5+4.0, 75.5+4.0, 75.5+4.0, 75.5+4.0};
     public int last = distances.length-1;
@@ -55,6 +52,8 @@ public class WsVision implements Subsystem {
     public void init() {
         VC = new VisionConsts();
 
+        
+
         //same as update()
         //resetState();
         driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
@@ -68,6 +67,8 @@ public class WsVision implements Subsystem {
 
     @Override
     public void update() {
+        isBlue = Core.isBlue();
+
         left.update(swerve.getFieldYaw());
         right.update(swerve.getFieldYaw());
         back.update(swerve.getFieldYaw());
@@ -120,22 +121,11 @@ public class WsVision implements Subsystem {
         }
         return angles[last] + (inputDistance-distances[last])*(angles[last]-angles[last-1])/(distances[last]-distances[last-1]);
     }
-    /**
-     *sets which alliance we are on
-     */
-    public void setAlliance(boolean alliance){
-        this.isBlue = alliance;
-    }
-     /**
-     * @return true if on blue alliance
-     */
-    public boolean getAlliance() {
-        return isBlue;
-    }
+
     /**
      *  determine whether to take data from left or right camera
      */
-    private boolean isLeftBetter(){
+    public boolean isLeftBetter(){
         if (left.TargetInView() && !right.TargetInView()) return true;
         if (!left.TargetInView() && right.TargetInView()) return false;
         if (left.getTagDist() < right.getTagDist()) return true;

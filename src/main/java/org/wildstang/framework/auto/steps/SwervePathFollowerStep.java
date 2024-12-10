@@ -24,7 +24,7 @@ public class SwervePathFollowerStep extends AutoStep {
     private boolean isBlue;
 
     // x and y field relative
-    private Pose2d localAutoPose, localRobotPose;
+    private Pose2d fieldAutoPose, fieldRobotPose;
     private double xOffset, yOffset;
 
     private Timer timer;
@@ -60,26 +60,28 @@ public class SwervePathFollowerStep extends AutoStep {
             setFinished();
         } else {
 
-            // Choreo and odometry works in field relative
-            ChoreoTrajectoryState sample = pathtraj.sample(timer.get());
-            localRobotPose = m_drive.returnPose();
-            localAutoPose = sample.getPose();
-
             // Meters
-            yOffset = localAutoPose.getX() - localRobotPose.getX();
-            if (isBlue) xOffset = localRobotPose.getY() - localAutoPose.getY();
-            else xOffset = localRobotPose.getY() - (8.016 - localAutoPose.getY());
-            //update values the robot is tracking to
-            // Set in alliance relative
+            // Choreo and odometry works in field relative
+            // Choreo pose flipped for red alliance
+            ChoreoTrajectoryState sample;
             if (isBlue) {
-                m_drive.setAutoValues(-sample.velocityY * mToIn, sample.velocityX * mToIn, 0, 0);
+                sample = pathtraj.sample(timer.get());
             } else {
-                m_drive.setAutoValues(sample.velocityY * mToIn, sample.velocityX * mToIn, 0, 0);
+                sample = pathtraj.sample(timer.get()).flipped();
             }
+            
+            fieldRobotPose = m_drive.returnPose();
+            fieldAutoPose = sample.getPose();
+
+            xOffset = fieldAutoPose.getX() - fieldRobotPose.getX();
+            yOffset = fieldAutoPose.getY() - fieldRobotPose.getY();
+            SmartDashboard.putNumber("xOffset", xOffset);
+            SmartDashboard.putNumber("yOffset", yOffset);
 
             m_drive.setAutoHeading(getHeading());
-            SmartDashboard.putNumber("PF local X", localRobotPose.getX());
-            SmartDashboard.putNumber("PF path X", localAutoPose.getX());
+            m_drive.setAutoValues(sample.velocityX * mToIn, sample.velocityY * mToIn, xOffset, yOffset);
+            SmartDashboard.putNumber("PF local X", fieldRobotPose.getX());
+            SmartDashboard.putNumber("PF path X", fieldAutoPose.getX());
             }
     }
 
@@ -90,7 +92,6 @@ public class SwervePathFollowerStep extends AutoStep {
 
     public double getHeading(){
         if (isBlue) return ((-pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
-        // I think this needs to be flipped 180 for Red alliance
         else return ((pathtraj.sample(timer.get()).heading*180/Math.PI)+360)%360;
     }
     public ChoreoTrajectory getTraj(String fileName){

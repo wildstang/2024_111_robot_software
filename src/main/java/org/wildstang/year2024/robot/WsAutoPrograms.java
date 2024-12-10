@@ -9,6 +9,7 @@ import org.wildstang.year2024.auto.Programs.FastCenterBlueD;
 import org.wildstang.year2024.auto.Programs.FastCenterRed;
 import org.wildstang.year2024.auto.Programs.FastCenterRedB;
 import org.wildstang.year2024.auto.Programs.FastCenterRedD;
+import org.wildstang.year2024.auto.Programs.Jubilee;
 import org.wildstang.year2024.auto.Programs.OffsideBlue;
 import org.wildstang.year2024.auto.Programs.OffsideBlueD;
 import org.wildstang.year2024.auto.Programs.SmartOffsideBlue;
@@ -19,6 +20,8 @@ import org.wildstang.year2024.auto.Programs.RushBlueB;
 import org.wildstang.year2024.auto.Programs.RushRed;
 import org.wildstang.year2024.auto.Programs.RushRedB;
 import org.wildstang.year2024.auto.Programs.TestProgram;
+import org.wildstang.year2024.auto.Programs.Line;
+
 
 /**
  * All active AutoPrograms are enumerated here.
@@ -30,6 +33,7 @@ public enum WsAutoPrograms implements AutoPrograms {
     //SAMPLE_PROGRAM("Sample", SampleAutoProgram.class),
     // CENTER_BLUE("Center Blue", CenterBlue.class),
     // CENTER_RED("Center Red", CenterRed.class),
+    Line("Line", Line.class),
     OFFSIDE_BLUE("Offside Blue", OffsideBlue.class),
     OFFSIDE_D_BLUE("Offside Blue D", OffsideBlueD.class),
     OFFSIDE_RED("Offside Red", OffsideRed.class),
@@ -45,6 +49,7 @@ public enum WsAutoPrograms implements AutoPrograms {
     FAST_D_BLUE("Fast Center Blue D", FastCenterBlueD.class),
     FAST_B_RED("Fast Center Red B", FastCenterRedB.class),
     FAST_D_RED("Fast Center Red D", FastCenterRedD.class),
+    Jubilee("Jubilee", Jubilee.class),
     ;
 
     /**

@@ -14,6 +14,7 @@ import org.wildstang.framework.logger.Log;
 import org.wildstang.framework.subsystems.Subsystem;
 import org.wildstang.framework.subsystems.SubsystemManager;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
@@ -31,7 +32,7 @@ public class Core {
 
     private Class<?> m_inputFactoryClass;
     private Class<?> m_outputFactoryClass;
-    private SendableChooser<Boolean> allianceChooser;
+    private static Alliance s_alliance;
 
     /**
      * Constructor collects I/O factory and initialized framework components.
@@ -73,10 +74,6 @@ public class Core {
 
         s_outputFactory = (OutputFactory) createObject(m_outputFactoryClass);
         s_outputFactory.init();
-
-        allianceChooser = new SendableChooser<>();
-        allianceChooser.setDefaultOption("Blue", true);
-        allianceChooser.addOption("Red", false);
     }
 
     /**
@@ -159,12 +156,16 @@ public class Core {
         }
     }
 
-    /**
-     * Returns the selected alliance in shuffleboard
-     * @return Boolean whether on blue alliance
-     */
-    public Boolean getAlliance() {
-        return allianceChooser.getSelected();
+    public static Alliance getAlliance() {
+        return s_alliance;
+    }
+
+    public static void setAlliance(Alliance alliance) {
+        s_alliance = alliance;
+    }
+
+    public static Boolean isBlue() {
+        return s_alliance == Alliance.Blue;
     }
 
     /**
