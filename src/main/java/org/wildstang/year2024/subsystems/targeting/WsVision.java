@@ -31,7 +31,6 @@ public class WsVision implements Subsystem {
     public double[] angles =    {205, 155+5.0, 125+5.0,  87+5.0, 75.5+4.0, 75.5+4.0, 75.5+4.0, 75.5+4.0};
     public int last = distances.length-1;
 
-    public boolean isBlue = true;
     private double inputDistance = 0;
 
     private DigitalInput driverLeftShoulder;
@@ -67,15 +66,14 @@ public class WsVision implements Subsystem {
 
     @Override
     public void update() {
-        isBlue = Core.isBlue();
 
         left.update(swerve.getFieldYaw());
         right.update(swerve.getFieldYaw());
         back.update(swerve.getFieldYaw());
         if (aprilTagsInView()) lastUpdate.reset();
         SmartDashboard.putNumber("Vision getAngle", getAngle());
-        SmartDashboard.putNumber("Vision distToTarget", distanceToTarget(isBlue));
-        SmartDashboard.putNumber("Vision angleToRot", turnToTarget(isBlue));
+        SmartDashboard.putNumber("Vision distToTarget", distanceToTarget());
+        SmartDashboard.putNumber("Vision angleToRot", turnToTarget());
         SmartDashboard.putBoolean("Vision targetinView", aprilTagsInView());
         SmartDashboard.putNumber("GP X", back.tx);
         SmartDashboard.putNumber("GP Y", back.ty);
@@ -109,9 +107,9 @@ public class WsVision implements Subsystem {
       */
     public double getAngle(){
         if (isLeftBetter()) {
-            inputDistance = left.distanceToTarget(isBlue);
+            inputDistance = left.distanceToTarget();
         }  else {
-            inputDistance = right.distanceToTarget(isBlue);
+            inputDistance = right.distanceToTarget();
         }
         if (inputDistance < distances[0]) return angles[0];
         for (int i = 1; i < distances.length; i++){
@@ -134,19 +132,19 @@ public class WsVision implements Subsystem {
         if (!left.seesAmp() && right.seesAmp()) return false;
         if (left.getNumTags() > right.getNumTags()) return true;
         if (left.getNumTags() < right.getNumTags()) return false;
-        return !this.isBlue;
+        return !Core.isBlue();
     }
     /**
      *  gets bearing degrees for what the robot's heading should be to be pointing at the speaker
      */
-    public double turnToTarget(boolean isBlue){
-        return isLeftBetter() ? left.turnToTarget(isBlue) : right.turnToTarget(isBlue);
+    public double turnToTarget(){
+        return isLeftBetter() ? left.turnToTarget() : right.turnToTarget();
     }
     /**
      * distance to center of speaker for use in finding shooter angle
      */
-    private double distanceToTarget(boolean isBlue){
-        return isLeftBetter() ? left.distanceToTarget(isBlue) : right.distanceToTarget(isBlue);
+    private double distanceToTarget(){
+        return isLeftBetter() ? left.distanceToTarget() : right.distanceToTarget();
     }
     /**
      * can either camera see an April Tag
@@ -157,14 +155,8 @@ public class WsVision implements Subsystem {
     /*
      * can either camera see the speaker, specifying which alliance
      */
-    public boolean canSeeSpeaker(boolean isBlue){
-        return left.canSeeSpeaker(isBlue) || right.canSeeSpeaker(isBlue);
-    }
-    /*
-     * can the robot see a speaker april tag
-     */
     public boolean canSeeSpeaker(){
-        return canSeeSpeaker(isBlue);
+        return left.canSeeSpeaker() || right.canSeeSpeaker();
     }
     /*
      * can the robot see an amp april tag
@@ -177,15 +169,15 @@ public class WsVision implements Subsystem {
      */
     public double getXAdjust(){
         if (isLeftBetter()){
-            return left.getAlignX(isBlue);
-        } else return right.getAlignX(isBlue);
+            return left.getAlignX();
+        } else return right.getAlignX();
     }
     /*
      * get the control value to use for driving the robot to a specific y on the field
      */
     public double getYAdjust(){
-        if (isLeftBetter()) return left.getAlignY(isBlue);
-        else return right.getAlignY(isBlue);
+        if (isLeftBetter()) return left.getAlignY();
+        else return right.getAlignY();
     }
     /*
      * get Y value from cameras to use for determining the direction of the robot

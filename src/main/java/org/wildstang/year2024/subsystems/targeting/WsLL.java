@@ -1,5 +1,7 @@
 package org.wildstang.year2024.subsystems.targeting;
 
+import org.wildstang.framework.core.Core;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -121,8 +123,8 @@ public class WsLL {
     /**
      * returns distance to selected alliances' center of speaker for lookup table use
      */
-    public double distanceToTarget(boolean isBlue){
-        if (isBlue) return Math.hypot(blue3D[0] - VC.blueSpeakerX,
+    public double distanceToTarget(){
+        if (Core.isBlue()) return Math.hypot(blue3D[0] - VC.blueSpeakerX,
             blue3D[1] - VC.blueSpeakerY);
         else return Math.hypot(red3D[0] - VC.redSpeakerX,
             red3D[1] - VC.redSpeakerY);
@@ -130,24 +132,24 @@ public class WsLL {
     /*
      * gets control value for aligning robot to certain x value on the field
      */
-    public double getAlignX(boolean isBlue){
-        if (isBlue) return -blue3D[0]+VC.blueShotX;
+    public double getAlignX(){
+        if (Core.isBlue()) return -blue3D[0]+VC.blueShotX;
         else return -red3D[0] + VC.redShotX;
     }
     /*
      * gets control value for aligning robot to certain y value on the field
      */
-    public double getAlignY(boolean isBlue){
-        if (isBlue) return blue3D[1] - VC.blueShotY;
+    public double getAlignY(){
+        if (Core.isBlue()) return blue3D[1] - VC.blueShotY;
         else return red3D[1] - VC.redShotY;
     }
 
     /**
      * input of X and Y in frc field coordinates, returns controller bearing degrees (aka what to plug into rotLocked) for turnToTarget
      */
-    private double getDirection(double x, double y, boolean isBlue) {
+    private double getDirection(double x, double y) {
         double measurement = Math.toDegrees(Math.atan2(x,y));
-        if (isBlue) measurement += 90;
+        if (Core.isBlue()) measurement += 90;
         else measurement -= 90;
         if (measurement < 0) {
             measurement = 360 + measurement;
@@ -160,18 +162,18 @@ public class WsLL {
     /**
      * returns what to set rotLocked to
      */
-    public double turnToTarget(boolean isBlue){
-        if (isBlue) return getDirection(blue3D[0] - VC.blueSpeakerX,
-            blue3D[1] - VC.blueSpeakerY, isBlue);
+    public double turnToTarget(){
+        if (Core.isBlue()) return getDirection(blue3D[0] - VC.blueSpeakerX,
+            blue3D[1] - VC.blueSpeakerY);
         else return getDirection(-red3D[0] + VC.redSpeakerX,
-            -red3D[1] + VC.redSpeakerY, isBlue);
+            -red3D[1] + VC.redSpeakerY);
     }
     /*
      * can the robot see the specified alliance's speaker april tags
      */
-    public boolean canSeeSpeaker(boolean isBlue){
+    public boolean canSeeSpeaker(){
         if (!TargetInView()) return false;
-        if (isBlue) {
+        if (Core.isBlue()) {
             return tid == 6 || tid == 7 || tid == 8;
         } else {
             return tid == 3 || tid == 4 || tid == 5;

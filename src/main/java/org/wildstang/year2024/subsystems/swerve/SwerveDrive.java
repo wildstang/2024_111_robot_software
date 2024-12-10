@@ -67,7 +67,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     /**Direction to face */
     private double rotTarget;
 
-    private boolean isBlue = true;
     private boolean isVision = false;
     private boolean autoAlign = false;
     private boolean isFeedVision = false;
@@ -186,7 +185,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //if aiming in feed mode
         if (leftTrigger.getValue() > 0.15 && isFeedVision){
             rotLocked = true;
-            rotTarget = isBlue ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();//update below as well
+            rotTarget = Core.isBlue() ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();//update below as well
             isFeedModeUpdate = true;
             // if (vision.aprilTagsInView() || vision.getUpdateTime() < 1.0){
             //     rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 136.7 + 0.183*vision.getYValue();
@@ -317,7 +316,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     @Override
     public void update() {
-        isBlue = Core.isBlue();
         odometry.update(new Rotation2d(gyro.getYaw() * Math.PI / 180), odoPosition());
         SmartDashboard.putNumber("Drive Speed", robotSpeed());
         if (robotSpeed() < 0.5) {
@@ -338,9 +336,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
                 //get rotation of the robot to aim while feeding
-                if (isFeedModeUpdate) rotTarget = isBlue ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();
+                if (isFeedModeUpdate) rotTarget = Core.isBlue() ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();
                 //point at target to score in speaker
-                else if (isVision) rotTarget = vision.turnToTarget(isBlue);
+                else if (isVision) rotTarget = vision.turnToTarget();
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 if (Math.abs(rotTarget - getGyroAngle()) < 1.0) rotSpeed = 0;
                 // if (isSnake) {
@@ -363,7 +361,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 this.swerveSignal = swerveHelper.setDrive(0.006*vision.getYAdjust(), 0.006*vision.getXAdjust(), 0, getGyroAngle());
             //shooting at speaker during auto
             } else if (isVision && vision.aprilTagsInView()) {
-                rotTarget = vision.turnToTarget(isBlue);
+                rotTarget = vision.turnToTarget();
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
             //picking up a game piece with vision assistance in auto
@@ -495,11 +493,11 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     /**sets autonomous values from the path data file in field relative */
     public void setAutoValues(double xVelocity, double yVelocity, double xOffset, double yOffset) {
-        SmartDashboard.putNumber("Offset X Power", (isBlue ? -yOffset : yOffset) * DriveConstants.TRANSLATION_P);
-        SmartDashboard.putNumber("Offset Y Power", (isBlue ? xOffset : -xOffset) * DriveConstants.TRANSLATION_P);
+        SmartDashboard.putNumber("Offset X Power", (Core.isBlue() ? -yOffset : yOffset) * DriveConstants.TRANSLATION_P);
+        SmartDashboard.putNumber("Offset Y Power", (Core.isBlue() ? xOffset : -xOffset) * DriveConstants.TRANSLATION_P);
         // accel of 0 because currently not using acceleration for power since
-        xPower = swerveHelper.getAutoPower(isBlue ? -yVelocity : yVelocity, 0) + (isBlue ? -yOffset : yOffset) * DriveConstants.TRANSLATION_P;
-        yPower = swerveHelper.getAutoPower(isBlue ? xVelocity : -xVelocity, 0) + (isBlue ? xOffset : -xOffset) * DriveConstants.TRANSLATION_P;
+        xPower = swerveHelper.getAutoPower(Core.isBlue() ? -yVelocity : yVelocity, 0) + (Core.isBlue() ? -yOffset : yOffset) * DriveConstants.TRANSLATION_P;
+        yPower = swerveHelper.getAutoPower(Core.isBlue() ? xVelocity : -xVelocity, 0) + (Core.isBlue() ? xOffset : -xOffset) * DriveConstants.TRANSLATION_P;
     }
 
     /**sets the autonomous heading controller to a new target */
@@ -526,7 +524,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     // Gets blue field relative yaw for choreo, WPILIB, photonvision, limelight
     public double getFieldYaw() {
-        if (isBlue) {
+        if (Core.isBlue()) {
             return (360 + gyro.getYaw()) % 360;
         } else {
             return (180 + gyro.getYaw()) % 360;

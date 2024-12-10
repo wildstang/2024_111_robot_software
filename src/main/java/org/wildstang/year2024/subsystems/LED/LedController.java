@@ -5,6 +5,7 @@ import org.wildstang.framework.io.inputs.AnalogInput;
 import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
 import org.wildstang.framework.subsystems.Subsystem;
+import org.wildstang.year2024.robot.Robot;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsSubsystems;
 import org.wildstang.year2024.subsystems.shooter.shooter;
@@ -15,11 +16,9 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LedController implements Subsystem {
 
-    private AnalogInput rightTrigger;
     private AddressableLED led;
     private AddressableLEDBuffer ledBuffer;
     private theClass RandomThing;
@@ -41,27 +40,31 @@ public class LedController implements Subsystem {
     private int[] cyan = {0,155,155};
     private int[] purple = {128,0,128};
     
-    private int[] normal = white;
-    private boolean isAuto = false;
+    private boolean isAutoLocked = false;
 
 
     @Override
     public void update(){
-        if (flywheel.isFeeding() && RandomThing.hasNote()){
+        if (Core.getIsInAuto()){
+            if (isAutoLocked){
+                if (Core.isBlue()) cycleBlue();
+                else cycleRed();
+            } else rainbow();
+        } else if (flywheel.isFeeding() && RandomThing.hasNote()){
             setRGB(white);
-        } else if (vision.canSeeSpeaker() && RandomThing.hasNote() && !isAuto){ 
+        } else if (vision.canSeeSpeaker() && RandomThing.hasNote()){ 
             if (flywheel.getShooterVelocity()>5300){
                 setRGB(green); 
             } else if (vision.canSeeAmp()){
                 setRGB(purple);
             } else setRGB(cyan);
-        } else if (RandomThing.hasNote() && !isAuto){
+        } else if (RandomThing.hasNote()){
             setRGB(orange);
         } else {
-            if (normal == white) rainbow();
-            else if (normal == blue) cycleBlue();
-            else if (normal == red) cycleRed();
-            else rainbow();
+            if (isAutoLocked){
+                if (Core.isBlue()) cycleBlue();
+                else cycleRed();
+            } else rainbow();
         }
         led.setData(ledBuffer);
         led.start();
@@ -69,7 +72,7 @@ public class LedController implements Subsystem {
 
     @Override
     public void inputUpdate(Input source) {
-        isAuto = false;
+        isAutoLocked = false;
     }
 
     @Override
@@ -81,8 +84,6 @@ public class LedController implements Subsystem {
 
     @Override
     public void init() {
-        rightTrigger = (AnalogInput) WsInputs.DRIVER_RIGHT_TRIGGER.get();
-        rightTrigger.addInputListener(this);
         
         //Outputs
         led = new AddressableLED(port);
@@ -109,6 +110,10 @@ public class LedController implements Subsystem {
         return "Led Controller";
     }
 
+    public void setAuto(){
+        isAutoLocked = true;
+    }
+
     public void setRGB(int red, int green, int blue){
         for (int i = 0; i < length; i++){
             ledBuffer.setRGB(i, (int)(0.75*red), (int)(0.75*green), (int)(0.75*blue));
@@ -117,10 +122,7 @@ public class LedController implements Subsystem {
     public void setRGB(int[] color){
         setRGB(color[0],color[1],color[2]);
     }
-    public void setAlliance(Alliance alliance){
-        this.normal = alliance == Alliance.Blue ? blue : red;
-        isAuto = true;
-    }
+
     private void rainbow(){
         for (int i = 0; i < ledBuffer.getLength(); i++){
             ledBuffer.setHSV(i, 180-(initialHue + (i*180/ledBuffer.getLength()))%180, 255, 128);

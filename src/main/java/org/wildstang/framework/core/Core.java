@@ -34,6 +34,8 @@ public class Core {
     private Class<?> m_outputFactoryClass;
     private static Alliance s_alliance;
 
+    private static boolean inAuto = false;
+
     /**
      * Constructor collects I/O factory and initialized framework components.
      * @param p_inputFactoryClass InputFactory Class
@@ -166,6 +168,12 @@ public class Core {
 
     public static Boolean isBlue() {
         return s_alliance == Alliance.Blue;
+    }
+    public static boolean getIsInAuto(){
+        return inAuto;
+    }
+    public static void setToTeleop(){
+        inAuto = false;
     }
 
     /**
