@@ -91,20 +91,16 @@ public class WsPV {
      * returns what to set rotLocked to
      */
     public double turnToTarget(boolean isBlue){
-        if (isBlue) return getDirection(estimatedPose.getX()*VC.mToIn - (VC.blueSpeakerX),
-            estimatedPose.getY()*VC.mToIn - (VC.blueSpeakerY), isBlue);
-        else return getDirection(estimatedPose.getX()*VC.mToIn - (VC.redSpeakerX),
-            estimatedPose.getY()*VC.mToIn - (VC.redSpeakerY), isBlue);
+        return getDirection(estimatedPose.getX()*VC.mToIn - (VisionConsts.speaker.getX()),
+            estimatedPose.getY()*VC.mToIn - (VisionConsts.speaker.getY()), isBlue);
     }
 
     /**
      * returns distance to selected alliances' center of speaker for lookup table use
      */
     public double distanceToTarget(boolean isBlue){
-        if (isBlue) return Math.hypot(estimatedPose.getX()*VC.mToIn - VC.blueSpeakerX,
-            estimatedPose.getY()*VC.mToIn - VC.blueSpeakerY);
-        else return Math.hypot(estimatedPose.getX()*VC.mToIn - VC.redSpeakerX,
-            estimatedPose.getY()*VC.mToIn - VC.redSpeakerY);
+        return Math.hypot(estimatedPose.getX()*VC.mToIn - VisionConsts.speaker.getX(),
+            estimatedPose.getY()*VC.mToIn - VisionConsts.speaker.getY());
     }
 
     /**
