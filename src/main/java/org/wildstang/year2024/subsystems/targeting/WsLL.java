@@ -18,6 +18,7 @@ public class WsLL {
 
     public double[] blue3D;
     public double[] red3D;
+    public double[] target3D;
     public int tid;
     public double tv;
     public double tx;
@@ -62,7 +63,10 @@ public class WsLL {
         ty = limelight.getEntry("ty").getDouble(0);
         if (tv > 0){
             blue3D = limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[11]);
+            //blue3D = limelight.getEntry("botpose_orb_wpiblue").getDoubleArray(new double[11]);
             red3D = limelight.getEntry("botpose_wpired").getDoubleArray(new double[11]);
+            //red3D = limelight.getEntry("botpose_orb_wpired").getDoubleArray(new double[11]);
+            target3D = Core.isBlue() ? blue3D : red3D;
             setToIn();
             tid = (int) limelight.getEntry("tid").getInteger(0);
             //numTargets = result.targets_Fiducials.length;
@@ -80,8 +84,8 @@ public class WsLL {
         SmartDashboard.putBoolean(CameraID + " tv", TargetInView());
         SmartDashboard.putNumber(CameraID + " tid", tid);
         SmartDashboard.putNumber(CameraID + " numTargets", numTargets);
-        SmartDashboard.putNumber(CameraID + "Vision blue x", blue3D[0]);
-        SmartDashboard.putNumber(CameraID + "Vision blue y", blue3D[1]);
+        SmartDashboard.putNumber(CameraID + "Vision x", target3D[0]);
+        SmartDashboard.putNumber(CameraID + "Vision y", target3D[1]);
     }
     /*
      * returns total latency, capture latency + pipeline latency
@@ -118,39 +122,34 @@ public class WsLL {
         for (int i = 0; i < 7; i++){
             this.red3D[i] *= mToIn;
             this.blue3D[i] *= mToIn;
+            this.target3D[i] *= mToIn;
         }
     }
     /**
      * returns distance to selected alliances' center of speaker for lookup table use
      */
-    public double distanceToTarget(){
-        if (Core.isBlue()) return Math.hypot(blue3D[0] - VC.blueSpeakerX,
-            blue3D[1] - VC.blueSpeakerY);
-        else return Math.hypot(red3D[0] - VC.redSpeakerX,
-            red3D[1] - VC.redSpeakerY);
+    public double distanceToTarget(TargetCoordinate target){
+        return Math.hypot(target3D[0] - target.getX(),
+            target3D[1] - target.getY());
     }
     /*
      * gets control value for aligning robot to certain x value on the field
      */
-    public double getAlignX(){
-        if (Core.isBlue()) return -blue3D[0]+VC.blueShotX;
-        else return -red3D[0] + VC.redShotX;
+    public double getAlignX(TargetCoordinate target){
+        return -target3D[0]+target.getX();
     }
     /*
      * gets control value for aligning robot to certain y value on the field
      */
-    public double getAlignY(){
-        if (Core.isBlue()) return blue3D[1] - VC.blueShotY;
-        else return red3D[1] - VC.redShotY;
+    public double getAlignY(TargetCoordinate target){
+        return target3D[1] - target.getY();
     }
 
     /**
      * input of X and Y in frc field coordinates, returns controller bearing degrees (aka what to plug into rotLocked) for turnToTarget
      */
     private double getDirection(double x, double y) {
-        double measurement = Math.toDegrees(Math.atan2(x,y));
-        if (Core.isBlue()) measurement += 90;
-        else measurement -= 90;
+        double measurement = 90 + Math.toDegrees(Math.atan2(x,y));
         if (measurement < 0) {
             measurement = 360 + measurement;
         }
@@ -162,11 +161,9 @@ public class WsLL {
     /**
      * returns what to set rotLocked to
      */
-    public double turnToTarget(){
-        if (Core.isBlue()) return getDirection(blue3D[0] - VC.blueSpeakerX,
-            blue3D[1] - VC.blueSpeakerY);
-        else return getDirection(-red3D[0] + VC.redSpeakerX,
-            -red3D[1] + VC.redSpeakerY);
+    public double turnToTarget(TargetCoordinate target){
+        return getDirection(target3D[0] - target.getX(),
+            target3D[1] - target.getY());
     }
     /*
      * can the robot see the specified alliance's speaker april tags
@@ -183,13 +180,13 @@ public class WsLL {
      * determine how many april tags a camera can see
      */
     public double getNumTags(){
-        return blue3D[7];
+        return target3D[7];
     }
     /*
      * determine the distance to the first april tag that a camera can see
      */
     public double getTagDist(){
-        return blue3D[9];
+        return target3D[9];
     }
     /*
      * determines if the robot can see either amp april tag

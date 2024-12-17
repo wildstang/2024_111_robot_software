@@ -2,6 +2,8 @@ package org.wildstang.year2024.subsystems.targeting;
 
 import java.util.List;
 
+import org.wildstang.framework.core.Core;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
@@ -11,20 +13,14 @@ public class VisionConsts {
     public static final double inToM = 1/39.71;
     public final double mToIn = 39.71;
 
-    public final double blueSpeakerX = 9.5;//in
-    public final double blueSpeakerY = 208.42;//in
-    public final double redSpeakerX = 11.03;//641.7;//in
-    public final double redSpeakerY = 114.58;//208.42;//in
+    public static final TargetCoordinate speaker = new TargetCoordinate
+        (9.5, 208, 11, 114);
 
-    public final double blueTrussX = 140.0;
-    public final double blueTrussY = 218.42;
-    public final double redTrussX = 142.73;//510.0;
-    public final double redTrussY = 104.58;//218.42;
+    public static final TargetCoordinate truss = new TargetCoordinate
+        (140, 218, 142, 104);
 
-    public final double blueShotX = 67.0;
-    public final double blueShotY = 218.42;
-    public final double redShotX = 68.53;//584.2;
-    public final double redShotY = 104.58;//218.42;
+    public static final TargetCoordinate shot = new TargetCoordinate
+        (67, 218, 68, 104);
 
     //TODO: what are the actual pipeline indices?
     public final int notePipelineIndex = 0;
@@ -41,6 +37,5 @@ public class VisionConsts {
     public final List<Integer> ampATs = List.of(5, 6);
 
     public static Pose3d cameraPose = new Pose3d(-11.8*inToM,8.5*inToM,22.3*inToM, new Rotation3d(0.0,-65*Math.PI/180.0,11*Math.PI/180.0));
-
 
 }

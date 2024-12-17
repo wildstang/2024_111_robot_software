@@ -50,9 +50,6 @@ public class WsVision implements Subsystem {
     @Override
     public void init() {
         VC = new VisionConsts();
-
-        
-
         //same as update()
         //resetState();
         driverLeftShoulder = (DigitalInput) WsInputs.DRIVER_LEFT_SHOULDER.get();
@@ -72,8 +69,6 @@ public class WsVision implements Subsystem {
         back.update(swerve.getFieldYaw());
         if (aprilTagsInView()) lastUpdate.reset();
         SmartDashboard.putNumber("Vision getAngle", getAngle());
-        SmartDashboard.putNumber("Vision distToTarget", distanceToTarget());
-        SmartDashboard.putNumber("Vision angleToRot", turnToTarget());
         SmartDashboard.putBoolean("Vision targetinView", aprilTagsInView());
         SmartDashboard.putNumber("GP X", back.tx);
         SmartDashboard.putNumber("GP Y", back.ty);
@@ -107,9 +102,9 @@ public class WsVision implements Subsystem {
       */
     public double getAngle(){
         if (isLeftBetter()) {
-            inputDistance = left.distanceToTarget();
+            inputDistance = left.distanceToTarget(VisionConsts.speaker);
         }  else {
-            inputDistance = right.distanceToTarget();
+            inputDistance = right.distanceToTarget(VisionConsts.speaker);
         }
         if (inputDistance < distances[0]) return angles[0];
         for (int i = 1; i < distances.length; i++){
@@ -137,14 +132,8 @@ public class WsVision implements Subsystem {
     /**
      *  gets bearing degrees for what the robot's heading should be to be pointing at the speaker
      */
-    public double turnToTarget(){
-        return isLeftBetter() ? left.turnToTarget() : right.turnToTarget();
-    }
-    /**
-     * distance to center of speaker for use in finding shooter angle
-     */
-    private double distanceToTarget(){
-        return isLeftBetter() ? left.distanceToTarget() : right.distanceToTarget();
+    public double turnToTarget(TargetCoordinate target){
+        return isLeftBetter() ? left.turnToTarget(target) : right.turnToTarget(target);
     }
     /**
      * can either camera see an April Tag
@@ -167,17 +156,17 @@ public class WsVision implements Subsystem {
     /*
      * get the control value to use for driving the robot to a specific X on the field
      */
-    public double getXAdjust(){
+    public double getXAdjust(TargetCoordinate target){
         if (isLeftBetter()){
-            return left.getAlignX();
-        } else return right.getAlignX();
+            return left.getAlignX(target);
+        } else return right.getAlignX(target);
     }
     /*
      * get the control value to use for driving the robot to a specific y on the field
      */
-    public double getYAdjust(){
-        if (isLeftBetter()) return left.getAlignY();
-        else return right.getAlignY();
+    public double getYAdjust(TargetCoordinate target){
+        if (isLeftBetter()) return left.getAlignY(target);
+        else return right.getAlignY(target);
     }
     /*
      * get Y value from cameras to use for determining the direction of the robot

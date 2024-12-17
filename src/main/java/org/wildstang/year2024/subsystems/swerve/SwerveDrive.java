@@ -15,6 +15,7 @@ import org.wildstang.year2024.robot.CANConstants;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
+import org.wildstang.year2024.subsystems.targeting.VisionConsts;
 import org.wildstang.year2024.subsystems.targeting.WsVision;
 import org.wildstang.year2024.subsystems.theFolder.theClass;
 
@@ -338,7 +339,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 //get rotation of the robot to aim while feeding
                 if (isFeedModeUpdate) rotTarget = Core.isBlue() ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();
                 //point at target to score in speaker
-                else if (isVision) rotTarget = vision.turnToTarget();
+                else if (isVision) rotTarget = vision.turnToTarget(VisionConsts.speaker);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 if (Math.abs(rotTarget - getGyroAngle()) < 1.0) rotSpeed = 0;
                 // if (isSnake) {
@@ -358,10 +359,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.AUTO) {
             //auto Align to reset robot to a specific X/Y location on the field, in case of any serious collisions
             if (autoAlign){
-                this.swerveSignal = swerveHelper.setDrive(0.006*vision.getYAdjust(), 0.006*vision.getXAdjust(), 0, getGyroAngle());
+                this.swerveSignal = swerveHelper.setDrive(0.006*vision.getYAdjust(VisionConsts.shot), 0.006*vision.getXAdjust(VisionConsts.shot), 0, getGyroAngle());
             //shooting at speaker during auto
             } else if (isVision && vision.aprilTagsInView()) {
-                rotTarget = vision.turnToTarget();
+                rotTarget = vision.turnToTarget(VisionConsts.speaker);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());
                 this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
             //picking up a game piece with vision assistance in auto
