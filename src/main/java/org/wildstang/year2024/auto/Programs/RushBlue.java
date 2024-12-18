@@ -27,8 +27,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class RushBlue extends AutoProgram {
 
-    private boolean isBlue = true;
-
     @Override
     protected void defineSteps() {
         
@@ -47,7 +45,7 @@ public class RushBlue extends AutoProgram {
 
         // grab first prestaged and shoot preload
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
-        group1.addStep(new SwervePathFollowerStep("RushA", swerve, isBlue));
+        group1.addStep(new SwervePathFollowerStep("RushA", swerve));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
         group1a.addStep(new ShooterSetAngle(83));
         group1a.addStep(new AutoStepDelay(1600));
@@ -59,7 +57,7 @@ public class RushBlue extends AutoProgram {
 
         //return and shoot A
         AutoParallelStepGroup group3 = new AutoParallelStepGroup();
-        group3.addStep(new SwervePathFollowerStep("RushB", swerve, isBlue));
+        group3.addStep(new SwervePathFollowerStep("RushB", swerve));
         AutoSerialStepGroup group3a = new AutoSerialStepGroup();
         group3a.addStep(new AutoStepDelay(1000));
         group3a.addStep(new ShooterAutoAim(true));
@@ -70,7 +68,7 @@ public class RushBlue extends AutoProgram {
 
         //go to center and grab B
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
-        group4.addStep(new SwervePathFollowerStep("RushC", swerve, isBlue));
+        group4.addStep(new SwervePathFollowerStep("RushC", swerve));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
         group4a.addStep(new AutoStepDelay(1000));
         group4a.addStep(new SetIntakeSequenceStep(true));
@@ -80,14 +78,14 @@ public class RushBlue extends AutoProgram {
         addStep(new ObjectOnStep(false));
 
         //return from center and shoot B
-        addStep(new SwervePathFollowerStep("RushD", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("RushD", swerve));
         addStep(new AutoStepDelay(500));
         addStep(new ShootSpeakerStep());
         addStep(new AutoStepDelay(400));
         addStep(new SetIntakeSequenceStep(true));
         addStep(new SetFlywheel(false));
 
-        addStep(new SwervePathFollowerStep("RushE", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("RushE", swerve));
 
     }
 

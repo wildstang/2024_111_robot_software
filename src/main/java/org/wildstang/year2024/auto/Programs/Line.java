@@ -16,7 +16,7 @@ public class Line extends AutoProgram {
     protected void defineSteps() {
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         addStep(new AutoSetupStep(1.5, 5.5, 0, Alliance.Blue));
-        addStep(new SwervePathFollowerStep("Line", swerve, Core.isBlue()));
+        addStep(new SwervePathFollowerStep("Line", swerve));
     }
 
     @Override

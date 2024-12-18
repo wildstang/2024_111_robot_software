@@ -33,7 +33,7 @@ public class TestProgram extends AutoProgram{
         // group.addStep(groupa);
         // addStep(group);
         // addStep(new StartOdometryStep(1.0, 5.0, 0.0, true));
-        addStep(new SwervePathFollowerStep("TestSlow", swerve, true));
+        addStep(new SwervePathFollowerStep("TestSlow", swerve));
         
  
     }

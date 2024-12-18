@@ -14,10 +14,8 @@ public class WsLL {
 
     //public LimelightHelpers.Results result;
 
-    private VisionConsts VC = new VisionConsts();
-
-    public double[] blue3D;
-    public double[] red3D;
+    private double[] blue3D;
+    private double[] red3D;
     public double[] target3D;
     public int tid;
     public double tv;

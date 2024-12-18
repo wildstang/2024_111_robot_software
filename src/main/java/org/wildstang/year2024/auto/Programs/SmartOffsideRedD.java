@@ -27,8 +27,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class SmartOffsideRedD extends AutoProgram {
 
-    private boolean isBlue = false;
-
     @Override
     protected void defineSteps() {
         
@@ -48,7 +46,7 @@ public class SmartOffsideRedD extends AutoProgram {
 
         // grab center E 
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
-        group1.addStep(new SwervePathFollowerStep("GrabDOffsidealt", swerve, isBlue));
+        group1.addStep(new SwervePathFollowerStep("GrabDOffsidealt", swerve));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
         group1a.addStep(new AutoStepDelay(300));
         group1a.addStep(new SetIntakeSequenceStep(true));
@@ -65,7 +63,7 @@ public class SmartOffsideRedD extends AutoProgram {
 
         // score middle piece E
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
-        group2.addStep(new SwervePathFollowerStep("ScoreDOffside", swerve, isBlue));
+        group2.addStep(new SwervePathFollowerStep("ScoreDOffside", swerve));
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();
         group2a.addStep(new AutoStepDelay(1700));
         group2a.addStep(new VisionOnStep(true));
@@ -80,7 +78,7 @@ public class SmartOffsideRedD extends AutoProgram {
 
         // grab middle piece D
         AutoParallelStepGroup group3 = new AutoParallelStepGroup();
-        group3.addStep(new SwervePathFollowerStep("GrabEOffsidealt", swerve, isBlue));
+        group3.addStep(new SwervePathFollowerStep("GrabEOffsidealt", swerve));
         AutoSerialStepGroup group3a = new AutoSerialStepGroup();
         group3a.addStep(new AutoStepDelay(1500));
         group3a.addStep(new ObjectOnStep(true));
@@ -91,7 +89,7 @@ public class SmartOffsideRedD extends AutoProgram {
         AutoSerialStepGroup notGotE = new AutoSerialStepGroup();
 
         AutoParallelStepGroup group6 = new AutoParallelStepGroup();
-        group6.addStep(new SwervePathFollowerStep("DtoE", swerve, isBlue));
+        group6.addStep(new SwervePathFollowerStep("DtoE", swerve));
         AutoSerialStepGroup group6a = new AutoSerialStepGroup();
         group6a.addStep(new AutoStepDelay(1500));
         group6a.addStep(new ObjectOnStep(true));
@@ -104,7 +102,7 @@ public class SmartOffsideRedD extends AutoProgram {
 
         //score middle piece D
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
-        group4.addStep(new SwervePathFollowerStep("ScoreDOffside", swerve, isBlue));
+        group4.addStep(new SwervePathFollowerStep("ScoreDOffside", swerve));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
         group4a.addStep(new AutoStepDelay(1700));
         group4a.addStep(new VisionOnStep(true));
@@ -115,7 +113,7 @@ public class SmartOffsideRedD extends AutoProgram {
         restOfPath.addStep(new ShootSpeakerStep());
         restOfPath.addStep(new AutoStepDelay(500));
         restOfPath.addStep(new VisionOnStep(false));
-        restOfPath.addStep(new SwervePathFollowerStep("EndOffside", swerve, isBlue));
+        restOfPath.addStep(new SwervePathFollowerStep("EndOffside", swerve));
 
         notGotE.addStep(restOfPath);
         gotE.addStep(restOfPath);

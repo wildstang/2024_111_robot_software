@@ -188,16 +188,10 @@ public class SwerveDrive extends SwerveDriveTemplate {
             rotLocked = true;
             rotTarget = Core.isBlue() ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();//update below as well
             isFeedModeUpdate = true;
-            // if (vision.aprilTagsInView() || vision.getUpdateTime() < 1.0){
-            //     rotTarget = isBlue ? 237.3 - 0.183*vision.getYValue() : 136.7 + 0.183*vision.getYValue();
-            // } else {
-            //     rotTarget = isBlue ? 230.0 : 144.0;
-            // }
             isVision = false;
         //else if aiming while in scoring mode
         }else if (leftTrigger.getValue() > 0.15 && vision.aprilTagsInView()){
             rotLocked = true;
-            //rotTarget = vision.front.turnToTarget(isBlue);
             isVision = true;
             isFeedModeUpdate = false;
             xPower *= 0.7;
@@ -235,7 +229,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
             isCurrentLow = false;
         }
 
-        // if (source == dpadRight && dpadRight.getValue()) isOverride = !isOverride;
         if (source == dpadLeft && dpadLeft.getValue()) feedOffset-=2;
         if (source == dpadRight && dpadRight.getValue()) feedOffset+=2;
     }
@@ -321,9 +314,9 @@ public class SwerveDrive extends SwerveDriveTemplate {
         SmartDashboard.putNumber("Drive Speed", robotSpeed());
         if (robotSpeed() < 0.5) {
             if (vision.isLeftBetter()) {
-                setOdo(new Pose2d(new Translation2d(vision.left.blue3D[0], vision.left.blue3D[1]), new Rotation2d(getFieldYaw())));
+                setOdo(new Pose2d(new Translation2d(vision.left.target3D[0], vision.left.target3D[1]), odoAngle()));
             } else {
-                setOdo(new Pose2d(new Translation2d(vision.right.blue3D[0], vision.right.blue3D[1]), new Rotation2d(getFieldYaw())));
+                setOdo(new Pose2d(new Translation2d(vision.right.target3D[0], vision.right.target3D[1]), odoAngle()));
             }
         }
         publisher.set(odometry.getPoseMeters());
@@ -359,7 +352,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.AUTO) {
             //auto Align to reset robot to a specific X/Y location on the field, in case of any serious collisions
             if (autoAlign){
-                this.swerveSignal = swerveHelper.setDrive(0.006*vision.getYAdjust(VisionConsts.shot), 0.006*vision.getXAdjust(VisionConsts.shot), 0, getGyroAngle());
+                this.swerveSignal = swerveHelper.setDrive(0.006*vision.getYAdjust(VisionConsts.shot),
+                     0.006*vision.getXAdjust(VisionConsts.shot), 0, getGyroAngle());
             //shooting at speaker during auto
             } else if (isVision && vision.aprilTagsInView()) {
                 rotTarget = vision.turnToTarget(VisionConsts.speaker);
@@ -398,7 +392,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 drive();
             }
         }
-        // SmartDashboard.putBoolean("Object Override", isOverride);
         SmartDashboard.putNumber("Gyro Reading", getGyroAngle());
         SmartDashboard.putNumber("X Power", xPower);
         SmartDashboard.putNumber("Y Power", yPower);
@@ -440,13 +433,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     @Override
     public String getName() {
         return "Swerve Drive";
-    }
-
-    /** resets the drive encoders on each module */
-    public void resetDriveEncoders() {
-        // for (int i = 0; i < modules.length; i++) {
-        //     modules[i].resetDriveEncoders();
-        // }
     }
 
     /** sets the drive to teleop/cross, and sets drive motors to coast */
@@ -494,11 +480,11 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     /**sets autonomous values from the path data file in field relative */
     public void setAutoValues(double xVelocity, double yVelocity, double xOffset, double yOffset) {
-        SmartDashboard.putNumber("Offset X Power", (Core.isBlue() ? -yOffset : yOffset) * DriveConstants.TRANSLATION_P);
-        SmartDashboard.putNumber("Offset Y Power", (Core.isBlue() ? xOffset : -xOffset) * DriveConstants.TRANSLATION_P);
+        SmartDashboard.putNumber("Offset X Power", xOffset * DriveConstants.TRANSLATION_P);
+        SmartDashboard.putNumber("Offset Y Power", yOffset * DriveConstants.TRANSLATION_P);
         // accel of 0 because currently not using acceleration for power since
-        xPower = swerveHelper.getAutoPower(Core.isBlue() ? -yVelocity : yVelocity, 0) + (Core.isBlue() ? -yOffset : yOffset) * DriveConstants.TRANSLATION_P;
-        yPower = swerveHelper.getAutoPower(Core.isBlue() ? xVelocity : -xVelocity, 0) + (Core.isBlue() ? xOffset : -xOffset) * DriveConstants.TRANSLATION_P;
+        xPower = swerveHelper.getAutoPower(xVelocity, 0) + (xOffset) * DriveConstants.TRANSLATION_P;
+        yPower = swerveHelper.getAutoPower(yVelocity, 0) + (yOffset) * DriveConstants.TRANSLATION_P;
     }
 
     /**sets the autonomous heading controller to a new target */
@@ -520,16 +506,11 @@ public class SwerveDrive extends SwerveDriveTemplate {
     }
 
     public double getGyroAngle() {
-        return (359.99 - gyro.getYaw()+360)%360;
+        return (360 - gyro.getYaw()+360)%360;
     }  
 
-    // Gets blue field relative yaw for choreo, WPILIB, photonvision, limelight
-    public double getFieldYaw() {
-        if (Core.isBlue()) {
-            return (360 + gyro.getYaw()) % 360;
-        } else {
-            return (180 + gyro.getYaw()) % 360;
-        }
+    public double getFieldYaw(){
+        return Math.toRadians(360-getGyroAngle());
     }
 
     // Magnitude of robot speed for vision confidence
@@ -540,13 +521,12 @@ public class SwerveDrive extends SwerveDriveTemplate {
          * speeds.vyMetersPerSecond + speeds.omegaRadiansPerSecond);
     }
     public Rotation2d odoAngle(){
-        return new Rotation2d(Math.toRadians(360-getGyroAngle()));
+        return new Rotation2d(getFieldYaw());
     }
     public SwerveModulePosition[] odoPosition(){
         return new SwerveModulePosition[]{modules[0].odoPosition(), modules[1].odoPosition(), modules[2].odoPosition(), modules[3].odoPosition()};
     }
     public void setOdo(Pose2d starting){
-        //this.odometry.resetPosition(odoAngle(), odoPosition(), starting);
         this.odometry = new SwerveDriveOdometry(DriveConstants.kinematics, odoAngle(), odoPosition(), starting);
     }
     public Pose2d returnPose(){

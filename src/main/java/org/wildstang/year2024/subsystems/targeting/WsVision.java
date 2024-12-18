@@ -10,10 +10,6 @@ import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -173,8 +169,8 @@ public class WsVision implements Subsystem {
      * to feed a note to the desired location
      */
     public double getYValue(){
-        if (isLeftBetter()) return left.blue3D[1];
-        else return right.blue3D[1];
+        if (isLeftBetter()) return left.target3D[1];
+        else return right.target3D[1];
     }
     public double getUpdateTime(){
         return lastUpdate.get();

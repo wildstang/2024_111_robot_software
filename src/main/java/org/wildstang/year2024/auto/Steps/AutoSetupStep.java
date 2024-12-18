@@ -35,7 +35,7 @@ public class AutoSetupStep extends AutoStep{
             if (Core.isBlue()){
                 swerve.setOdo(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(360.0-heading))));
             } else {
-                swerve.setOdo(new Pose2d(new Translation2d(16.5410515-x, y), new Rotation2d(Math.toRadians(180.0-heading))));
+                swerve.setOdo(new Pose2d(new Translation2d(x, 8.016-y), new Rotation2d(Math.toRadians(360.0-heading))));
             }
             this.setFinished();
         }

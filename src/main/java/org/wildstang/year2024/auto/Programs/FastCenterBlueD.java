@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class FastCenterBlueD extends AutoProgram{
 
-    private boolean isBlue = true;
 
     @Override
     protected void defineSteps() {
@@ -40,7 +39,7 @@ public class FastCenterBlueD extends AutoProgram{
         //shoot two, and grab from center
         addStep(new ShootSpeakerStep());
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
-        group1.addStep(new SwervePathFollowerStep("CenterDA", swerve, isBlue));
+        group1.addStep(new SwervePathFollowerStep("CenterDA", swerve));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
         group1a.addStep(new AutoStepDelay(CenterConsts.slideDelay1));
         group1a.addStep(new ShooterSetAngle(CenterConsts.secondShot));
@@ -55,7 +54,7 @@ public class FastCenterBlueD extends AutoProgram{
 
         //return from center and home on target
         addStep(new ObjectOnStep(false));
-        addStep(new SwervePathFollowerStep("CenterDB", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("CenterDB", swerve));
         addStep(new SetFlywheel(true));
         addStep(new ShooterSetAngle(CenterConsts.thirdShot));
         addStep(new AlignOnStep(true));
@@ -72,7 +71,7 @@ public class FastCenterBlueD extends AutoProgram{
         //addStep(new ShooterSetAngle(CenterConsts.fourthShot));
         addStep(new ShooterAutoAim(true));
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
-        group2.addStep(new SwervePathFollowerStep("CenterFinish", swerve, isBlue));
+        group2.addStep(new SwervePathFollowerStep("CenterFinish", swerve));
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();
         group2a.addStep(new AutoStepDelay(CenterConsts.move4Delay));
         group2a.addStep(new ObjectOnStep(true));
@@ -82,10 +81,10 @@ public class FastCenterBlueD extends AutoProgram{
         addStep(new ObjectOnStep(false));
         addStep(new VisionOnStep(false));
         addStep(new AutoStepDelay(CenterConsts.shoot4Delay));
-        // addStep(new SwervePathFollowerStep("CenterFinishB", swerve, isBlue));
+        // addStep(new SwervePathFollowerStep("CenterFinishB", swerve));
 
         AutoParallelStepGroup finishGroup = new AutoParallelStepGroup();
-        finishGroup.addStep(new SwervePathFollowerStep("CenterFinishBalt", swerve, isBlue));
+        finishGroup.addStep(new SwervePathFollowerStep("CenterFinishBalt", swerve));
         AutoSerialStepGroup finishGroupa = new AutoSerialStepGroup();
         finishGroupa.addStep(new AutoStepDelay(1300));
         finishGroupa.addStep(new ObjectOnStep(true));

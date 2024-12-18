@@ -102,7 +102,6 @@ public class LedController implements Subsystem {
 
     @Override
     public void resetState() {
-        // normal = white;
     }
 
     @Override

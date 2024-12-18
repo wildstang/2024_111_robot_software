@@ -24,14 +24,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class CenterRed extends AutoProgram {
 
-    private boolean isBlue = true;
 
     @Override
     protected void defineSteps() {
         
         SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
         LedController led = (LedController) Core.getSubsystemManager().getSubsystem(WsSubsystems.LED);
-        isBlue = false;
         AutoSerialStepGroup startGroup = new AutoSerialStepGroup();
         addStep(new AutoSetupStep(0.7, 4.0, 180.0, Alliance.Red));
         startGroup.addStep(new ShooterSetAngle(175));
@@ -41,7 +39,7 @@ public class CenterRed extends AutoProgram {
 
         // grab first prestaged and shoot preload
         AutoParallelStepGroup group1 = new AutoParallelStepGroup();
-        group1.addStep(new SwervePathFollowerStep("CenterAred", swerve, isBlue));
+        group1.addStep(new SwervePathFollowerStep("CenterAred", swerve));
         AutoSerialStepGroup group1a = new AutoSerialStepGroup();
         group1a.addStep(new ShootSpeakerStep());
         group1a.addStep(new AutoStepDelay(500));
@@ -54,7 +52,7 @@ public class CenterRed extends AutoProgram {
 
         //grab second prestaged and shoot first prestaged
         AutoParallelStepGroup group2 = new AutoParallelStepGroup();
-        group2.addStep(new SwervePathFollowerStep("CenterBred", swerve, isBlue));
+        group2.addStep(new SwervePathFollowerStep("CenterBred", swerve));
         AutoSerialStepGroup group2a = new AutoSerialStepGroup();
         group2a.addStep(new AutoStepDelay(500));
         group2a.addStep(new ShooterAutoAim(true));
@@ -69,7 +67,7 @@ public class CenterRed extends AutoProgram {
 
         //grab third prestaged and shoot second prestaged
         AutoParallelStepGroup group3 = new AutoParallelStepGroup();
-        group3.addStep(new SwervePathFollowerStep("CenterCred", swerve, isBlue));
+        group3.addStep(new SwervePathFollowerStep("CenterCred", swerve));
         AutoSerialStepGroup group3a = new AutoSerialStepGroup();
         group3a.addStep(new AutoStepDelay(1500));
         group3a.addStep(new ObjectOnStep(true));
@@ -83,7 +81,7 @@ public class CenterRed extends AutoProgram {
 
         //grab middle A note and shoot third prestaged
         AutoParallelStepGroup group4 = new AutoParallelStepGroup();
-        group4.addStep(new SwervePathFollowerStep("CenterDred", swerve, isBlue));
+        group4.addStep(new SwervePathFollowerStep("CenterDred", swerve));
         AutoSerialStepGroup group4a = new AutoSerialStepGroup();
         group4a.addStep(new ShooterSetAngle(82.5));
         group4a.addStep(new AutoStepDelay(500));
@@ -97,7 +95,7 @@ public class CenterRed extends AutoProgram {
         //return from middle
         addStep(new ObjectOnStep(false));
         addStep(new VisionOnStep(true));
-        addStep(new SwervePathFollowerStep("CenterEred", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("CenterEred", swerve));
         addStep(new AutoStepDelay(150));
         addStep(new ShootSpeakerStep());
         addStep(new AutoStepDelay(250));
@@ -105,7 +103,7 @@ public class CenterRed extends AutoProgram {
 
         //grab middle B note and shoot middle A note
         AutoParallelStepGroup group5 = new AutoParallelStepGroup();
-        group5.addStep(new SwervePathFollowerStep("CenterFred", swerve, isBlue));
+        group5.addStep(new SwervePathFollowerStep("CenterFred", swerve));
         AutoSerialStepGroup group5a = new AutoSerialStepGroup();
         group5a.addStep(new AutoStepDelay(500));
         group5a.addStep(new SetIntakeSequenceStep(true));
@@ -117,7 +115,7 @@ public class CenterRed extends AutoProgram {
         //return from middle and shoot middle B note
         addStep(new ObjectOnStep(false));
         addStep(new VisionOnStep(true));
-        addStep(new SwervePathFollowerStep("CenterGred", swerve, isBlue));
+        addStep(new SwervePathFollowerStep("CenterGred", swerve));
         addStep(new AutoStepDelay(150));
         addStep(new ShootSpeakerStep());
     }
