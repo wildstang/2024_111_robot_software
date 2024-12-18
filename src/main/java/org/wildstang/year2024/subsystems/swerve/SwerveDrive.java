@@ -186,7 +186,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         //if aiming in feed mode
         if (leftTrigger.getValue() > 0.15 && isFeedVision){
             rotLocked = true;
-            rotTarget = Core.isBlue() ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();//update below as well
+            rotTarget = vision.getFeedRotation(feedOffset);//update below as well
             isFeedModeUpdate = true;
             isVision = false;
         //else if aiming while in scoring mode
@@ -330,7 +330,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.TELEOP) {
             if (rotLocked){
                 //get rotation of the robot to aim while feeding
-                if (isFeedModeUpdate) rotTarget = Core.isBlue() ? 232.3+feedOffset - 0.183*vision.getYValue() : 146+feedOffset + 0.193*vision.getYValue();
+                if (isFeedModeUpdate) rotTarget = vision.getFeedRotation(feedOffset);
                 //point at target to score in speaker
                 else if (isVision) rotTarget = vision.turnToTarget(VisionConsts.speaker);
                 rotSpeed = swerveHelper.getRotControl(rotTarget, getGyroAngle());

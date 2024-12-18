@@ -118,19 +118,7 @@ public class SmartOffsideRedD extends AutoProgram {
         notGotE.addStep(restOfPath);
         gotE.addStep(restOfPath);
         addStep(new ControlFlowStep(intake, gotE, notGotE));
-        // addStep(new AutoStepDelay(300));
-        // addStep(new SetIntakeSequenceStep(true));
-        // addStep(new VisionOnStep(false));
 
-        // addStep(new SwervePathFollowerStep("GrabCOffside", swerve, isBlue));
-        // AutoParallelStepGroup group5 = new AutoParallelStepGroup();
-        // group5.addStep(new SwervePathFollowerStep("ScoreCOffside", swerve, isBlue));
-        // AutoSerialStepGroup group5a = new AutoSerialStepGroup();
-        // group5a.addStep(new AutoStepDelay(1000));
-        // group5a.addStep(new VisionOnStep(true));
-        // group5.addStep(group5a);
-        // addStep(group5);
-        // addStep(new ShootSpeakerStep());
 
     }
 

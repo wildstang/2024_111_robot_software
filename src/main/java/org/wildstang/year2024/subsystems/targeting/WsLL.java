@@ -192,4 +192,7 @@ public class WsLL {
     public boolean seesAmp(){
         return tid == 5 || tid == 6;
     }
+    public double getFeedRotation(double feedOffset){
+        return Core.isBlue() ? 232.3+feedOffset - 0.183*target3D[1] : 146+feedOffset + 0.193*target3D[1];
+    }
 }

@@ -123,7 +123,7 @@ public class WsVision implements Subsystem {
         if (!left.seesAmp() && right.seesAmp()) return false;
         if (left.getNumTags() > right.getNumTags()) return true;
         if (left.getNumTags() < right.getNumTags()) return false;
-        return !Core.isBlue();
+        return false;
     }
     /**
      *  gets bearing degrees for what the robot's heading should be to be pointing at the speaker
@@ -171,6 +171,10 @@ public class WsVision implements Subsystem {
     public double getYValue(){
         if (isLeftBetter()) return left.target3D[1];
         else return right.target3D[1];
+    }
+    public double getFeedRotation(double feedOffset){
+        if (isLeftBetter()) return left.getFeedRotation(feedOffset);
+        else return right.getFeedRotation(feedOffset);
     }
     public double getUpdateTime(){
         return lastUpdate.get();
