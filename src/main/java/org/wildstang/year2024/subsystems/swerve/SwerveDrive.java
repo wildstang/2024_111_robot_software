@@ -11,7 +11,7 @@ import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.subsystems.swerve.SwerveDriveTemplate;
 import org.wildstang.hardware.roborio.outputs.WsSpark;
 import org.wildstang.year2024.robot.CANConstants;
-//import org.wildstang.year2024.robot.KalmanFilterJenny;
+import org.wildstang.year2024.robot.KalmanFilterJenny;
 import org.wildstang.year2024.robot.WsInputs;
 import org.wildstang.year2024.robot.WsOutputs;
 import org.wildstang.year2024.robot.WsSubsystems;
@@ -87,7 +87,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private SwerveSignal swerveSignal;
     private WsSwerveHelper swerveHelper = new WsSwerveHelper();
     public SwerveDriveOdometry odometry;
-    StructPublisher<Pose2d> publisher;
+    StructPublisher<Pose2d> odometryPublisher;
 
     private WsVision vision;
     private theClass intake;
@@ -120,7 +120,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
         xPower = swerveHelper.scaleDeadband(leftStickX.getValue(), DriveConstants.DEADBAND);
         yPower = swerveHelper.scaleDeadband(leftStickY.getValue(), DriveConstants.DEADBAND);
         
-        
+
         //reset gyro
         if (source == select && select.getValue()) {
             gyro.setYaw(0.0);
@@ -232,7 +232,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
  
     @Override
     public void init() {
-        publisher = NetworkTableInstance.getDefault()
+        odometryPublisher = NetworkTableInstance.getDefault()
         .getStructTopic("MyPose", Pose2d.struct).publish();
 
         initInputs();
@@ -308,16 +308,16 @@ public class SwerveDrive extends SwerveDriveTemplate {
     @Override
     public void update() {
         isBlue = Core.isBlue();
-        odometry.update(new Rotation2d(gyro.getYaw() * Math.PI / 180), odoPosition());
+        odometry.update(Rotation2d.fromDegrees(getFieldYaw()), odoPosition());
         SmartDashboard.putNumber("Drive Speed", robotSpeed());
-        if (robotSpeed() < 0.5) {
-            if (vision.isLeftBetter()) {
-                setOdo(new Pose2d(new Translation2d(vision.left.blue3D[0], vision.left.blue3D[1]), new Rotation2d(getFieldYaw())));
-            } else {
-                setOdo(new Pose2d(new Translation2d(vision.right.blue3D[0], vision.right.blue3D[1]), new Rotation2d(getFieldYaw())));
-            }
-        }
-        publisher.set(odometry.getPoseMeters());
+        // if (robotSpeed() < 0.5) {
+        //     if (vision.isLeftBetter()) {
+        //         setOdo(new Pose2d(new Translation2d(vision.left.blue3D[0], vision.left.blue3D[1]), Rotation2d.fromDegrees(getFieldYaw())));
+        //     } else {
+        //         setOdo(new Pose2d(new Translation2d(vision.right.blue3D[0], vision.right.blue3D[1]), Rotation2d.fromDegrees(getFieldYaw())));
+        //     }
+        // }
+        odometryPublisher.set(odometry.getPoseMeters());
         //kf.kfPeriodic(); //calling periodic kalman filter method
 
         if (driveState == driveType.CROSS) {
@@ -523,7 +523,7 @@ public class SwerveDrive extends SwerveDriveTemplate {
     // Magnitude of robot speed for vision confidence
     public double robotSpeed() {
         ChassisSpeeds speeds = DriveConstants.kinematics.toChassisSpeeds(new SwerveModuleState[]{modules[0].moduleState(), modules[1].moduleState(), modules[2].moduleState(), modules[3].moduleState()});
-        return Math.sqrt(speeds.vxMetersPerSecond * speeds.vxMetersPerSecond + speeds.vyMetersPerSecond * speeds.vyMetersPerSecond + speeds.omegaRadiansPerSecond);
+        return Math.sqrt(speeds.vxMetersPerSecond * speeds.vxMetersPerSecond + speeds.vyMetersPerSecond * speeds.vyMetersPerSecond);
     }
     public Rotation2d odoAngle(){
         return new Rotation2d(Math.toRadians(360-getGyroAngle()));
