@@ -6,6 +6,7 @@ import org.wildstang.year2024.subsystems.targeting.WsVision;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 
 public class KalmanFilterJenny {
@@ -56,26 +57,25 @@ public class KalmanFilterJenny {
     // Identity matrix for update step
     private final SimpleMatrix I = SimpleMatrix.identity(8);
 
-    private SwerveDrive swerve;
+    private SwerveDrive swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem("SwerveDrive");
     private SwerveDriveOdometry odometry;
     private com.ctre.phoenix.sensors.Pigeon2 gyro;
+    private ChassisSpeeds robotSpeeds;
 
     private final int ACCL_X = 0;
     private final int ACCL_Y = 1;
 
     public KalmanFilterJenny() {
+        odometry = swerve.odometry;
+        gyro = swerve.gyro;
+        robotSpeeds = swerve.speeds;
         kfInit();
-
     }
 
     public void kfInit(){
-        swerve = (SwerveDrive) Core.getSubsystemManager().getSubsystem(WsSubsystems.SWERVE_DRIVE);
-        gyro = swerve.gyro;
-        odometry = swerve.odometry;
         initStateMatrix();
         initCovarianceMatrix();
         z = new SimpleMatrix(5, 1);
-
     }
 
     private void initStateMatrix(){
@@ -87,13 +87,16 @@ public class KalmanFilterJenny {
         for (int i=0;i<2;i++) {
             acceleration[i] = shortAcceleration[i];
         }
+        //geting x,y velocity values from chassisspeeds class
+        double currSpeedX = robotSpeeds.vxMetersPerSecond;
+        double currSpeedY = robotSpeeds.vyMetersPerSecond;
         
         //initalizing state matrix
         x.set(1,0,odometry.getPoseMeters().getX()); //position in x direction
-        x.set(2,0,0); //will update once figure out how to get velocity
+        x.set(2,0,currSpeedX); //velocity in x direction
         x.set(3,0,acceleration[ACCL_X]); //acceleration in x direction
         x.set(4,0,odometry.getPoseMeters().getY()); //position in y direction
-        x.set(4,0,0); //will update 
+        x.set(4,0,currSpeedY); //velocity in y direction
         x.set(5,0,acceleration[ACCL_Y]); //acceleration in y direction;
 
     }
@@ -162,7 +165,6 @@ public class KalmanFilterJenny {
     }
 
     public void kfPeriodic() {
-        x.print();
 
         //get Measurements
         updateMeasurementMatrix();
@@ -172,11 +174,11 @@ public class KalmanFilterJenny {
 
         // Run the update step 
 
-
         update();
 
         // Get the updated state
         SimpleMatrix updatedState = getState();
+       
 
     }
 }

@@ -87,7 +87,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private SwerveSignal swerveSignal;
     private WsSwerveHelper swerveHelper = new WsSwerveHelper();
     public SwerveDriveOdometry odometry;
-    StructPublisher<Pose2d> odometryPublisher;
+    StructPublisher<Pose2d> publisher;
+    public ChassisSpeeds speeds;
 
     private WsVision vision;
     private theClass intake;
