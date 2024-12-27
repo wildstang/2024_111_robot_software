@@ -14,13 +14,13 @@ public class VisionConsts {
     public final double mToIn = 39.71;
 
     public static final TargetCoordinate speaker = new TargetCoordinate
-        (9.5, 208, 11, 114);
+        (9.5, 208);
 
     public static final TargetCoordinate truss = new TargetCoordinate
-        (140, 218, 142, 104);
+        (140, 218);
 
     public static final TargetCoordinate shot = new TargetCoordinate
-        (67, 218, 68, 104);
+        (67, 218);
 
     //TODO: what are the actual pipeline indices?
     public final int notePipelineIndex = 0;

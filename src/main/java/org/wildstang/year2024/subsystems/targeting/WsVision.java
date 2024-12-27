@@ -18,6 +18,8 @@ public class WsVision implements Subsystem {
     public WsLL left = new WsLL("limelight-left");
     public WsLL right = new WsLL("limelight-right");
     public WsLL back = new WsLL("limelight-back");
+
+    private final double Align_P = 0.006;
     
     public SwerveDrive swerve;
 
@@ -154,15 +156,15 @@ public class WsVision implements Subsystem {
      */
     public double getXAdjust(TargetCoordinate target){
         if (isLeftBetter()){
-            return left.getAlignX(target);
-        } else return right.getAlignX(target);
+            return Align_P * left.getAlignX(target);
+        } else return Align_P * right.getAlignX(target);
     }
     /*
      * get the control value to use for driving the robot to a specific y on the field
      */
     public double getYAdjust(TargetCoordinate target){
-        if (isLeftBetter()) return left.getAlignY(target);
-        else return right.getAlignY(target);
+        if (isLeftBetter()) return Align_P * left.getAlignY(target);
+        else return Align_P * right.getAlignY(target);
     }
     /*
      * get Y value from cameras to use for determining the direction of the robot

@@ -75,7 +75,6 @@ public class SwerveDrive extends SwerveDriveTemplate {
     private boolean isOverride = false;
     private boolean isAutoObject = false;
     private boolean isFeedModeUpdate = false;
-    private double xObject = 0;
     private double yObject = 0;
     private double feedOffset = 0;
     
@@ -352,8 +351,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.AUTO) {
             //auto Align to reset robot to a specific X/Y location on the field, in case of any serious collisions
             if (autoAlign){
-                this.swerveSignal = swerveHelper.setDrive(0.006*vision.getYAdjust(VisionConsts.shot),
-                     0.006*vision.getXAdjust(VisionConsts.shot), 0, getGyroAngle());
+                this.swerveSignal = swerveHelper.setDrive(vision.getYAdjust(VisionConsts.shot),
+                     vision.getXAdjust(VisionConsts.shot), swerveHelper.getRotControl(180, getGyroAngle()), getGyroAngle());
             //shooting at speaker during auto
             } else if (isVision && vision.aprilTagsInView()) {
                 rotTarget = vision.turnToTarget(VisionConsts.speaker);
@@ -361,15 +360,12 @@ public class SwerveDrive extends SwerveDriveTemplate {
                 this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
             //picking up a game piece with vision assistance in auto
             } else if (isAutoObject && !intake.hasNote() && vision.back.TargetInView()){
-                xObject = vision.back.tx * 0.01;
-                yObject = vision.back.ty * 0.03;
-                if (Math.hypot(xPower, yPower) > vision.back.ty*0.03) yObject = 0;
-                rotSpeed = swerveHelper.getRotControl( 1.0*vision.back.tx, 0.0);
-                this.swerveSignal = swerveHelper.setDrive(0, Math.min(-Math.hypot(xPower, yPower), -yObject), rotSpeed, 360.0-1.0*vision.back.tx);
+                yObject = swerveHelper.adjustObjectAuto(vision.back.ty, xPower, yPower);
+                if (yObject > 0) this.swerveSignal = swerveHelper.setObject(0, yObject, vision.back.tx);
+                else this.swerveSignal = swerveHelper.setObject(xPower, yPower, vision.back.tx);
             } else {
                 //get controller generated rotation value
-                // Capped at .2
-                rotSpeed = Math.max(-0.2, Math.min(0.2, swerveHelper.getRotControl(rotTarget, getGyroAngle())));
+                rotSpeed = swerveHelper.getAutoRotation(rotTarget, getGyroAngle());
                 this.swerveSignal = swerveHelper.setDrive(xPower, yPower, rotSpeed, getGyroAngle());
             }
             
@@ -379,12 +375,8 @@ public class SwerveDrive extends SwerveDriveTemplate {
         if (driveState == driveType.OBJECT) {
             //for teleop game piece pickup
             if (vision.back.TargetInView() && !intake.hasNote()) {
-                if (rotLocked){
-                    //turn the robot to point at the game piece
-                    rotSpeed = swerveHelper.getRotControl( 1.0*vision.back.tx, 0.0);
-                }
                 //force the controller input to point at the gamepiece, only thing driver controls is speed of the robot
-                this.swerveSignal = swerveHelper.setDrive(0, -Math.hypot(yPower, xPower) , rotSpeed, 360.0-1.0*vision.back.tx);
+                this.swerveSignal = swerveHelper.setObject(xPower, yPower, vision.back.tx);
                 drive();
             }
             else {
