@@ -10,6 +10,7 @@ import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.inputs.DigitalInput;
 import org.wildstang.framework.io.inputs.Input;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -24,6 +25,7 @@ public class WsVision implements Subsystem {
     public SwerveDrive swerve;
 
     public VisionConsts VC;
+    public Translation2d robotOdometry = new Translation2d();
 
     public double[] distances = { 48,  60,  95, 145,  192,  250, 251, 252};
     public double[] angles =    {205, 155+5.0, 125+5.0,  87+5.0, 75.5+4.0, 75.5+4.0, 75.5+4.0, 75.5+4.0};
@@ -131,7 +133,15 @@ public class WsVision implements Subsystem {
      *  gets bearing degrees for what the robot's heading should be to be pointing at the speaker
      */
     public double turnToTarget(TargetCoordinate target){
+        if (!aprilTagsInView()) return left.getDirection(robotOdometry.getX() - target.getX(), robotOdometry.getY() - target.getY());
         return isLeftBetter() ? left.turnToTarget(target) : right.turnToTarget(target);
+    }
+    /*
+     * returns distance from current location to target, in inches
+     */
+    public double distanceToTarget(TargetCoordinate target){
+        if (!aprilTagsInView()) return Math.hypot(robotOdometry.getX() - target.getX(), robotOdometry.getY() - target.getY());
+        else return isLeftBetter() ? left.distanceToTarget(target) : right.distanceToTarget(target);
     }
     /**
      * can either camera see an April Tag
@@ -155,14 +165,15 @@ public class WsVision implements Subsystem {
      * get the control value to use for driving the robot to a specific X on the field
      */
     public double getXAdjust(TargetCoordinate target){
-        if (isLeftBetter()){
-            return Align_P * left.getAlignX(target);
-        } else return Align_P * right.getAlignX(target);
+        if (!aprilTagsInView()) return Align_P * robotOdometry.getX();
+        if (isLeftBetter()) return Align_P * left.getAlignX(target);
+        else return Align_P * right.getAlignX(target);
     }
     /*
      * get the control value to use for driving the robot to a specific y on the field
      */
     public double getYAdjust(TargetCoordinate target){
+        if (!aprilTagsInView()) return Align_P * robotOdometry.getY();
         if (isLeftBetter()) return Align_P * left.getAlignY(target);
         else return Align_P * right.getAlignY(target);
     }
@@ -171,6 +182,7 @@ public class WsVision implements Subsystem {
      * to feed a note to the desired location
      */
     public double getYValue(){
+        if (!aprilTagsInView()) return robotOdometry.getY();
         if (isLeftBetter()) return left.target3D[1];
         else return right.target3D[1];
     }
@@ -180,5 +192,13 @@ public class WsVision implements Subsystem {
     }
     public double getUpdateTime(){
         return lastUpdate.get();
+    }
+    public Translation2d getCameraPose(){
+        if (isLeftBetter()) return new Translation2d(left.target3D[0], left.target3D[1]);
+        else return new Translation2d(right.target3D[0], right.target3D[1]);
+    }
+    public void setOdometry(Translation2d update){
+        robotOdometry = update;
+        robotOdometry.times(39.37);
     }
     }

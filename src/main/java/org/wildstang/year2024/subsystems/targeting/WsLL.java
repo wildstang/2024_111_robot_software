@@ -146,7 +146,7 @@ public class WsLL {
     /**
      * input of X and Y in frc field coordinates, returns controller bearing degrees (aka what to plug into rotLocked) for turnToTarget
      */
-    private double getDirection(double x, double y) {
+    public double getDirection(double x, double y) {
         double measurement = 90 + Math.toDegrees(Math.atan2(x,y));
         if (measurement < 0) {
             measurement = 360 + measurement;

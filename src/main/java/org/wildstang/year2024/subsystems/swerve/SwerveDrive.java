@@ -309,15 +309,12 @@ public class SwerveDrive extends SwerveDriveTemplate {
 
     @Override
     public void update() {
-        odometry.update(new Rotation2d(gyro.getYaw() * Math.PI / 180), odoPosition());
+        odometry.update(odoAngle(), odoPosition());
         SmartDashboard.putNumber("Drive Speed", robotSpeed());
         if (robotSpeed() < 0.5) {
-            if (vision.isLeftBetter()) {
-                setOdo(new Pose2d(new Translation2d(vision.left.target3D[0], vision.left.target3D[1]), odoAngle()));
-            } else {
-                setOdo(new Pose2d(new Translation2d(vision.right.target3D[0], vision.right.target3D[1]), odoAngle()));
-            }
+            setOdo(new Pose2d(vision.getCameraPose(), odoAngle()));
         }
+        vision.setOdometry(odometry.getPoseMeters().getTranslation());
         publisher.set(odometry.getPoseMeters());
         //kf.kfPeriodic(); //calling periodic kalman filter method
 
